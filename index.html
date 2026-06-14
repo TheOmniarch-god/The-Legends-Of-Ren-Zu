@@ -408,7 +408,7 @@ function ThemeCycler({ mode, onClick }) {
   );
 }
 // ─── Typewriter ───────────────────────────────────────────────────────────────
-function Typewriter({ text, color, streaming }) {
+function Typewriter({ text, color, streaming, font }) {
   // streaming=true: text grows live token-by-token from Groq stream, render directly
   // streaming=false: Together AI non-stream, animate character-by-character on arrival
   const [displayed, setDisplayed] = useState("");
@@ -432,7 +432,7 @@ function Typewriter({ text, color, streaming }) {
     return () => clearInterval(interval);
   }, [text, streaming]);
 
-  return <span style={{ color, fontFamily: "Uncial Antiqua, Georgia, serif", fontSize: 14, lineHeight: 1.9 }}>{displayed}</span>;
+  return <span style={{ color, fontFamily: font || "'IM Fell English', 'Palatino Linotype', Georgia, serif", fontSize: 14, lineHeight: 1.9 }}>{displayed}</span>;
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -545,7 +545,7 @@ function RenZuReader() {
     const userMsg = `Chapter ${selected.num}: "${selected.title}"\n\nChapter text:\n${bodyForAI}\n\nQuestion: ${question}`;
 
     try {
-      const res = await fetch("/.netlify/functions/ai-chat", {
+      const res = await fetch("/api/ai-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMsg })
@@ -995,7 +995,7 @@ function RenZuReader() {
                       ))}
                     </div>
                   ) : (
-                    <Typewriter text={aiResponse} color={text} streaming={aiStreaming} />
+                    <Typewriter text={aiResponse} color={text} streaming={aiStreaming} font={bodyFont} />
                   )}
                 </div>
               )}
