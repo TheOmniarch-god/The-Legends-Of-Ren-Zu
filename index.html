@@ -478,8 +478,10 @@ function RenZuReader() {
   const [transitioning, setTransitioning] = useState(false);
   const [voice, setVoice]           = useState("female");
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [audioLoading, setAudioLoading] = useState(false); // model downloading/generating
   const [audioError, setAudioError] = useState(false);
   const audioElRef = useRef(null);
+  const kokoroWorkerRef = useRef(null);
   const aiRef    = useRef(null);
   const customRef = useRef(null);
   const topRef   = useRef(null);
@@ -498,96 +500,101 @@ function RenZuReader() {
     }, 300);
   }
 
-  // ── Google Cloud TTS narration ───────────────────────────────────
-  // SSML preprocessing: annotate Chinese names/terms for natural English TTS
-  function buildSSML(text, voiceGender) {
-    // Escape XML special characters
-    const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-    // Phoneme / substitution map for proper nouns and unusual terms
-    const subs = [
-      // Names
-      [/\bRen Zu\b/g, '<phoneme alphabet="ipa" ph="ɹɛn zuː">Ren Zu</phoneme>'],
-      [/\bGu Zhen Ren\b/g, '<phoneme alphabet="ipa" ph="ɡuː dʒɛn ɹɛn">Gu Zhen Ren</phoneme>'],
-      [/\bVerdant Great Sun\b/g, '<phoneme alphabet="ipa" ph="vɜːdənt ɡɹeɪt sʌn">Verdant Great Sun</phoneme>'],
-      [/\bDesolate Ancient Moon\b/g, 'Desolate Ancient Moon'],
-      [/\bNorthern Dark Ice Soul\b/g, 'Northern Dark Ice Soul'],
-      [/\bBoundless Forest Samsara\b/g, 'Boundless Forest <phoneme alphabet="ipa" ph="sæmˈsɑːrə">Samsara</phoneme>'],
-      [/\bBlazing Glory Lightning Brilliance\b/g, 'Blazing Glory Lightning Brilliance'],
-      [/\bGreat Strength True Martial\b/g, 'Great Strength True Martial'],
-      [/\bCarefree Wisdom Heart\b/g, 'Carefree Wisdom Heart'],
-      // Gu terms — "Gu" pronounced "goo"
-      [/\b(Hope|Strength|Wisdom|Rules?|Regulation|Longevity|Attitude|Belief|Suspicion|Cognition|Faith|Courage|Reputation|Love|Freedom|Fear|Weak|Strong|Betrayal|Effort|Ability|Perseverance|Serious|Learning|Talent|Self|Pride|Humility|Forgiveness|Authority|Memory|Fortitude) Gu\b/g,
-        (m, name) => `${esc(name)} <phoneme alphabet="ipa" ph="ɡuː">Gu</phoneme>`],
-      [/\bGu Worm/g, '<phoneme alphabet="ipa" ph="ɡuː">Gu</phoneme> Worm'],
-      [/\bGu Master/g, '<phoneme alphabet="ipa" ph="ɡuː">Gu</phoneme> Master'],
-      [/\b(?<![A-Za-z])Gu\b/g, '<phoneme alphabet="ipa" ph="ɡuː">Gu</phoneme>'],
-      // Places
-      [/\bLuo Po Valley\b/g, '<phoneme alphabet="ipa" ph="lwɔː pɔː">Luo Po</phoneme> Valley'],
-      [/\bDang Hun Mountain\b/g, '<phoneme alphabet="ipa" ph="dɑːŋ hʊn">Dang Hun</phoneme> Mountain'],
-      [/\bOrdinary Abyss\b/g, 'Ordinary Abyss'],
-      [/\bQian Kun Crystal Wall\b/g, '<phoneme alphabet="ipa" ph="tɕjɛn kʊn">Qian Kun</phoneme> Crystal Wall'],
-      [/\bReverse Flow River\b/g, 'Reverse Flow River'],
-      [/\bCheng Bai Mountain\b/g, '<phoneme alphabet="ipa" ph="tʂʌŋ baɪ">Cheng Bai</phoneme> Mountain'],
-      // Misc
-      [/\bPredicament(s?)\b/g, 'Predicament$1'],
-      [/\bTribulation(s?)\b/g, 'Tribulation$1'],
-      [/\bSamsara\b/g, '<phoneme alphabet="ipa" ph="sæmˈsɑːrə">Samsara</phoneme>'],
-    ];
-    let processed = esc(text);
-    for (const [re, rep] of subs) {
-      processed = processed.replace(re, rep);
-    }
-    // Wrap in SSML with appropriate speaking rate
-    const rate = "0.95";
-    const pitch = voiceGender === "female" ? "0st" : "-2st";
-    return `<speak><prosody rate="${rate}" pitch="${pitch}">${processed}</prosody></speak>`;
+  // ── Kokoro TTS narration (runs 100% in-browser via ONNX/WASM) ───────────────
+  // Worker uses type:'module' + ESM import from jsDelivr. British voices: bf_emma / bm_george.
+  function getOrCreateWorker() {
+    if (kokoroWorkerRef.current) return kokoroWorkerRef.current;
+    const workerSrc = `
+      import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js';
+      let tts = null;
+      self.onmessage = async (e) => {
+        const { text, voice } = e.data;
+        try {
+          if (!tts) {
+            self.postMessage({ type: 'loading' });
+            tts = await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', {
+              dtype: 'q8',
+              device: 'wasm',
+            });
+          }
+          self.postMessage({ type: 'generating' });
+          const audio = await tts.generate(text, { voice });
+          const wav = audio.toWav(); // Uint8Array
+          // Transfer the underlying ArrayBuffer for zero-copy
+          self.postMessage({ type: 'done', wav: wav.buffer, byteOffset: wav.byteOffset, byteLength: wav.byteLength }, [wav.buffer]);
+        } catch(err) {
+          self.postMessage({ type: 'error', message: String(err) });
+        }
+      };
+    `;
+    const blob = new Blob([workerSrc], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    const worker = new Worker(url, { type: 'module' });
+    worker.onmessage = (e) => {
+      const { type, wav, byteOffset, byteLength } = e.data;
+      if (type === 'loading' || type === 'generating') {
+        setAudioLoading(true);
+      } else if (type === 'done') {
+        setAudioLoading(false);
+        const uint8 = new Uint8Array(wav, byteOffset, byteLength);
+        const wavBlob = new Blob([uint8], { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(wavBlob);
+        const el = audioElRef.current;
+        if (el) {
+          el.src = audioUrl;
+          el.play().catch(() => setAudioError(true));
+        }
+      } else if (type === 'error') {
+        setAudioLoading(false);
+        setAudioError(true);
+      }
+    };
+    worker.onerror = () => { setAudioLoading(false); setAudioError(true); };
+    kokoroWorkerRef.current = worker;
+    return worker;
   }
 
   function toggleAudio() {
     const el = audioElRef.current;
     if (!el) return;
-    if (audioPlaying) { el.pause(); }
-    else { el.play().catch(() => setAudioError(true)); }
+    if (audioPlaying) {
+      el.pause();
+      return;
+    }
+    if (el.src && el.paused && el.duration > 0) {
+      // Already has audio loaded, just resume
+      el.play().catch(() => setAudioError(true));
+      return;
+    }
+    // Need to generate — spin up worker
+    if (audioLoading) return; // already working
+    setAudioError(false);
+    setAudioLoading(true);
+    const kokoroVoice = voice === "female" ? "bf_emma" : "bm_george";
+    const text = selected?.body || "";
+    try {
+      const worker = getOrCreateWorker();
+      worker.postMessage({ text, voice: kokoroVoice });
+    } catch {
+      setAudioLoading(false);
+      setAudioError(true);
+    }
   }
+
   function switchVoice(v) {
     if (v === voice) return;
     setAudioError(false);
     setAudioPlaying(false);
+    setAudioLoading(false);
     if (audioElRef.current) { audioElRef.current.pause(); audioElRef.current.src = ""; }
     setVoice(v);
   }
-  // Synthesize via Google Cloud TTS when chapter selected or voice changed
+
+  // Stop audio when chapter changes
   useEffect(() => {
-    setAudioPlaying(false); setAudioError(false);
+    setAudioPlaying(false); setAudioError(false); setAudioLoading(false);
     if (audioElRef.current) { audioElRef.current.pause(); audioElRef.current.src = ""; }
-    if (!selected) return;
-    // Synthesize via serverless function /api/tts
-    let cancelled = false;
-    (async () => {
-      try {
-        const ssml = buildSSML(selected.body, voice);
-        const voiceName = voice === "female"
-          ? "en-GB-Neural2-C"   // British female
-          : "en-GB-Neural2-B";  // British male
-        const res = await fetch("/api/tts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ssml, voiceName, languageCode: "en-GB" }),
-        });
-        if (cancelled) return;
-        if (!res.ok) throw new Error("TTS request failed");
-        const blob = await res.blob();
-        if (cancelled) return;
-        if (audioElRef.current) {
-          const url = URL.createObjectURL(blob);
-          audioElRef.current.src = url;
-        }
-      } catch {
-        if (!cancelled) setAudioError(true);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [selected, voice]);
+  }, [selected]);
 
   function select(c) {
     setSelected(c); setAiResponse(""); setAiQuestion("");
@@ -885,20 +892,22 @@ function RenZuReader() {
               </>
             ) : (
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                {/* Squircle artwork thumbnail in header */}
-                <div style={{
-                  width: 58, height: 66, flexShrink: 0,
-                  borderRadius: "38% / 32%",
-                  overflow: "hidden",
-                  border: `1px solid ${D ? "rgba(255,255,255,0.12)" : S ? "rgba(140,90,20,0.30)" : "rgba(0,0,0,0.10)"}`,
-                  boxShadow: D ? "0 2px 12px rgba(0,0,0,0.6)" : S ? "0 2px 8px rgba(80,40,5,0.20)" : "0 2px 10px rgba(0,0,0,0.08)",
-                  position: "relative",
-                }}>
-                  <img src={IMG_COLOR} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top", display:"block" }} />
-                  <div style={{ position:"absolute", inset:0, background: D ? "rgba(0,0,0,0.25)" : S ? "rgba(180,130,40,0.08)" : "rgba(255,255,255,0.05)" }} />
+                {/* Squircle artwork thumbnail — "created by" label sits above it */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flexShrink: 0 }}>
+                  <div style={{ fontSize: 7, letterSpacing: "0.15em", color: textDim, textTransform: "uppercase", fontFamily: headFont, whiteSpace: "nowrap" }}>Reverend Insanity · Gu Zhen Ren</div>
+                  <div style={{
+                    width: 58, height: 62,
+                    borderRadius: "38% / 32%",
+                    overflow: "hidden",
+                    border: `1px solid ${D ? "rgba(255,255,255,0.12)" : S ? "rgba(140,90,20,0.30)" : "rgba(0,0,0,0.10)"}`,
+                    boxShadow: D ? "0 2px 12px rgba(0,0,0,0.6)" : S ? "0 2px 8px rgba(80,40,5,0.20)" : "0 2px 10px rgba(0,0,0,0.08)",
+                    position: "relative",
+                  }}>
+                    <img src={IMG_COLOR} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top", display:"block" }} />
+                    <div style={{ position:"absolute", inset:0, background: D ? "rgba(0,0,0,0.25)" : S ? "rgba(180,130,40,0.08)" : "rgba(255,255,255,0.05)" }} />
+                  </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 8, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase", marginBottom: 2, fontFamily: headFont, whiteSpace: "nowrap" }}>Reverend Insanity · Gu Zhen Ren</div>
                   <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
                     <span style={{ fontSize: "clamp(14px, 3.2vw, 18px)", fontWeight: 700, fontFamily: headFont, letterSpacing: S ? "0.03em" : "-0.025em", color: text, whiteSpace: "nowrap" }}>The Legends Of Ren Zu</span>
                     <span style={{ fontSize: "clamp(9px, 2vw, 12px)", color: textDim, letterSpacing: "0.12em", whiteSpace: "nowrap" }}>人祖传说</span>
@@ -1096,15 +1105,23 @@ function RenZuReader() {
                 {/* ── Narration player ── */}
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
                   <button onClick={toggleAudio} aria-label={audioPlaying ? "Pause narration" : "Play narration"}
+                    disabled={audioLoading}
                     style={{
                       flexShrink: 0, width: 38, height: 38, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
                       background: D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.12)" : "rgba(0,0,0,0.07)",
-                      border: `1px solid ${border}`, color: text, cursor: "pointer", transition: "all 0.17s",
+                      border: `1px solid ${border}`, color: text, cursor: audioLoading ? "default" : "pointer", transition: "all 0.17s",
+                      opacity: audioLoading ? 0.5 : 1,
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = borderHov; }}
+                    onMouseEnter={e => { if (!audioLoading) e.currentTarget.style.borderColor = borderHov; }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = border; }}
                   >
-                    {audioPlaying ? (
+                    {audioLoading ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={text} strokeWidth="2.5" strokeLinecap="round">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                          <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/>
+                        </path>
+                      </svg>
+                    ) : audioPlaying ? (
                       <svg width="13" height="13" viewBox="0 0 24 24" fill={text}><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg>
                     ) : (
                       <svg width="13" height="13" viewBox="0 0 24 24" fill={text}><path d="M6 4 L20 12 L6 20 Z"/></svg>
@@ -1122,7 +1139,7 @@ function RenZuReader() {
                     ))}
                   </div>
                   <span style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: textDim, fontFamily: headFont }}>
-                    {audioError ? "Narration unavailable" : "Listen — British English"}
+                    {audioError ? "Narration unavailable" : audioLoading ? "Loading Kokoro AI…" : audioPlaying ? "Narrating…" : "Listen — Kokoro AI"}
                   </span>
                   <audio ref={audioElRef} preload="auto"
                     onPlay={() => setAudioPlaying(true)}
