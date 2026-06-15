@@ -478,10 +478,16 @@ function RenZuReader() {
   const [transitioning, setTransitioning] = useState(false);
   const [voice, setVoice]           = useState("female");
   const [audioPlaying, setAudioPlaying] = useState(false);
-  const [audioLoading, setAudioLoading] = useState(false); // model downloading/generating
+  const [audioLoading, setAudioLoading] = useState(false);
   const [audioError, setAudioError] = useState(false);
+  const [audioStatus, setAudioStatus] = useState(""); // "loading-model" | "buffering" | ""
   const audioElRef = useRef(null);
   const kokoroWorkerRef = useRef(null);
+  // AudioContext pipeline for chunked streaming
+  const audioCtxRef      = useRef(null);
+  const chunkQueueRef    = useRef([]);   // decoded AudioBuffers waiting to play
+  const nextStartTimeRef = useRef(0);    // when next chunk should start in AC timeline
+  const playbackActiveRef = useRef(false);
   const aiRef    = useRef(null);
   const customRef = useRef(null);
   const topRef   = useRef(null);
@@ -500,100 +506,282 @@ function RenZuReader() {
     }, 300);
   }
 
-  // ── Kokoro TTS narration (runs 100% in-browser via ONNX/WASM) ───────────────
-  // Worker uses type:'module' + ESM import from jsDelivr. British voices: bf_emma / bm_george.
-  function getOrCreateWorker() {
-    if (kokoroWorkerRef.current) return kokoroWorkerRef.current;
+  // ── Kokoro TTS — chunked sentence-streaming via AudioContext ─────────────────
+  // The model runs in a Web Worker (WASM/ONNX). We split the chapter into
+  // short sentence-groups (~250 chars) and feed them one at a time. Each
+  // finished WAV chunk is decoded and scheduled on an AudioContext so playback
+  // starts as soon as the first chunk is ready rather than waiting for the whole
+  // chapter, and WASM never has to hold more than ~250 chars in memory at once.
+
+  // Split text into sentence-groups of roughly MAX_CHUNK chars.
+  function splitIntoChunks(text, maxLen = 250) {
+    const sentences = text.match(/[^.!?\n]+[.!?\n]*/g) || [text];
+    const groups = [];
+    let cur = "";
+    for (const s of sentences) {
+      if (cur.length + s.length > maxLen && cur.length > 0) {
+        groups.push(cur.trim());
+        cur = "";
+      }
+      cur += s;
+    }
+    if (cur.trim()) groups.push(cur.trim());
+    return groups;
+  }
+
+  function stopAllAudio() {
+    playbackActiveRef.current = false;
+    chunkQueueRef.current = [];
+    nextStartTimeRef.current = 0;
+    if (audioCtxRef.current) {
+      try { audioCtxRef.current.close(); } catch(_) {}
+      audioCtxRef.current = null;
+    }
+  }
+
+  function getOrCreateWorker(onChunk, onError, onDone) {
+    // Always create fresh worker per playback session so callbacks are current
+    if (kokoroWorkerRef.current) {
+      kokoroWorkerRef.current.terminate();
+      kokoroWorkerRef.current = null;
+    }
     const workerSrc = `
       import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js';
       let tts = null;
+      let currentVoice = null;
       self.onmessage = async (e) => {
-        const { text, voice } = e.data;
-        try {
-          if (!tts) {
+        const { type, text, voice, chunks } = e.data;
+
+        if (type === 'init') {
+          try {
             self.postMessage({ type: 'loading' });
             tts = await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', {
               dtype: 'q8',
               device: 'wasm',
             });
+            currentVoice = voice;
+            self.postMessage({ type: 'ready' });
+          } catch(err) {
+            self.postMessage({ type: 'error', message: String(err) });
           }
-          self.postMessage({ type: 'generating' });
-          const audio = await tts.generate(text, { voice });
-          const wav = audio.toWav(); // Uint8Array
-          // Transfer the underlying ArrayBuffer for zero-copy
-          self.postMessage({ type: 'done', wav: wav.buffer, byteOffset: wav.byteOffset, byteLength: wav.byteLength }, [wav.buffer]);
-        } catch(err) {
-          self.postMessage({ type: 'error', message: String(err) });
+        } else if (type === 'generate_chunks') {
+          // Process chunks sequentially so WASM memory stays bounded
+          for (let i = 0; i < chunks.length; i++) {
+            try {
+              const audio = await tts.generate(chunks[i], { voice });
+              // toWav() returns a Uint8Array; copy it to avoid detached buffer issues
+              const wavSrc = audio.toWav();
+              const wavCopy = new Uint8Array(wavSrc.byteLength);
+              wavCopy.set(wavSrc);
+              self.postMessage({ type: 'chunk', wav: wavCopy.buffer, index: i, total: chunks.length }, [wavCopy.buffer]);
+            } catch(err) {
+              self.postMessage({ type: 'chunk_error', index: i, message: String(err) });
+              // Continue to next chunk rather than aborting
+            }
+          }
+          self.postMessage({ type: 'done' });
         }
       };
     `;
     const blob = new Blob([workerSrc], { type: 'application/javascript' });
     const url = URL.createObjectURL(blob);
     const worker = new Worker(url, { type: 'module' });
-    worker.onmessage = (e) => {
-      const { type, wav, byteOffset, byteLength } = e.data;
-      if (type === 'loading' || type === 'generating') {
+
+    worker.onmessage = async (e) => {
+      const { type, wav, index, total } = e.data;
+      if (type === 'loading') {
+        setAudioStatus("loading-model");
         setAudioLoading(true);
-      } else if (type === 'done') {
-        setAudioLoading(false);
-        const uint8 = new Uint8Array(wav, byteOffset, byteLength);
-        const wavBlob = new Blob([uint8], { type: 'audio/wav' });
-        const audioUrl = URL.createObjectURL(wavBlob);
-        const el = audioElRef.current;
-        if (el) {
-          el.src = audioUrl;
-          el.play().catch(() => setAudioError(true));
+      } else if (type === 'ready') {
+        setAudioStatus("buffering");
+      } else if (type === 'chunk') {
+        if (!playbackActiveRef.current) return;
+        try {
+          // Ensure AudioContext exists and is running
+          if (!audioCtxRef.current) {
+            audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          const ctx = audioCtxRef.current;
+          if (ctx.state === 'suspended') await ctx.resume();
+
+          const decoded = await ctx.decodeAudioData(wav);
+          const source = ctx.createBufferSource();
+          source.buffer = decoded;
+          source.connect(ctx.destination);
+
+          const now = ctx.currentTime;
+          const startAt = Math.max(now + 0.05, nextStartTimeRef.current);
+          nextStartTimeRef.current = startAt + decoded.duration;
+          source.start(startAt);
+
+          // First chunk ready — we're no longer "loading"
+          if (index === 0) {
+            setAudioLoading(false);
+            setAudioStatus("");
+            setAudioPlaying(true);
+          }
+          // When last chunk finishes playing, mark as done
+          if (index === total - 1) {
+            source.onended = () => {
+              if (playbackActiveRef.current) {
+                setAudioPlaying(false);
+                playbackActiveRef.current = false;
+              }
+            };
+          }
+        } catch(err) {
+          // Decode failed for this chunk — skip it silently
+          console.warn('Kokoro chunk decode error:', err);
         }
+      } else if (type === 'chunk_error') {
+        console.warn('Kokoro chunk generation error at index', index, e.data.message);
+      } else if (type === 'done') {
+        // All chunks sent; loading spinner off if not already
+        setAudioLoading(false);
+        setAudioStatus("");
+        if (onDone) onDone();
       } else if (type === 'error') {
         setAudioLoading(false);
+        setAudioStatus("");
         setAudioError(true);
+        setAudioPlaying(false);
+        if (onError) onError(e.data.message);
       }
     };
-    worker.onerror = () => { setAudioLoading(false); setAudioError(true); };
+    worker.onerror = (err) => {
+      console.error('Kokoro worker error:', err);
+      setAudioLoading(false);
+      setAudioStatus("");
+      setAudioError(true);
+      setAudioPlaying(false);
+    };
     kokoroWorkerRef.current = worker;
     return worker;
   }
 
   function toggleAudio() {
-    const el = audioElRef.current;
-    if (!el) return;
-    if (audioPlaying) {
-      el.pause();
+    if (audioLoading) return; // already initialising
+
+    // If AudioContext is running, toggle suspend/resume (pause/play)
+    const ctx = audioCtxRef.current;
+    if (ctx) {
+      if (audioPlaying) {
+        ctx.suspend().then(() => setAudioPlaying(false));
+      } else {
+        ctx.resume().then(() => setAudioPlaying(true));
+      }
       return;
     }
-    if (el.src && el.paused && el.duration > 0) {
-      // Already has audio loaded, just resume
-      el.play().catch(() => setAudioError(true));
-      return;
-    }
-    // Need to generate — spin up worker
-    if (audioLoading) return; // already working
+
+    // Fresh playback — spin up worker
+    if (!selected) return;
     setAudioError(false);
     setAudioLoading(true);
+    setAudioStatus("loading-model");
+    playbackActiveRef.current = true;
+    chunkQueueRef.current = [];
+    nextStartTimeRef.current = 0;
+
     const kokoroVoice = voice === "female" ? "bf_emma" : "bm_george";
-    const text = selected?.body || "";
+    const chunks = splitIntoChunks(selected.body);
+
     try {
       const worker = getOrCreateWorker();
-      worker.postMessage({ text, voice: kokoroVoice });
-    } catch {
+      // First init the model, then stream chunks
+      worker.onmessage = async (e) => {
+        const { type, wav, index, total } = e.data;
+        if (type === 'loading') {
+          setAudioStatus("loading-model");
+          setAudioLoading(true);
+        } else if (type === 'ready') {
+          setAudioStatus("buffering");
+          // Model ready — now send all chunks
+          worker.postMessage({ type: 'generate_chunks', chunks, voice: kokoroVoice });
+        } else if (type === 'chunk') {
+          if (!playbackActiveRef.current) return;
+          try {
+            if (!audioCtxRef.current) {
+              audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            const actx = audioCtxRef.current;
+            if (actx.state === 'suspended') await actx.resume();
+            const decoded = await actx.decodeAudioData(wav);
+            const source = actx.createBufferSource();
+            source.buffer = decoded;
+            source.connect(actx.destination);
+            const now = actx.currentTime;
+            const startAt = Math.max(now + 0.05, nextStartTimeRef.current);
+            nextStartTimeRef.current = startAt + decoded.duration;
+            source.start(startAt);
+            if (index === 0) {
+              setAudioLoading(false);
+              setAudioStatus("");
+              setAudioPlaying(true);
+            }
+            if (index === total - 1) {
+              source.onended = () => {
+                if (playbackActiveRef.current) {
+                  setAudioPlaying(false);
+                  playbackActiveRef.current = false;
+                }
+              };
+            }
+          } catch(decErr) {
+            console.warn('Kokoro decode error at chunk', index, decErr);
+          }
+        } else if (type === 'chunk_error') {
+          console.warn('Kokoro chunk_error at', index, e.data.message);
+        } else if (type === 'done') {
+          setAudioLoading(false);
+          setAudioStatus("");
+        } else if (type === 'error') {
+          setAudioLoading(false);
+          setAudioStatus("");
+          setAudioError(true);
+          setAudioPlaying(false);
+          playbackActiveRef.current = false;
+        }
+      };
+      worker.onerror = () => {
+        setAudioLoading(false);
+        setAudioStatus("");
+        setAudioError(true);
+        setAudioPlaying(false);
+        playbackActiveRef.current = false;
+      };
+      worker.postMessage({ type: 'init', voice: kokoroVoice });
+    } catch(_) {
       setAudioLoading(false);
       setAudioError(true);
+      playbackActiveRef.current = false;
     }
   }
 
   function switchVoice(v) {
     if (v === voice) return;
+    stopAllAudio();
     setAudioError(false);
     setAudioPlaying(false);
     setAudioLoading(false);
-    if (audioElRef.current) { audioElRef.current.pause(); audioElRef.current.src = ""; }
+    setAudioStatus("");
+    if (kokoroWorkerRef.current) {
+      kokoroWorkerRef.current.terminate();
+      kokoroWorkerRef.current = null;
+    }
     setVoice(v);
   }
 
   // Stop audio when chapter changes
   useEffect(() => {
-    setAudioPlaying(false); setAudioError(false); setAudioLoading(false);
-    if (audioElRef.current) { audioElRef.current.pause(); audioElRef.current.src = ""; }
+    stopAllAudio();
+    setAudioPlaying(false);
+    setAudioError(false);
+    setAudioLoading(false);
+    setAudioStatus("");
+    if (kokoroWorkerRef.current) {
+      kokoroWorkerRef.current.terminate();
+      kokoroWorkerRef.current = null;
+    }
   }, [selected]);
 
   function select(c) {
@@ -1139,14 +1327,14 @@ function RenZuReader() {
                     ))}
                   </div>
                   <span style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: textDim, fontFamily: headFont }}>
-                    {audioError ? "Narration unavailable" : audioLoading ? "Loading Kokoro AI…" : audioPlaying ? "Narrating…" : "Listen — Kokoro AI"}
+                    {audioError
+                      ? "Narration unavailable"
+                      : audioLoading
+                        ? (audioStatus === "loading-model" ? "Downloading Kokoro AI…" : "Buffering…")
+                        : audioPlaying
+                          ? "Narrating…"
+                          : "Listen — Kokoro AI"}
                   </span>
-                  <audio ref={audioElRef} preload="auto"
-                    onPlay={() => setAudioPlaying(true)}
-                    onPause={() => setAudioPlaying(false)}
-                    onEnded={() => setAudioPlaying(false)}
-                    onError={() => setAudioError(true)}
-                  />
                 </div>
               </div>
             </div>
