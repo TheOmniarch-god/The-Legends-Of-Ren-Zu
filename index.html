@@ -464,7 +464,7 @@ function RenZuReader() {
   }, []);
 
   // mode: "light" | "dark" | "scroll"
-  const [showIntro, setShowIntro]   = useState(() => !window.matchMedia('(display-mode: standalone)').matches);
+  const [showIntro, setShowIntro]   = useState(true);
   const [mode, setMode]             = useState("light");
   const [query, setQuery]           = useState("");
   const [theme, setTheme]           = useState("all");
@@ -754,9 +754,19 @@ function RenZuReader() {
         .card-in:nth-child(n+9){ animation-delay: 0.32s; }
         input::placeholder { color: ${textDim}; font-family: ${headFont}; }
         * { box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 3px; }
+        html { scrollbar-width: thin; scrollbar-color: ${borderHov} transparent; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: ${borderHov}; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb {
+          background-color: ${borderHov};
+          border-radius: 99px;
+          border: 2px solid transparent;
+          background-clip: content-box;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background-color: ${text};
+          background-clip: content-box;
+        }
         .ghost-num { animation: ghostPulse 7s ease-in-out infinite; }
         .hero-num  { animation: heroNumReveal 0.9s cubic-bezier(.2,.8,.3,1) both; }
         .drop-cap  { animation: dropCapIn 0.65s cubic-bezier(.2,.8,.3,1) 0.12s both; }
