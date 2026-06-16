@@ -113,7 +113,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Text too long (max 5000 characters)" });
   }
 
-  // Derive language code from voice name (e.g. "en-GB-Neural2-B" → "en-GB")
+  // Derive language code from voice name (e.g. "en-GB-Studio-B" → "en-GB")
   const langCode = (voice && voice.startsWith("en-GB")) ? "en-GB" : "en-US";
 
   // Preprocessing: fix contextual pronunciations via SSML phonemes.
@@ -141,8 +141,8 @@ export default async function handler(req, res) {
       [/\bGu Masters?\b/g, '<phoneme alphabet="ipa" ph="ɡuː mɑːstər">Gu Master</phoneme>'],
       // "Gu Zhen Ren" (author name)
       [/\bGu Zhen Ren\b/g, '<phoneme alphabet="ipa" ph="ɡuː ʒɛn rɛn">Gu Zhen Ren</phoneme>'],
-      // Replace periods with subtle pause — 350ms is just noticeable, not intrusive
-      [/\./g, '.<break time="350ms"/>'],
+      // Replace periods with subtle pause — 80ms is just noticeable, not intrusive
+      [/\./g, '.<break time="80ms"/>'],
     ];
 
     for (const [pattern, replacement] of subs) {
@@ -156,6 +156,11 @@ export default async function handler(req, res) {
 
   try {
     const accessToken = await getAccessToken(serviceAccountJson);
+
+    // Validate speaking rate is within bounds
+    let finalRate = speakingRate || 1.0;
+    if (typeof finalRate !== 'number') finalRate = 1.0;
+    finalRate = Math.max(0.25, Math.min(4.0, finalRate)); // Chirp 3 HD supports 0.25 to 4.0
 
     const ttsRes = await fetch(
       "https://texttospeech.googleapis.com/v1/text:synthesize",
@@ -174,7 +179,7 @@ export default async function handler(req, res) {
           audioConfig: {
             audioEncoding: "LINEAR16",
             sampleRateHertz: 24000,
-            speakingRate: speakingRate || 0.88,
+            speakingRate: finalRate,
             effectsProfileId: ["large-home-entertainment-class-device"],
           },
         }),
