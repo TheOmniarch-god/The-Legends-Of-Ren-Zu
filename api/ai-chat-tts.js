@@ -2,7 +2,7 @@
 //
 // TTS endpoint for Vercel serverless functions
 // Uses Google Cloud Text-to-Speech with Service Account auth
-// Free tier: 4 million characters/month (Chirp 3 HD voices)
+// Free tier: 4 million characters/month (Studio voices)
 //
 
 async function getAccessToken(serviceAccountJson) {
@@ -160,7 +160,7 @@ export default async function handler(req, res) {
     // Validate speaking rate is within bounds
     let finalRate = speakingRate || 1.0;
     if (typeof finalRate !== 'number') finalRate = 1.0;
-    finalRate = Math.max(0.25, Math.min(4.0, finalRate)); // Chirp 3 HD supports 0.25 to 4.0
+    finalRate = Math.max(0.25, Math.min(4.0, finalRate)); // Studio voices support 0.25 to 4.0
 
     const ttsRes = await fetch(
       "https://texttospeech.googleapis.com/v1/text:synthesize",
