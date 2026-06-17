@@ -465,19 +465,36 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S }) {
   const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
   const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
 
-  function tryUnlock() {
+  async function tryUnlock() {
     const clean = code.trim().toLowerCase();
-    // In production, replace this with a backend verification call.
-    // Demo codes: "renzu" grants Immortal (unlimited), "stones" grants 500 credits.
     // Admin code grants the creator permanent Venerable access.
     if (clean === "theomniarch&ancestorrenzu") {
       setError("");
-      onUnlock("immortal");
-    } else if (clean === "stones") {
+      onUnlock("venerable");
+      return;
+    }
+    // Demo code for testing credits.
+    if (clean === "stones") {
       setError("");
-      onUnlock("credits");
-    } else {
-      setError("Invalid token. Cultivators receive a token after offering essence.");
+      onUnlock("gu_master");
+      return;
+    }
+    // Backend redeem for real lore-themed payment codes.
+    try {
+      const res = await fetch("/api/redeem-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deviceId, code: clean }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setError("");
+        onUnlock(data.tier);
+      } else {
+        setError(data.error || "Invalid token.");
+      }
+    } catch (err) {
+      setError("Heaven is unreachable. Try again shortly.");
     }
   }
 
@@ -488,7 +505,7 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S }) {
     }).catch(() => {});
   }
 
-  const Tier = ({ title, price, desc, icon, primary, href, onClick }) => (
+  const Tier = ({ title, realm, price, desc, icon, primary, href, onClick }) => (
     <div style={{
       padding: "14px 16px", borderRadius: 16, border: `1px solid ${primary ? border : "transparent"}`,
       background: primary
@@ -500,6 +517,7 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S }) {
         <span style={{ fontSize: 22 }}>{icon}</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontFamily: headFont, fontSize: 13, fontWeight: 700, color: text }}>{title}</div>
+          <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 2 }}>{realm}</div>
           <div style={{ fontSize: 11, color: textDim, marginTop: 2 }}>{desc}</div>
         </div>
         <div style={{ fontFamily: headFont, fontSize: 14, fontWeight: 700, color: text }}>{price}</div>
@@ -535,7 +553,7 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S }) {
       animation: "fadeUp 0.22s ease",
     }} onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{
-        width: "min(440px, 94vw)", maxHeight: "90vh", overflow: "auto",
+        width: "min(460px, 94vw)", maxHeight: "90vh", overflow: "auto",
         background: surface, border: `1px solid ${border}`, borderRadius: 26,
         boxShadow: "0 28px 90px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.04)",
         padding: "30px 26px 24px", textAlign: "center", position: "relative",
@@ -556,26 +574,38 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
           <Tier
             title="Mortal Aperture"
+            realm="Free Realm"
             price="Free"
-            desc="3 chats & 1 narration per day. Resets at midnight."
+            desc="2 narrations + 3 chats per day. Resets at midnight."
             icon="🌀"
             onClick={() => {}}
           />
           <Tier
-            title="Pouch of Primeval Stones"
+            title="Gu Master Pack"
+            realm="20 Narrations + 100 Chats"
             price="$4.99"
-            desc="500 API credits. One-time purchase."
+            desc="A solid start for a mortal ascending."
             icon="💎"
             primary
-            href={`https://paystack.com/pay/YOUR_PAYSTACK_CREDITS_LINK?deviceId=${encodeURIComponent(deviceId || '')}&plan=credits`}
+            href={`https://paystack.com/pay/YOUR_PAYSTACK_GUMASTER_LINK?deviceId=${encodeURIComponent(deviceId || '')}&plan=gu_master`}
           />
           <Tier
-            title="Immortal Essence Stones"
-            price="$9.99/mo"
-            desc="Gu Immortal status. Unlimited chat & audio."
+            title="Gu Immortal Pass"
+            realm="Full Book + Unlimited Chat"
+            price="$9.99"
+            desc="50 narrations + unlimited chat. One-time."
             icon="✨"
             primary
-            href={`https://paystack.com/pay/YOUR_PAYSTACK_SUBSCRIPTION_LINK?deviceId=${encodeURIComponent(deviceId || '')}&plan=immortal`}
+            href={`https://paystack.com/pay/YOUR_PAYSTACK_GUIMMORTAL_LINK?deviceId=${encodeURIComponent(deviceId || '')}&plan=gu_immortal`}
+          />
+          <Tier
+            title="Venerable Ascension"
+            realm="Everything Forever"
+            price="$15+"
+            desc="Unlimited narrations + chat. Supreme supporter."
+            icon="👑"
+            primary
+            href={`https://paystack.com/pay/YOUR_PAYSTACK_VENERABLE_LINK?deviceId=${encodeURIComponent(deviceId || '')}&plan=venerable`}
           />
 
           <button onClick={copyCrypto}
@@ -632,13 +662,94 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S }) {
           </button>
           {glossaryOpen && (
             <div style={{ marginTop: 10, textAlign: "left", fontSize: 11, color: textDim, lineHeight: 1.7, padding: "10px 14px", borderRadius: 12, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)" }}>
-              <strong>Mortal Aperture</strong> — The dantian-like space where a mortal Gu Master stores primeval essence. Here it represents your free daily allowance.<br />
-              <strong>Primeval Essence</strong> — The energy used to activate Gu. In this app, it is consumed by the AI chat and TTS narration.<br />
-              <strong>Primeval Stones</strong> — Mortal currency used to replenish essence. Buy a pouch to gain credits.<br />
-              <strong>Immortal Essence Stones</strong> — The currency of Gu Immortals. Subscribing grants unlimited primeval essence.<br />
-              <strong>Treasure Yellow Heaven</strong> — A legendary grotto-heaven marketplace where cultivators trade treasures for essence stones.
+              <strong>Mortal Aperture</strong> — Where a mortal stores primeval essence. Free daily allowance.<br />
+              <strong>Primeval Essence</strong> — Energy consumed by AI chat and TTS narration.<br />
+              <strong>Gu Master</strong> — A cultivator who has begun to refine their aperture. Access to a starter pack.<br />
+              <strong>Gu Immortal</strong> — Ascended being with an immortal aperture. Full access to the lore.<br />
+              <strong>Venerable</strong> — Rank 9 cultivator, peak of the Gu world. Unlimited everything as a supreme supporter.<br />
+              <strong>Treasure Yellow Heaven</strong> — The legendary grotto-heaven marketplace where cultivators trade treasures for essence stones.
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Profile Modal — realm, username, essence balance ─────────────────────────
+function ProfileModal({ open, onClose, D, S, deviceId, username, email, tierName, tierIcon, essenceStatus, onSave }) {
+  const [editName, setEditName] = useState(username);
+  const [editEmail, setEditEmail] = useState(email);
+  if (!open) return null;
+
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const surface = D ? "rgba(8,8,10,0.96)" : S ? "rgba(245,230,200,0.96)" : "rgba(255,255,255,0.98)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 10001,
+      background: "rgba(0,0,0,0.75)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+      animation: "fadeUp 0.22s ease",
+    }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: "min(380px, 92vw)",
+        background: surface, border: `1px solid ${border}`, borderRadius: 24,
+        boxShadow: "0 28px 90px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.04)",
+        padding: "28px 26px 24px", textAlign: "center", position: "relative",
+      }}>
+        <button onClick={onClose} style={{
+          position: "absolute", top: 10, right: 12, width: 30, height: 30, borderRadius: "50%",
+          background: "transparent", border: "none", color: textDim, fontSize: 18, cursor: "pointer",
+        }}>✕</button>
+
+        <div style={{ fontSize: 42, marginBottom: 8 }}>{tierIcon}</div>
+        <div style={{ fontFamily: headFont, fontSize: 18, fontWeight: 700, color: text, marginBottom: 4 }}>
+          {tierName}
+        </div>
+        <div style={{ fontSize: 11, color: textDim, marginBottom: 18, fontFamily: "'IM Fell English', Georgia, serif" }}>
+          {essenceStatus()}
+        </div>
+
+        <div style={{ textAlign: "left", marginBottom: 16 }}>
+          <label style={{ display: "block", fontSize: 10, color: textDim, marginBottom: 5, fontFamily: headFont, textTransform: "uppercase", letterSpacing: "0.1em" }}>Cultivator Name</label>
+          <input
+            value={editName}
+            onChange={e => setEditName(e.target.value)}
+            placeholder="Your name"
+            style={{
+              width: "100%", padding: "10px 14px", borderRadius: 12, fontSize: 13,
+              background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+              border: `1px solid ${border}`, color: text, fontFamily: "inherit", outline: "none", marginBottom: 12,
+            }}
+          />
+          <label style={{ display: "block", fontSize: 10, color: textDim, marginBottom: 5, fontFamily: headFont, textTransform: "uppercase", letterSpacing: "0.1em" }}>Email</label>
+          <input
+            value={editEmail}
+            onChange={e => setEditEmail(e.target.value)}
+            placeholder="your@email.com"
+            style={{
+              width: "100%", padding: "10px 14px", borderRadius: 12, fontSize: 13,
+              background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+              border: `1px solid ${border}`, color: text, fontFamily: "inherit", outline: "none",
+            }}
+          />
+        </div>
+
+        <button onClick={() => { onSave({ username: editName, email: editEmail }); onClose(); }}
+          style={{
+            width: "100%", padding: "11px 20px", borderRadius: 14,
+            background: D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.20)" : "rgba(0,0,0,0.08)",
+            border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 12, fontWeight: 600, cursor: "pointer", marginBottom: 10,
+          }}>
+          Save Identity
+        </button>
+
+        <div style={{ fontSize: 9, color: textDim, opacity: 0.7, letterSpacing: "0.1em", lineHeight: 1.5 }}>
+          Device ID: {deviceId ? deviceId.slice(0, 16) + "..." : "Unknown"}
         </div>
       </div>
     </div>
@@ -709,12 +820,16 @@ const chapterKeyRef = useRef(null);
   const [activeSentenceIdx, setActiveSentenceIdx] = useState(-1);
   // ── Cultivation billing / essence state ───────────────────────────────
   const [deviceId, setDeviceId] = useState(null);
+  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
+  const [tier, setTier] = useState("mortal");
   const [dailyChatUsed, setDailyChatUsed] = useState(0);
   const [dailyAudioUsed, setDailyAudioUsed] = useState(0);
-  const [purchasedCredits, setPurchasedCredits] = useState(0);
-  const [isImmortal, setIsImmortal] = useState(false);
+  const [narrationsRemaining, setNarrationsRemaining] = useState(0);
+  const [chatsRemaining, setChatsRemaining] = useState(0);
   const [lastResetDate, setLastResetDate] = useState(null);
   const [showTreasure, setShowTreasure] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [essenceLoading, setEssenceLoading] = useState(false);
   const [backendMode, setBackendMode] = useState('local'); // 'api' | 'local'
   const utteranceRef = useRef(null);
@@ -731,9 +846,10 @@ const chapterKeyRef = useRef(null);
 
   // ── Cultivation billing / essence helpers ────────────────────────────
   const DAILY_CHAT_LIMIT = 3;
-  const DAILY_AUDIO_LIMIT = 1;
-  const CHAT_COST = 1;
-  const AUDIO_COST = 5;
+  const DAILY_AUDIO_LIMIT = 2;
+  const GU_MASTER_NARRATIONS = 20;
+  const GU_MASTER_CHATS = 100;
+  const GU_IMMORTAL_NARRATIONS = 50;
 
   function getTodayKey() {
     return new Date().toISOString().slice(0, 10);
@@ -770,8 +886,11 @@ const chapterKeyRef = useRef(null);
           setDailyChatUsed(0);
           setDailyAudioUsed(0);
         }
-        setPurchasedCredits(data.purchasedCredits || 0);
-        setIsImmortal(data.isImmortal || false);
+        setTier(data.tier || "mortal");
+        setNarrationsRemaining(data.narrationsRemaining || 0);
+        setChatsRemaining(data.chatsRemaining || 0);
+        setUserEmail(data.userEmail || "");
+        setUserName(data.userName || "");
         setLastResetDate(today);
       }
     } catch (_) {}
@@ -785,10 +904,13 @@ const chapterKeyRef = useRef(null);
       const res = await fetch(`/api/me?deviceId=${encodeURIComponent(id)}`);
       if (!res.ok) throw new Error("Backend unavailable");
       const data = await res.json();
+      setTier(data.tier || "mortal");
       setDailyChatUsed(data.dailyChatUsed || 0);
       setDailyAudioUsed(data.dailyAudioUsed || 0);
-      setPurchasedCredits(data.purchasedCredits || 0);
-      setIsImmortal(data.isImmortal || false);
+      setNarrationsRemaining(data.narrationsRemaining || 0);
+      setChatsRemaining(data.chatsRemaining || 0);
+      setUserEmail(data.userEmail || "");
+      setUserName(data.userName || "");
       setBackendMode("api");
     } catch (err) {
       setBackendMode("local");
@@ -798,14 +920,17 @@ const chapterKeyRef = useRef(null);
   useEffect(() => {
     try {
       localStorage.setItem("renzu_essence", JSON.stringify({
+        tier,
         dailyChatUsed,
         dailyAudioUsed,
-        purchasedCredits,
-        isImmortal,
+        narrationsRemaining,
+        chatsRemaining,
+        userEmail,
+        userName,
         lastResetDate: getTodayKey(),
       }));
     } catch (_) {}
-  }, [dailyChatUsed, dailyAudioUsed, purchasedCredits, isImmortal]);
+  }, [tier, dailyChatUsed, dailyAudioUsed, narrationsRemaining, chatsRemaining, userEmail, userName]);
 
   function resetDailyIfNeeded() {
     const today = getTodayKey();
@@ -816,10 +941,28 @@ const chapterKeyRef = useRef(null);
     }
   }
 
+  function getTierName() {
+    switch (tier) {
+      case "venerable": return "Venerable";
+      case "gu_immortal": return "Gu Immortal";
+      case "gu_master": return "Gu Master";
+      default: return "Mortal";
+    }
+  }
+
+  function getTierIcon() {
+    switch (tier) {
+      case "venerable": return "👑";
+      case "gu_immortal": return "✨";
+      case "gu_master": return "💎";
+      default: return "🌀";
+    }
+  }
+
   async function deductEssence(type) {
     resetDailyIfNeeded();
     if (!deviceId) return false;
-    if (isImmortal) return true;
+    if (tier === "venerable") return true;
 
     setEssenceLoading(true);
 
@@ -833,11 +976,10 @@ const chapterKeyRef = useRef(null);
         });
         const data = await res.json();
         if (data.success) {
-          if (data.remainingCredits !== undefined) setPurchasedCredits(data.remainingCredits);
-          if (data.remaining !== undefined) {
-            if (type === "chat") setDailyChatUsed(DAILY_CHAT_LIMIT - data.remaining);
-            else setDailyAudioUsed(DAILY_AUDIO_LIMIT - data.remaining);
-          }
+          if (data.narrationsRemaining !== undefined) setNarrationsRemaining(data.narrationsRemaining);
+          if (data.chatsRemaining !== undefined) setChatsRemaining(data.chatsRemaining);
+          if (data.dailyAudioUsed !== undefined) setDailyAudioUsed(data.dailyAudioUsed);
+          if (data.dailyChatUsed !== undefined) setDailyChatUsed(data.dailyChatUsed);
           setEssenceLoading(false);
           return true;
         }
@@ -853,48 +995,95 @@ const chapterKeyRef = useRef(null);
     }
 
     // Local fallback
-    const cost = type === "chat" ? CHAT_COST : AUDIO_COST;
-    if (purchasedCredits >= cost) {
-      setPurchasedCredits(c => c - cost);
+    if (tier === "venerable") {
       setEssenceLoading(false);
       return true;
     }
-    const dailyUsed = type === "chat" ? dailyChatUsed : dailyAudioUsed;
-    const limit = type === "chat" ? DAILY_CHAT_LIMIT : DAILY_AUDIO_LIMIT;
-    if (dailyUsed < limit) {
-      if (type === "chat") setDailyChatUsed(c => c + 1);
-      else setDailyAudioUsed(c => c + 1);
-      setEssenceLoading(false);
-      return true;
+    if (tier === "gu_immortal") {
+      if (type === "audio") {
+        if (narrationsRemaining > 0) {
+          setNarrationsRemaining(n => n - 1);
+          setEssenceLoading(false);
+          return true;
+        }
+      } else {
+        setEssenceLoading(false);
+        return true;
+      }
+    }
+    if (tier === "gu_master") {
+      if (type === "audio") {
+        if (narrationsRemaining > 0) {
+          setNarrationsRemaining(n => n - 1);
+          setEssenceLoading(false);
+          return true;
+        }
+      } else {
+        if (chatsRemaining > 0) {
+          setChatsRemaining(c => c - 1);
+          setEssenceLoading(false);
+          return true;
+        }
+      }
+    }
+    // Mortal
+    if (type === "audio") {
+      if (dailyAudioUsed < DAILY_AUDIO_LIMIT) {
+        setDailyAudioUsed(c => c + 1);
+        setEssenceLoading(false);
+        return true;
+      }
+    } else {
+      if (dailyChatUsed < DAILY_CHAT_LIMIT) {
+        setDailyChatUsed(c => c + 1);
+        setEssenceLoading(false);
+        return true;
+      }
     }
     setEssenceLoading(false);
     setShowTreasure(true);
     return false;
   }
 
-  function unlockAudio(tier) {
-    if (tier === "immortal") {
-      setIsImmortal(true);
-    } else if (tier === "credits") {
-      setPurchasedCredits(c => c + 500);
+  function unlockAudio(tierName) {
+    setTier(tierName);
+    if (tierName === "gu_master") {
+      setNarrationsRemaining(GU_MASTER_NARRATIONS);
+      setChatsRemaining(GU_MASTER_CHATS);
+    } else if (tierName === "gu_immortal") {
+      setNarrationsRemaining(GU_IMMORTAL_NARRATIONS);
+      setChatsRemaining(999999);
+    } else if (tierName === "venerable") {
+      setNarrationsRemaining(999999);
+      setChatsRemaining(999999);
     }
     setShowTreasure(false);
     syncWithBackend(deviceId);
   }
 
+  function saveProfile({ username, email }) {
+    setUserName(username || "");
+    setUserEmail(email || "");
+    // Optionally sync to backend
+    if (backendMode === "api" && deviceId) {
+      fetch("/api/update-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deviceId, username: username || "", email: email || "" }),
+      }).catch(() => {});
+    }
+  }
+
   const essenceStatus = () => {
     if (essenceLoading) return backendMode === "api" ? "Communing with heaven..." : "Sensing aperture...";
-    if (isImmortal) return "Gu Immortal — unlimited essence";
-    const parts = [];
-    if (purchasedCredits > 0) parts.push(`${purchasedCredits} Primeval Stones`);
+    if (tier === "venerable") return "Venerable — unlimited essence";
+    if (tier === "gu_immortal") return `Gu Immortal — ${narrationsRemaining} narrations · unlimited chat`;
+    if (tier === "gu_master") return `Gu Master — ${narrationsRemaining} narrations · ${chatsRemaining} chats`;
     const today = getTodayKey();
     if (lastResetDate !== today) {
-      parts.push(`Mortal: ${DAILY_CHAT_LIMIT} chats, ${DAILY_AUDIO_LIMIT} audio today`);
-    } else {
-      parts.push(`Mortal: ${Math.max(0, DAILY_CHAT_LIMIT - dailyChatUsed)} chats, ${Math.max(0, DAILY_AUDIO_LIMIT - dailyAudioUsed)} audio left`);
+      return `Mortal — ${DAILY_AUDIO_LIMIT} narrations · ${DAILY_CHAT_LIMIT} chats today`;
     }
-    if (backendMode === "local") parts.push("(local mode)");
-    return parts.join(" · ");
+    return `Mortal — ${Math.max(0, DAILY_AUDIO_LIMIT - dailyAudioUsed)} narrations · ${Math.max(0, DAILY_CHAT_LIMIT - dailyChatUsed)} chats left`;
   };
   const filtered = TAGGED.filter(c => {
     const q = query.toLowerCase();
@@ -1794,7 +1983,18 @@ function getOrBuildSentences() {
               <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.18em", textTransform: "uppercase", fontFamily: headFont }}>
                 {query || theme !== "all" ? `${filtered.length} ${filtered.length === 1 ? "result" : "results"}` : "44 chapters · 42 entries"}
               </div>
-              <ThemeCycler mode={mode} onClick={cycleMode} />
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <button onClick={() => setShowProfile(true)} title={essenceStatus()} style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "5px 12px", borderRadius: 999,
+                  background: D ? "rgba(255,255,255,0.06)" : S ? "rgba(139,94,26,0.12)" : "rgba(0,0,0,0.05)",
+                  border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer",
+                }}>
+                  <span>{getTierIcon()}</span>
+                  <span>{getTierName()}</span>
+                </button>
+                <ThemeCycler mode={mode} onClick={cycleMode} />
+              </div>
             </div>
             {filtered.length === 0 && (
               <div style={{ ...sq(20), padding: "48px 24px", textAlign: "center", color: textDim, fontSize: 13 }}>Nothing found.</div>
@@ -2226,6 +2426,23 @@ function getOrBuildSentences() {
           S={S}
         />
       )}
+
+      {/* ── Profile modal — realm, username, essence balance ── */}
+      {showProfile && (
+        <ProfileModal
+          open={showProfile}
+          onClose={() => setShowProfile(false)}
+          D={D}
+          S={S}
+          deviceId={deviceId}
+          username={userName}
+          email={userEmail}
+          tierName={getTierName()}
+          tierIcon={getTierIcon()}
+          essenceStatus={essenceStatus}
+          onSave={saveProfile}
+        />
+      )}
     </div>
   );
 }
@@ -2242,6 +2459,5 @@ function getOrBuildSentences() {
       });
     }
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0ccb427982a6f21',t:'MTc4MTY0MzIwMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0ccb427982a6f21',t:'MTc4MTY0MzIwMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0d31d62fa146f48',t:'MTc4MTcxMDQyOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
