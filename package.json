@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Backend API for The Legends of Ren Zu reader — cultivation billing system",
   "scripts": {
-  
     "deploy": "vercel --prod"
   },
   "dependencies": {
