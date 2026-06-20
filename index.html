@@ -800,13 +800,13 @@ function AscensionOverlay({ tier }) {
            revealAt: 1.85, cardAt: 2.7, titleAt: 2.85, subAt: 3.1, total: 4.0 },
     },
     venerable: {
-      accent: "255,140,70", glow: "255,195,75", core: "255,250,230",
+      accent: "200,30,35", glow: "230,60,45", core: "255,200,180",
       particles: 42, pillarW: 150, pillarH: "100vh",
       bg: "#0a0300",
       portraitSize: "min(280px,68vw)",
       cardWidth: "min(460px,92vw)",
-      t: { chargeAt: 0.75, peakAt: 2.2, flashAt: 2.3, burstAt: 2.4,
-           revealAt: 2.7, cardAt: 3.7, titleAt: 3.85, subAt: 4.1, total: 5.0 },
+      t: { chargeAt: 0.75, peakAt: 2.4, flashAt: 2.5, burstAt: 2.6,
+           revealAt: 2.95, cardAt: 4.0, titleAt: 4.15, subAt: 4.4, total: 5.3 },
     },
   };
   const cfg = CFG[tier] || CFG.gu_master;
@@ -851,7 +851,67 @@ function AscensionOverlay({ tier }) {
         @keyframes aoTitleIn     { 0% { opacity:0; letter-spacing:0.16em; } 100% { opacity:1; letter-spacing:0.05em; } }
         @keyframes aoSubIn       { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:translateY(0); } }
         @keyframes aoShake       { 0%,100% { transform:translate(0,0); } 20% { transform:translate(-7px,4px); } 40% { transform:translate(6px,-5px); } 60% { transform:translate(-4px,3px); } 80% { transform:translate(3px,-2px); } }
+        @keyframes aoBigShake    { 0%,100% { transform:translate(0,0); } 14% { transform:translate(-11px,7px); } 28% { transform:translate(10px,-8px); } 42% { transform:translate(-8px,6px); } 56% { transform:translate(6px,-4px); } 70% { transform:translate(-4px,3px); } 85% { transform:translate(2px,-1px); } }
+        @keyframes aoSmokeDrift  { 0% { opacity:0; transform:translate(0,0) scale(0.7); } 30% { opacity:0.55; } 70% { opacity:0.4; } 100% { opacity:0; transform:translate(var(--sx),var(--sy)) scale(1.6); } }
+        @keyframes aoSidePillar  { 0% { opacity:0; transform:scaleY(0.05); } 60% { opacity:0.85; } 100% { opacity:0; transform:scaleY(1); } }
+        @keyframes aoMeteor      { 0% { opacity:0; transform:translate(0,0) rotate(35deg); } 12% { opacity:1; } 100% { opacity:0; transform:translate(var(--mx),var(--my)) rotate(35deg); } }
       `}</style>
+
+      {/* SMOKE / CLOUD — Gu Immortal: environment-toned wisps. Venerable: deep crimson, denser */}
+      {(tier === "gu_immortal" || tier === "venerable") && Array.from({ length: tier === "venerable" ? 18 : 10 }).map((_, i) => {
+        const sx = (Math.random() * 200 - 100);
+        const sy = -(60 + Math.random() * 120);
+        const startX = 30 + Math.random() * 40;
+        const startY = 55 + Math.random() * 30;
+        const size = tier === "venerable" ? 60 + Math.random() * 70 : 40 + Math.random() * 50;
+        const delay = t.chargeAt + Math.random() * (t.peakAt - t.chargeAt) * 0.8;
+        return (
+          <div key={"sm"+i} style={{
+            position: "absolute", left: `${startX}%`, top: `${startY}%`,
+            width: size, height: size, borderRadius: "50%",
+            background: tier === "venerable"
+              ? `radial-gradient(circle, rgba(${cfg.accent},0.5) 0%, rgba(60,10,10,0.3) 55%, transparent 80%)`
+              : `radial-gradient(circle, rgba(${cfg.accent},0.35) 0%, transparent 75%)`,
+            filter: "blur(6px)",
+            "--sx": `${sx}px`, "--sy": `${sy}px`,
+            animation: `aoSmokeDrift ${1.6 + Math.random()*0.6}s ${delay}s ease-out both`,
+            pointerEvents: "none",
+          }} />
+        );
+      })}
+
+      {/* SIDE PILLARS — Venerable only: 4 extra smaller pillars flanking the main one */}
+      {tier === "venerable" && [-2.2, -1.3, 1.3, 2.2].map((mult, i) => (
+        <div key={"sp"+i} style={{
+          position: "absolute", bottom: "50%", left: "50%",
+          width: cfg.pillarW * 0.32, height: `${60 + Math.abs(mult)*8}vh`,
+          marginLeft: cfg.pillarW * mult - (cfg.pillarW * 0.16),
+          background: `linear-gradient(to top, rgba(${cfg.glow},0.8), rgba(${cfg.accent},0.4), transparent)`,
+          transformOrigin: "bottom", filter: "blur(3px)",
+          animation: `aoSidePillar ${0.9 + Math.abs(mult)*0.1}s ${t.chargeAt + 0.15 + Math.abs(mult)*0.05}s cubic-bezier(.2,.8,.3,1) both`,
+          pointerEvents: "none",
+        }} />
+      ))}
+
+      {/* METEORS — Venerable only: streaking lights converging toward center during charge */}
+      {tier === "venerable" && Array.from({ length: 9 }).map((_, i) => {
+        const startX = Math.random() * 100;
+        const startY = Math.random() * 35;
+        const mx = (50 - startX) * 4 + (Math.random()*30-15);
+        const my = (50 - startY) * 2 + 60;
+        const delay = t.chargeAt + 0.1 + Math.random() * (t.peakAt - t.chargeAt - 0.3);
+        return (
+          <div key={"mt"+i} style={{
+            position: "absolute", left: `${startX}%`, top: `${startY}%`,
+            width: 2, height: 22, borderRadius: 2,
+            background: `linear-gradient(to bottom, rgba(${cfg.core},1), rgba(${cfg.glow},0.6), transparent)`,
+            boxShadow: `0 0 6px rgba(${cfg.glow},0.9)`,
+            "--mx": `${mx}px`, "--my": `${my}px`,
+            animation: `aoMeteor 0.55s ${delay}s ease-in both`,
+            pointerEvents: "none",
+          }} />
+        );
+      })}
 
       {/* VOID — ambient motes drifting before anything happens */}
       {voidParticles.map(p => (
@@ -913,7 +973,7 @@ function AscensionOverlay({ tier }) {
       <div style={{
         position: "relative", zIndex: 2,
         display: "flex", flexDirection: "column", alignItems: "center",
-        animation: tier === "venerable" ? `aoShake 0.5s ${t.burstAt + 0.05}s ease both` : "none",
+        animation: tier === "venerable" ? `aoBigShake 0.6s ${t.burstAt + 0.05}s ease both` : "none",
       }}>
         <div style={{
           width: cfg.portraitSize, height: cfg.portraitSize,
@@ -1246,7 +1306,7 @@ const chapterKeyRef = useRef(null);
   }
 
   function showAscension(tierName) {
-    const ASCENSION_DURATIONS = { gu_master: 3200, gu_immortal: 4000, venerable: 5400 };
+    const ASCENSION_DURATIONS = { gu_master: 3300, gu_immortal: 4200, venerable: 6000 };
     setAscensionTier(tierName);
     setTimeout(() => setAscensionTier(null), ASCENSION_DURATIONS[tierName] || 4500);
   }
