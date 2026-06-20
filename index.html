@@ -760,7 +760,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   );
 }
 
-// ─── Ascension Overlay — Reverend-Insanity-style tribulation power-ups, unique mechanism per tier ──
+// ─── Ascension Overlay — clean reveal-pull: void → light pillar → burst → portrait reveal → name card ──
 function AscensionOverlay({ tier }) {
   if (!tier) return null;
 
@@ -775,331 +775,181 @@ function AscensionOverlay({ tier }) {
     venerable:   "Venerable",
   };
   const subtitles = {
-    gu_master:   "Earth qi rumbles below. The aperture cracks open.",
-    gu_immortal: "Heaven's tribulation descends. Lightning answers your ascension.",
-    venerable:   "Earth and heaven calamity, as one. Fate itself bows.",
+    gu_master:   "You have refined your aperture. Primeval essence flows.",
+    gu_immortal: "You have ascended. The immortal aperture opens.",
+    venerable:   "You stand at the peak. Fate itself bows.",
   };
 
-  // ── GU MASTER — Earthly Calamity: ground cracks, dust/rock erupts upward ──
-  if (tier === "gu_master") {
-    const accent = "150,130,70", glow = "230,180,90", core = "255,225,160";
-    // Jagged branching fracture paths — irregular angles, varying widths via multiple strokes, branches off the main lines
-    const cracks = [
-      { d: "M50,100 L47,88 L52,79 L45,68 L51,57 L43,44 L49,30 L44,16 L47,2", w: 1.6 },
-      { d: "M51,57 L62,52 L67,40", w: 0.9 },
-      { d: "M49,30 L38,28 L31,18", w: 0.8 },
-      { d: "M50,100 L58,90 L53,77 L61,63 L55,48 L60,32 L53,18", w: 1.4 },
-      { d: "M55,48 L68,44 L75,32", w: 0.9 },
-      { d: "M50,100 L41,89 L46,76 L36,61 L42,46", w: 1.1 },
-      { d: "M42,46 L30,40 L22,28", w: 0.7 },
-      { d: "M50,100 L63,93 L58,78 L70,68", w: 1.0 },
-    ];
-    const debris = Array.from({ length: 26 }, (_, i) => {
-      const angle = (360 / 26) * i + (Math.random() * 24 - 12);
-      const dist = 70 + Math.random() * 140;
-      const rad = (angle * Math.PI) / 180;
-      return { key: i, ex: Math.cos(rad) * dist, ey: -Math.abs(Math.sin(rad) * dist) - 30, size: 2.5 + Math.random() * 6, delay: 0.5 + Math.random() * 0.25 };
-    });
-    return (
-      <div style={{ position:"fixed", inset:0, zIndex:10002, background:"#0c0904", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", animation:"gmIn 0.3s ease both" }}>
-        <style>{`
-          @keyframes gmIn { from{opacity:0;} to{opacity:1;} }
-          @keyframes gmShake { 0%,100% { transform:translate(0,0); } 18% { transform:translate(-5px,3px) rotate(-0.3deg); } 36% { transform:translate(4px,-3px) rotate(0.3deg); } 54% { transform:translate(-3px,2px); } 72% { transform:translate(2px,-2px); } 88% { transform:translate(-1px,1px); } }
-          @keyframes gmCrackDraw { 0% { stroke-dashoffset:300; opacity:0; } 8% { opacity:1; } 100% { stroke-dashoffset:0; opacity:1; } }
-          @keyframes gmCrackGlow { 0%,100% { opacity:0.55; } 50% { opacity:1; } }
-          @keyframes gmDustRise { 0% { opacity:0; transform:translateY(40px) scale(0.6); } 40% { opacity:0.9; } 100% { opacity:0; transform:translateY(-180px) scale(1.4); } }
-          @keyframes gmDebris { 0% { opacity:0; transform:translate(0,0) rotate(0deg); } 15% { opacity:1; } 100% { opacity:0; transform:translate(var(--ex),var(--ey)) rotate(180deg); } }
-          @keyframes gmFlash { 0% { opacity:0; } 18% { opacity:0.9; } 100% { opacity:0; } }
-          @keyframes gmReveal { 0% { opacity:0; transform:scale(1.15) translateY(20px); filter:brightness(2.4) blur(6px); } 100% { opacity:1; transform:scale(1) translateY(0); filter:brightness(1) blur(0); } }
-          @keyframes gmRim { 0%,100% { filter:drop-shadow(0 0 14px rgba(${glow},0.5)); } 50% { filter:drop-shadow(0 0 36px rgba(${glow},0.85)); } }
-          @keyframes gmCardUp { 0% { opacity:0; transform:translateY(50px); } 100% { opacity:1; transform:translateY(0); } }
-          @keyframes gmTitleIn { 0% { opacity:0; letter-spacing:0.15em; } 100% { opacity:1; letter-spacing:0.05em; } }
-          @keyframes gmSubIn { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:translateY(0); } }
-        `}</style>
+  const CFG = {
+    gu_master: {
+      accent: "90,210,150", glow: "75,205,145", core: "200,255,220",
+      particles: 16, pillarW: 64, pillarH: "42vh",
+      bg: "#03100a",
+      portraitSize: "min(190px,50vw)",
+      cardWidth: "min(340px,88vw)",
+      t: { chargeAt: 0.35, peakAt: 0.95, flashAt: 1.0, burstAt: 1.05,
+           revealAt: 1.25, cardAt: 1.95, titleAt: 2.1, subAt: 2.3, total: 3.1 },
+    },
+    gu_immortal: {
+      accent: "255,205,90", glow: "255,180,55", core: "255,245,210",
+      particles: 26, pillarW: 96, pillarH: "55vh",
+      bg: "#0a0700",
+      portraitSize: "min(230px,56vw)",
+      cardWidth: "min(400px,90vw)",
+      t: { chargeAt: 0.5, peakAt: 1.5, flashAt: 1.55, burstAt: 1.62,
+           revealAt: 1.85, cardAt: 2.7, titleAt: 2.85, subAt: 3.1, total: 4.0 },
+    },
+    venerable: {
+      accent: "255,140,70", glow: "255,195,75", core: "255,250,230",
+      particles: 42, pillarW: 150, pillarH: "100vh",
+      bg: "#0a0300",
+      portraitSize: "min(280px,68vw)",
+      cardWidth: "min(460px,92vw)",
+      t: { chargeAt: 0.75, peakAt: 2.2, flashAt: 2.3, burstAt: 2.4,
+           revealAt: 2.7, cardAt: 3.7, titleAt: 3.85, subAt: 4.1, total: 5.0 },
+    },
+  };
+  const cfg = CFG[tier] || CFG.gu_master;
+  const t = cfg.t;
 
-        {/* freeze beat: nothing happens for 0.5s, just held dark */}
-
-        {/* shake wrapper for the crack/erupt beats */}
-        <div style={{ position:"absolute", inset:0, animation:"gmShake 0.5s 0.55s ease both", pointerEvents:"none" }}>
-          {/* ground cracks — jagged branching fractures, dark core + glowing edge for depth */}
-          <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice" style={{ position:"absolute", bottom:0, left:"50%", width:"78vmin", height:"62vmin", transform:"translateX(-50%)", overflow:"visible" }}>
-            {cracks.map((c, i) => (
-              <g key={i}>
-                {/* dark fracture shadow underneath for depth */}
-                <path d={c.d} fill="none" stroke="rgba(8,6,3,0.9)" strokeWidth={c.w * 2.2} strokeLinecap="round" strokeLinejoin="round"
-                  strokeDasharray="300" style={{ animation:`gmCrackDraw 0.5s ${0.55 + i*0.045}s ease-out both` }} />
-                {/* glowing molten core */}
-                <path d={c.d} fill="none" stroke={`rgba(${glow},0.95)`} strokeWidth={c.w} strokeLinecap="round" strokeLinejoin="round"
-                  strokeDasharray="300" style={{ filter:`drop-shadow(0 0 2px rgba(${glow},0.9))`,
-                  animation:`gmCrackDraw 0.5s ${0.55 + i*0.045}s ease-out both, gmCrackGlow 1.3s 1.05s ease-in-out infinite` }} />
-              </g>
-            ))}
-          </svg>
-
-          {/* dust/rock burst upward from the crack point */}
-          <div style={{ position:"absolute", bottom:"38%", left:"50%", width:160, height:160, marginLeft:-80, borderRadius:"50%",
-            background:`radial-gradient(circle, rgba(${glow},0.7) 0%, rgba(${accent},0.3) 45%, transparent 75%)`,
-            animation:"gmDustRise 1s 0.95s ease-out both", filter:"blur(2px)", pointerEvents:"none" }} />
-
-          {debris.map(p => (
-            <div key={p.key} style={{ position:"absolute", bottom:"38%", left:"50%", width:p.size, height:p.size, borderRadius:"40%",
-              background:`rgba(${accent},0.95)`, "--ex":`${p.ex}px`, "--ey":`${p.ey}px`,
-              animation:`gmDebris 0.95s ${p.delay}s cubic-bezier(.15,.6,.3,1) both`, pointerEvents:"none" }} />
-          ))}
-
-          {/* flash at the moment of eruption */}
-          <div style={{ position:"absolute", inset:0, background:`radial-gradient(circle at 50% 65%, rgba(${core},0.85) 0%, transparent 55%)`,
-            animation:"gmFlash 0.35s 0.95s ease both", pointerEvents:"none" }} />
-        </div>
-
-        {/* reveal */}
-        <div style={{ position:"relative", zIndex:2, width:"min(190px,50vw)", height:"min(190px,50vw)", borderRadius:"50%", overflow:"hidden",
-          border:`3px solid rgba(${glow},0.85)`, boxShadow:`0 0 0 7px rgba(${glow},0.12), 0 0 40px rgba(${glow},0.4)`,
-          animation:"gmReveal 0.6s 1.25s cubic-bezier(.2,.8,.3,1) both, gmRim 2s 1.85s ease-in-out infinite" }}>
-          <img src={images.gu_master} alt={titles.gu_master} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-        </div>
-
-        {/* name card */}
-        <div style={{ position:"relative", zIndex:2, marginTop:26, display:"flex", flexDirection:"column", alignItems:"center",
-          width:"min(360px,90vw)", opacity:0, animation:"gmCardUp 0.45s 1.95s cubic-bezier(.2,.8,.3,1) both" }}>
-          <div style={{ width:"100%", textAlign:"center", whiteSpace:"nowrap",
-            fontFamily:"Metamorphous,Georgia,serif", fontSize:"clamp(18px,4.5vw,26px)", fontWeight:700, color:`rgb(${core})`,
-            textShadow:`0 0 20px rgba(${glow},0.9), 0 0 48px rgba(${accent},0.5)`, opacity:0,
-            animation:"gmTitleIn 0.45s 2.1s ease both" }}>{titles.gu_master}</div>
-          <div style={{ marginTop:9, fontSize:13, textAlign:"center", color:"rgba(255,240,210,0.85)",
-            fontFamily:"'IM Fell English',Georgia,serif", lineHeight:1.55, opacity:0, padding:"0 16px",
-            animation:"gmSubIn 0.45s 2.3s ease both" }}>{subtitles.gu_master}</div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── GU IMMORTAL — Heavenly Tribulation: storm clouds gather, multi-bolt lightning strike ──
-  if (tier === "gu_immortal") {
-    const accent = "150,210,120", glow = "210,255,140", core = "245,255,225";
-    const bolts = [
-      { x: 30, d: "M30,0 L25,15 L33,18 L19,38 L29,41 L13,64 L21,67 L4,90" },
-      { x: 50, d: "M50,0 L44,12 L52,16 L38,34 L48,38 L31,60 L41,63 L23,86" },
-      { x: 68, d: "M68,0 L62,16 L71,19 L56,42 L67,46 L48,68 L59,71 L39,94" },
-      { x: 42, d: "M42,0 L38,9 L45,12 L33,26" },
-    ];
-    const sparks = Array.from({ length: 28 }, (_, i) => {
-      const angle = (360 / 28) * i + (Math.random() * 14 - 7);
-      const dist = 110 + Math.random() * 140;
-      const rad = (angle * Math.PI) / 180;
-      return { key: i, ex: Math.cos(rad) * dist, ey: Math.sin(rad) * dist, size: 2.5 + Math.random() * 3.5, delay: Math.random() * 0.16 };
-    });
-    return (
-      <div style={{ position:"fixed", inset:0, zIndex:10002, background:"radial-gradient(ellipse at 50% 20%, #0a1408 0%, #050805 60%, #020302 100%)",
-        display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", animation:"giIn 0.35s ease both" }}>
-        <style>{`
-          @keyframes giIn { from{opacity:0;} to{opacity:1;} }
-          @keyframes giCloudIn { 0% { opacity:0; transform:scale(0.7); } 100% { opacity:0.85; transform:scale(1); } }
-          @keyframes giCloudDrift { 0%,100% { transform:translateX(0); } 50% { transform:translateX(14px); } }
-          @keyframes giCharge { 0%,100% { opacity:0.3; } 50% { opacity:0.8; } }
-          @keyframes giBoltFlash { 0% { opacity:0; } 8% { opacity:1; } 16% { opacity:0.3; } 24% { opacity:1; } 100% { opacity:0; } }
-          @keyframes giBoltDraw { 0% { stroke-dashoffset:220; opacity:0; } 5% { opacity:1; } 60% { stroke-dashoffset:0; opacity:1; } 100% { opacity:0; } }
-          @keyframes giWhiteOut { 0% { opacity:0; } 50% { opacity:0.95; } 100% { opacity:0; } }
-          @keyframes giShake { 0%,100% { transform:translate(0,0); } 15% { transform:translate(-7px,4px); } 30% { transform:translate(6px,-5px); } 45% { transform:translate(-5px,3px); } 60% { transform:translate(4px,-3px); } 80% { transform:translate(-2px,1px); } }
-          @keyframes giSpark { 0% { opacity:0; transform:translate(0,0); } 12% { opacity:1; } 100% { opacity:0; transform:var(--pe); } }
-          @keyframes giReveal { 0% { opacity:0; transform:scale(1.18); filter:brightness(3.2) blur(7px); } 55% { filter:brightness(1.5) blur(1.5px); } 100% { opacity:1; transform:scale(1); filter:brightness(1) blur(0); } }
-          @keyframes giArc { 0%,100% { opacity:0.35; } 50% { opacity:0.9; } }
-          @keyframes giRim { 0%,100% { filter:drop-shadow(0 0 16px rgba(${glow},0.5)); } 50% { filter:drop-shadow(0 0 44px rgba(${glow},0.9)); } }
-          @keyframes giCardUp { 0% { opacity:0; transform:translateY(60px); } 100% { opacity:1; transform:translateY(0); } }
-          @keyframes giTitleIn { 0% { opacity:0; letter-spacing:0.18em; } 100% { opacity:1; letter-spacing:0.06em; } }
-          @keyframes giSubIn { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:translateY(0); } }
-        `}</style>
-
-        {/* storm clouds gather overhead — freeze + clouds beat, 0–1.3s */}
-        {[20, 50, 80].map((x, i) => (
-          <div key={i} style={{ position:"absolute", top:`${4 + i*3}%`, left:`${x}%`, width:"38vw", height:"16vh", marginLeft:"-19vw",
-            borderRadius:"50%", background:`radial-gradient(ellipse, rgba(20,30,15,0.9) 0%, transparent 75%)`,
-            animation:`giCloudIn 0.6s ${0.1 + i*0.15}s ease both, giCloudDrift ${3+i}s ${0.7+i*0.15}s ease-in-out infinite`, pointerEvents:"none" }} />
-        ))}
-        <div style={{ position:"absolute", top:0, left:0, right:0, height:"30vh",
-          background:`linear-gradient(to bottom, rgba(${accent},0.25), transparent)`,
-          animation:"giCharge 1.3s 0.6s ease-in-out infinite", pointerEvents:"none" }} />
-
-        {/* shake wrapper for the strike beat */}
-        <div style={{ position:"absolute", inset:0, animation:"giShake 0.55s 1.3s ease both", pointerEvents:"none" }}>
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position:"absolute", inset:0, width:"100%", height:"100%" }}>
-            {bolts.map((b, i) => (
-              <g key={i}>
-                <path d={b.d} fill="none" stroke={`rgba(${accent},0.45)`} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
-                  strokeDasharray="240" style={{ animation:`giBoltDraw 0.5s ${1.3 + i*0.07}s ease-out both` }} />
-                <path d={b.d} fill="none" stroke={`rgba(${core},1)`} strokeWidth="0.55" strokeLinecap="round" strokeLinejoin="round"
-                  strokeDasharray="240" style={{ filter:`drop-shadow(0 0 5px rgba(${glow},1))`,
-                  animation:`giBoltDraw 0.5s ${1.3 + i*0.07}s ease-out both` }} />
-              </g>
-            ))}
-          </svg>
-          <div style={{ position:"absolute", inset:0, background:`rgba(${core},1)`, animation:"giWhiteOut 0.4s 1.5s ease both" }} />
-          {sparks.map(p => (
-            <div key={p.key} style={{ position:"absolute", top:"38%", left:"50%", width:p.size, height:p.size, borderRadius:"50%",
-              background:`rgba(${glow},1)`, boxShadow:`0 0 6px rgba(${glow},0.85)`, "--pe":`translate(${p.ex}px,${p.ey}px)`,
-              animation:`giSpark 0.85s ${1.55 + p.delay}s cubic-bezier(.15,.6,.3,1) both`, pointerEvents:"none" }} />
-          ))}
-        </div>
-
-        {/* reveal, with residual arcs crawling over it */}
-        <div style={{ position:"relative", zIndex:2, width:"min(225px,55vw)", height:"min(225px,55vw)", borderRadius:"50%", overflow:"hidden",
-          border:`3px solid rgba(${glow},0.9)`, boxShadow:`0 0 0 8px rgba(${glow},0.12), 0 0 50px rgba(${glow},0.45)`,
-          animation:"giReveal 0.65s 1.85s cubic-bezier(.2,.8,.3,1) both, giRim 2s 2.5s ease-in-out infinite" }}>
-          <img src={images.gu_immortal} alt={titles.gu_immortal} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-          <svg viewBox="0 0 100 100" style={{ position:"absolute", inset:0, width:"100%", height:"100%", animation:"giArc 1.6s 2.1s ease-in-out infinite" }}>
-            <path d="M10,30 L30,35 L20,55 L45,50 L35,75" fill="none" stroke={`rgba(${glow},0.8)`} strokeWidth="0.8" />
-            <path d="M90,20 L70,30 L80,50 L55,48 L65,70" fill="none" stroke={`rgba(${glow},0.8)`} strokeWidth="0.8" />
-          </svg>
-        </div>
-
-        {/* name card */}
-        <div style={{ position:"relative", zIndex:2, marginTop:28, display:"flex", flexDirection:"column", alignItems:"center",
-          width:"min(420px,90vw)", opacity:0, animation:"giCardUp 0.5s 2.55s cubic-bezier(.2,.8,.3,1) both" }}>
-          <div style={{ width:"100%", textAlign:"center", whiteSpace:"nowrap",
-            fontFamily:"Metamorphous,Georgia,serif", fontSize:"clamp(22px,5.5vw,32px)", fontWeight:700, color:`rgb(${core})`,
-            textShadow:`0 0 22px rgba(${glow},0.95), 0 0 55px rgba(${accent},0.55)`, opacity:0,
-            animation:"giTitleIn 0.5s 2.7s ease both" }}>{titles.gu_immortal}</div>
-          <div style={{ marginTop:10, fontSize:13, textAlign:"center", color:"rgba(235,255,220,0.85)",
-            fontFamily:"'IM Fell English',Georgia,serif", lineHeight:1.55, opacity:0, padding:"0 16px",
-            animation:"giSubIn 0.5s 2.9s ease both" }}>{subtitles.gu_immortal}</div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── VENERABLE — Grand Tribulation: earth AND sky calamity collide, full-screen, biggest ──
-  const accent = "255,130,60", glow = "255,190,70", core = "255,250,225";
-  const groundCracks = [
-    { d: "M50,100 L46,90 L51,81 L43,71 L49,59 L41,46 L47,33 L42,18 L46,2", w: 2.0 },
-    { d: "M49,59 L62,54 L70,41 L80,30", w: 1.1 },
-    { d: "M47,33 L34,29 L25,16", w: 0.9 },
-    { d: "M50,100 L57,89 L52,77 L61,64 L55,50 L63,35 L57,19 L62,4", w: 1.9 },
-    { d: "M55,50 L70,46 L79,33", w: 1.1 },
-    { d: "M57,19 L70,14 L78,3", w: 0.8 },
-    { d: "M50,100 L40,91 L45,79 L33,67 L40,53 L28,40", w: 1.5 },
-    { d: "M40,53 L25,49 L14,38", w: 0.9 },
-    { d: "M50,100 L61,93 L56,82 L68,73 L77,61", w: 1.3 },
-    { d: "M50,100 L31,97 L37,84 L22,78", w: 1.0 },
-    { d: "M50,100 L70,97 L64,86 L81,80", w: 1.0 },
-  ];
-  const skyBolts = [
-    { d: "M18,0 L13,14 L23,16 L8,34 L19,37 L2,58 L11,60 L-3,80" },
-    { d: "M42,0 L36,11 L47,14 L33,30 L45,33 L29,52 L40,55 L24,76" },
-    { d: "M58,0 L52,13 L63,15 L47,32 L59,35 L41,54 L52,57 L36,76" },
-    { d: "M82,0 L76,12 L87,15 L70,32 L82,35 L64,54 L75,57 L58,78" },
-    { d: "M30,0 L26,9 L33,11 L22,24" },
-    { d: "M70,0 L66,9 L73,11 L62,24" },
-  ];
-  const emberDebris = Array.from({ length: 50 }, (_, i) => {
-    const angle = (360 / 50) * i + (Math.random() * 12 - 6);
-    const dist = 140 + Math.random() * 220;
+  const burstParticles = Array.from({ length: cfg.particles }, (_, i) => {
+    const angle = (360 / cfg.particles) * i + (Math.random() * 14 - 7);
+    const spread = tier === "venerable" ? 1.6 : tier === "gu_immortal" ? 1.25 : 1;
+    const dist = (110 + Math.random() * 140) * spread;
+    const size = 2.5 + Math.random() * 4.5;
+    const delay = Math.random() * 0.16;
     const rad = (angle * Math.PI) / 180;
-    return { key: i, ex: Math.cos(rad) * dist, ey: Math.sin(rad) * dist, size: 2.5 + Math.random() * 5, delay: Math.random() * 0.2 };
+    return { key: "b" + i, ex: Math.cos(rad) * dist, ey: Math.sin(rad) * dist, size, delay };
   });
+
+  const voidParticles = Array.from({ length: Math.round(cfg.particles * 0.5) }, (_, i) => ({
+    key: "v" + i, x: Math.random() * 100, y: Math.random() * 100,
+    size: 1.5 + Math.random() * 2.5, delay: Math.random() * (t.chargeAt * 0.8),
+    drift: Math.random() * 24 - 12,
+  }));
+
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:10002, background:"#070300", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", animation:"vIn 0.3s ease both" }}>
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 10002,
+      background: cfg.bg,
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      overflow: "hidden",
+      animation: "aoFadeIn 0.3s ease both",
+    }}>
       <style>{`
-        @keyframes vIn { from{opacity:0;} to{opacity:1;} }
-        @keyframes vCloudIn { 0% { opacity:0; transform:scale(0.6); } 100% { opacity:0.9; transform:scale(1); } }
-        @keyframes vCloudDrift { 0%,100% { transform:translateX(0) rotate(0deg); } 50% { transform:translateX(-18px) rotate(2deg); } }
-        @keyframes vGroundGlow { 0%,100% { opacity:0.35; } 50% { opacity:0.85; } }
-        @keyframes vBigShake { 0%,100% { transform:translate(0,0) scale(1); } 10% { transform:translate(-13px,8px) scale(1.01); } 22% { transform:translate(12px,-9px) scale(1.01); } 36% { transform:translate(-10px,7px); } 50% { transform:translate(8px,-6px); } 64% { transform:translate(-6px,4px); } 78% { transform:translate(4px,-3px); } 90% { transform:translate(-2px,1px); } }
-        @keyframes vCrackDraw { 0% { stroke-dashoffset:260; opacity:0; } 8% { opacity:1; } 100% { stroke-dashoffset:0; opacity:1; } }
-        @keyframes vBoltDraw { 0% { stroke-dashoffset:220; opacity:0; } 5% { opacity:1; } 55% { stroke-dashoffset:0; opacity:1; } 100% { opacity:0; } }
-        @keyframes vWhiteOut1 { 0% { opacity:0; } 45% { opacity:1; } 100% { opacity:0; } }
-        @keyframes vWhiteOut2 { 0% { opacity:0; } 50% { opacity:1; } 100% { opacity:0; } }
-        @keyframes vEmber { 0% { opacity:0; transform:translate(0,0) scale(1.3); } 10% { opacity:1; } 100% { opacity:0; transform:var(--pe) scale(0.15); } }
-        @keyframes vReveal { 0% { opacity:0; transform:scale(1.25); filter:brightness(4) blur(9px); } 55% { filter:brightness(1.6) blur(2px); } 100% { opacity:1; transform:scale(1); filter:brightness(1) blur(0); } }
-        @keyframes vRim { 0%,100% { filter:drop-shadow(0 0 18px rgba(${glow},0.55)); } 50% { filter:drop-shadow(0 0 50px rgba(${glow},1)); } }
-        @keyframes vCrownDrop { 0% { opacity:0; transform:translateY(-50px) scale(0.5) rotate(-12deg); } 70% { transform:translateY(5px) scale(1.08) rotate(2deg); } 100% { opacity:1; transform:translateY(0) scale(1) rotate(0deg); } }
-        @keyframes vCardUp { 0% { opacity:0; transform:translateY(80px); } 100% { opacity:1; transform:translateY(0); } }
-        @keyframes vTitleIn { 0% { opacity:0; letter-spacing:0.22em; } 100% { opacity:1; letter-spacing:0.07em; } }
-        @keyframes vSubIn { 0% { opacity:0; transform:translateY(10px); } 100% { opacity:1; transform:translateY(0); } }
-        @keyframes vEmberFlicker { 0%,100% { opacity:0.5; } 50% { opacity:0.9; } }
+        @keyframes aoFadeIn      { from { opacity:0; } to { opacity:1; } }
+        @keyframes aoVoidDrift   { 0% { opacity:0; transform:translateY(0); } 25% { opacity:0.55; } 100% { opacity:0; transform:translateY(var(--vd)); } }
+        @keyframes aoGroundRing  { 0% { transform:scale(0.15); opacity:0; } 40% { opacity:0.9; } 100% { transform:scale(1.5); opacity:0; } }
+        @keyframes aoPillarGrow  { 0% { opacity:0; transform:scaleY(0.04) scaleX(0.5); } 60% { opacity:1; } 100% { opacity:1; transform:scaleY(1) scaleX(1); } }
+        @keyframes aoPillarFade  { 0% { opacity:1; } 100% { opacity:0; } }
+        @keyframes aoWhiteFlash  { 0% { opacity:0; } 14% { opacity:1; } 100% { opacity:0; } }
+        @keyframes aoBurstRing   { 0% { transform:scale(0.3); opacity:1; } 100% { transform:scale(2.4); opacity:0; } }
+        @keyframes aoBurstPart   { 0% { opacity:0; transform:translate(0,0) scale(1.3); } 10% { opacity:1; } 100% { opacity:0; transform:var(--pe) scale(0.15); } }
+        @keyframes aoReveal      { 0% { opacity:0; transform:scale(1.18); filter:brightness(3.4) blur(7px); } 55% { filter:brightness(1.5) blur(1.5px); } 100% { opacity:1; transform:scale(1); filter:brightness(1) blur(0); } }
+        @keyframes aoRimPulse    { 0%,100% { filter:drop-shadow(0 0 16px rgba(${cfg.glow},0.5)); } 50% { filter:drop-shadow(0 0 42px rgba(${cfg.glow},0.9)); } }
+        @keyframes aoCardUp      { 0% { opacity:0; transform:translateY(60px); } 100% { opacity:1; transform:translateY(0); } }
+        @keyframes aoTitleIn     { 0% { opacity:0; letter-spacing:0.16em; } 100% { opacity:1; letter-spacing:0.05em; } }
+        @keyframes aoSubIn       { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:translateY(0); } }
+        @keyframes aoShake       { 0%,100% { transform:translate(0,0); } 20% { transform:translate(-7px,4px); } 40% { transform:translate(6px,-5px); } 60% { transform:translate(-4px,3px); } 80% { transform:translate(3px,-2px); } }
       `}</style>
 
-      {/* freeze beat — held dark, longest of the three, 0–0.9s */}
-
-      {/* sky calamity gathers, 0.2–1.6s */}
-      {[10, 35, 60, 85].map((x, i) => (
-        <div key={i} style={{ position:"absolute", top:`${2 + (i%2)*4}%`, left:`${x}%`, width:"42vw", height:"18vh", marginLeft:"-21vw",
-          borderRadius:"50%", background:"radial-gradient(ellipse, rgba(40,15,5,0.95) 0%, transparent 75%)",
-          animation:`vCloudIn 0.6s ${0.2 + i*0.1}s ease both, vCloudDrift ${3.4+i*0.3}s ${0.9+i*0.1}s ease-in-out infinite`, pointerEvents:"none" }} />
+      {/* VOID — ambient motes drifting before anything happens */}
+      {voidParticles.map(p => (
+        <div key={p.key} style={{
+          position: "absolute", left: `${p.x}%`, top: `${p.y}%`,
+          width: p.size, height: p.size, borderRadius: "50%",
+          background: `rgba(${cfg.accent},0.5)`,
+          "--vd": `${p.drift}px`,
+          animation: `aoVoidDrift ${t.chargeAt + 0.5}s ${p.delay}s ease-out both`,
+          pointerEvents: "none",
+        }} />
       ))}
 
-      {/* ground glow building, same timeframe */}
-      <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"32vh",
-        background:`linear-gradient(to top, rgba(${accent},0.3), transparent)`,
-        animation:"vGroundGlow 1.4s 0.5s ease-in-out infinite", pointerEvents:"none" }} />
+      {/* CHARGE — ground ring + rising light pillar */}
+      <div style={{
+        position: "absolute",
+        width: cfg.pillarW * 2.4, height: cfg.pillarW * 0.5,
+        borderRadius: "50%",
+        background: `radial-gradient(ellipse, rgba(${cfg.glow},0.55) 0%, transparent 70%)`,
+        animation: `aoGroundRing 0.7s ${t.chargeAt}s ease-out both`,
+        pointerEvents: "none",
+      }} />
+      <div style={{
+        position: "absolute", bottom: "50%", left: "50%",
+        width: cfg.pillarW, height: cfg.pillarH, marginLeft: -cfg.pillarW / 2,
+        background: `linear-gradient(to top, rgba(${cfg.glow},0.95), rgba(${cfg.accent},0.5), transparent)`,
+        transformOrigin: "bottom",
+        animation: `aoPillarGrow ${t.peakAt - t.chargeAt}s ${t.chargeAt}s cubic-bezier(.2,.8,.3,1) both, aoPillarFade 0.35s ${t.peakAt}s ease both`,
+        filter: "blur(2px)",
+        pointerEvents: "none",
+      }} />
 
-      {/* big shake wrapper for the dual-strike beat, 1.6s onward */}
-      <div style={{ position:"absolute", inset:0, animation:"vBigShake 0.75s 1.6s ease both", pointerEvents:"none" }}>
-        {/* ground cracks splitting open — dark fracture shadow + molten glow core */}
-        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice" style={{ position:"absolute", bottom:0, left:"50%", width:"105vmin", height:"68vmin", transform:"translateX(-50%)", overflow:"visible" }}>
-          {groundCracks.map((c, i) => (
-            <g key={i}>
-              <path d={c.d} fill="none" stroke="rgba(5,3,1,0.92)" strokeWidth={c.w * 2.4} strokeLinecap="round" strokeLinejoin="round"
-                strokeDasharray="320" style={{ animation:`vCrackDraw 0.55s ${1.6 + i*0.035}s ease-out both` }} />
-              <path d={c.d} fill="none" stroke={`rgba(${glow},1)`} strokeWidth={c.w} strokeLinecap="round" strokeLinejoin="round"
-                strokeDasharray="320" style={{ filter:`drop-shadow(0 0 3px rgba(${glow},1))`,
-                animation:`vCrackDraw 0.55s ${1.6 + i*0.035}s ease-out both` }} />
-            </g>
-          ))}
-        </svg>
-
-        {/* sky bolts striking down — dark outer bolt + bright white-hot core, jagged irregular paths */}
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position:"absolute", inset:0, width:"100%", height:"62%" }}>
-          {skyBolts.map((b, i) => (
-            <g key={i}>
-              <path d={b.d} fill="none" stroke={`rgba(${accent},0.5)`} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
-                strokeDasharray="240" style={{ animation:`vBoltDraw 0.55s ${1.65 + i*0.05}s ease-out both` }} />
-              <path d={b.d} fill="none" stroke={`rgba(${core},1)`} strokeWidth="0.6" strokeLinecap="round" strokeLinejoin="round"
-                strokeDasharray="240" style={{ filter:`drop-shadow(0 0 6px rgba(${glow},1))`,
-                animation:`vBoltDraw 0.55s ${1.65 + i*0.05}s ease-out both` }} />
-            </g>
-          ))}
-        </svg>
-
-        {/* two stacked white-out flashes — the dual-calamity collision tell */}
-        <div style={{ position:"absolute", inset:0, background:`rgba(${core},1)`, animation:"vWhiteOut1 0.45s 1.85s ease both" }} />
-        <div style={{ position:"absolute", inset:0, background:`rgba(${core},1)`, animation:"vWhiteOut2 0.5s 2.15s ease both" }} />
-
-        {emberDebris.map(p => (
-          <div key={p.key} style={{ position:"absolute", top:"55%", left:"50%", width:p.size, height:p.size, borderRadius:"45%",
-            background:`rgba(${glow},1)`, boxShadow:`0 0 8px rgba(${glow},0.9)`, "--pe":`translate(${p.ex}px,${p.ey}px)`,
-            animation:`vEmber 1s ${2.0 + p.delay}s cubic-bezier(.1,.7,.3,1) both`, pointerEvents:"none" }} />
-        ))}
-      </div>
-
-      {/* lingering embers behind everything, after the strike settles */}
-      {Array.from({ length: 14 }).map((_, i) => (
-        <div key={"lg"+i} style={{ position:"absolute", bottom:0, left:`${(i*7)%100}%`,
-          width:3, height:3, borderRadius:"50%", background:`rgba(${accent},0.8)`,
-          animation:`vEmberFlicker ${1.6 + (i%4)*0.3}s ${2.6 + i*0.06}s ease-in-out infinite`, pointerEvents:"none" }} />
+      {/* FLASH + BURST */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: `radial-gradient(circle at 50% 50%, rgba(${cfg.core},0.95) 0%, transparent 58%)`,
+        animation: `aoWhiteFlash 0.3s ${t.flashAt}s ease both`,
+        pointerEvents: "none",
+      }} />
+      <div style={{
+        position: "absolute", width: cfg.pillarW * 1.7, height: cfg.pillarW * 1.7, borderRadius: "50%",
+        border: `2px solid rgba(${cfg.glow},0.85)`,
+        animation: `aoBurstRing 0.6s ${t.burstAt}s ease-out both`,
+        pointerEvents: "none",
+      }} />
+      {burstParticles.map(p => (
+        <div key={p.key} style={{
+          position: "absolute", top: "50%", left: "50%",
+          width: p.size, height: p.size, borderRadius: "50%",
+          background: `rgba(${cfg.glow},1)`,
+          boxShadow: `0 0 6px rgba(${cfg.glow},0.8)`,
+          "--pe": `translate(${p.ex}px,${p.ey}px)`,
+          animation: `aoBurstPart 0.85s ${t.burstAt + p.delay}s cubic-bezier(.15,.6,.3,1) both`,
+          pointerEvents: "none",
+        }} />
       ))}
 
-      {/* reveal */}
-      <div style={{ position:"relative", zIndex:2, width:"min(280px,68vw)", height:"min(280px,68vw)", borderRadius:"50%", overflow:"hidden",
-        border:`3px solid rgba(${glow},0.95)`, boxShadow:`0 0 0 9px rgba(${glow},0.14), 0 0 60px rgba(${glow},0.5)`,
-        animation:"vReveal 0.75s 2.5s cubic-bezier(.2,.8,.3,1) both, vRim 2.2s 3.3s ease-in-out infinite" }}>
-        <img src={images.venerable} alt={titles.venerable} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-      </div>
+      {/* REVEAL — just the portrait, no glyphs, no crown */}
+      <div style={{
+        position: "relative", zIndex: 2,
+        display: "flex", flexDirection: "column", alignItems: "center",
+        animation: tier === "venerable" ? `aoShake 0.5s ${t.burstAt + 0.05}s ease both` : "none",
+      }}>
+        <div style={{
+          width: cfg.portraitSize, height: cfg.portraitSize,
+          borderRadius: "50%", overflow: "hidden",
+          border: `3px solid rgba(${cfg.accent},0.85)`,
+          boxShadow: `0 0 0 8px rgba(${cfg.glow},0.12), 0 0 50px rgba(${cfg.glow},0.4)`,
+          animation: `aoReveal 0.65s ${t.revealAt}s cubic-bezier(.2,.8,.3,1) both, aoRimPulse 2.2s ${t.revealAt + 0.75}s ease-in-out infinite`,
+        }}>
+          <img src={images[tier]} alt={titles[tier]} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
 
-      {/* crown — extra beat unique to Venerable */}
-      <div style={{ position:"relative", zIndex:2, marginTop:-30, fontSize:48, lineHeight:1,
-        filter:`drop-shadow(0 0 26px rgba(${core},1))`,
-        animation:"vCrownDrop 0.6s 3.2s cubic-bezier(.2,.8,.3,1) both", opacity:0 }}>👑</div>
-
-      {/* name card */}
-      <div style={{ position:"relative", zIndex:2, marginTop:18, display:"flex", flexDirection:"column", alignItems:"center",
-        width:"min(480px,92vw)", opacity:0, animation:"vCardUp 0.55s 3.55s cubic-bezier(.2,.8,.3,1) both" }}>
-        <div style={{ width:"100%", textAlign:"center", whiteSpace:"nowrap",
-          fontFamily:"Metamorphous,Georgia,serif", fontSize:"clamp(26px,6.5vw,40px)", fontWeight:700, color:`rgb(${core})`,
-          textShadow:`0 0 24px rgba(${glow},1), 0 0 60px rgba(${accent},0.6)`, opacity:0,
-          animation:"vTitleIn 0.55s 3.7s ease both" }}>{titles.venerable}</div>
-        <div style={{ marginTop:11, fontSize:14, textAlign:"center", color:"rgba(255,240,215,0.9)",
-          fontFamily:"'IM Fell English',Georgia,serif", lineHeight:1.6, opacity:0, padding:"0 18px",
-          animation:"vSubIn 0.55s 3.95s ease both" }}>{subtitles.venerable}</div>
+        {/* NAME CARD — one line, horizontal */}
+        <div style={{
+          marginTop: 26,
+          display: "flex", flexDirection: "column", alignItems: "center",
+          width: cfg.cardWidth,
+          opacity: 0,
+          animation: `aoCardUp 0.5s ${t.cardAt}s cubic-bezier(.2,.8,.3,1) both`,
+        }}>
+          <div style={{
+            width: "100%", textAlign: "center", whiteSpace: "nowrap",
+            fontFamily: "Metamorphous,Georgia,serif",
+            fontSize: tier === "venerable" ? "clamp(26px,6.5vw,40px)" : tier === "gu_immortal" ? "clamp(22px,5.5vw,32px)" : "clamp(18px,4.5vw,26px)",
+            fontWeight: 700, color: `rgb(${cfg.core})`,
+            textShadow: `0 0 20px rgba(${cfg.glow},0.9), 0 0 50px rgba(${cfg.accent},0.5)`,
+            opacity: 0,
+            animation: `aoTitleIn 0.5s ${t.titleAt}s ease both`,
+          }}>{titles[tier]}</div>
+          <div style={{
+            marginTop: 10, fontSize: 13, textAlign: "center",
+            color: "rgba(255,245,225,0.85)",
+            fontFamily: "'IM Fell English',Georgia,serif", lineHeight: 1.55,
+            opacity: 0, padding: "0 16px",
+            animation: `aoSubIn 0.5s ${t.subAt}s ease both`,
+          }}>{subtitles[tier]}</div>
+        </div>
       </div>
     </div>
   );
