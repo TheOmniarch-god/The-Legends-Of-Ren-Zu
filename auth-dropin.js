@@ -4,20 +4,20 @@
   const MODAL_ID = "rz-auth-modal-root";
 
   const FATE_SPIDER_SVG = `
-    <svg class="rz-fate-spider" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+    <svg class="rz-fate-spider" viewBox="-10 -10 84 84" aria-hidden="true" focusable="false">
       <defs>
-        <radialGradient id="rzSpiderGlow" cx="50%" cy="35%" r="70%">
-          <stop offset="0%" stop-color="#fff4d6"/>
-          <stop offset="48%" stop-color="#d8a34d"/>
-          <stop offset="100%" stop-color="#7b5522"/>
+        <radialGradient id="rzSpiderGlow" cx="50%" cy="34%" r="72%">
+          <stop offset="0%" stop-color="#fff7df"/>
+          <stop offset="42%" stop-color="#d8a34d"/>
+          <stop offset="100%" stop-color="#6f4618"/>
         </radialGradient>
       </defs>
-      <path class="rz-spider-web" d="M32 6 C32 16 32 22 32 27 M16 10 C23 17 27 22 29 27 M48 10 C41 17 37 22 35 27" />
-      <circle class="rz-spider-head" cx="32" cy="25" r="6" />
-      <ellipse class="rz-spider-body" cx="32" cy="39" rx="9" ry="12" />
-      <path class="rz-spider-legs" d="M26 30 C17 26 11 22 6 16 M38 30 C47 26 53 22 58 16" />
-      <path class="rz-spider-legs" d="M24 36 C15 35 9 36 3 39 M40 36 C49 35 55 36 61 39" />
-      <path class="rz-spider-legs" d="M25 43 C17 48 12 53 8 59 M39 43 C47 48 52 53 56 59" />
+      <path class="rz-spider-web" d="M32 2 C32 13 32 20 32 27 M15 8 C22 16 27 22 29 27 M49 8 C42 16 37 22 35 27" />
+      <circle class="rz-spider-head" cx="32" cy="25" r="5.6" />
+      <ellipse class="rz-spider-body" cx="32" cy="39" rx="8.4" ry="11.2" />
+      <path class="rz-spider-legs" d="M26 30 C18 26 11 21 5 15 M38 30 C46 26 53 21 59 15" />
+      <path class="rz-spider-legs" d="M24 36 C15 35 9 36 2 39 M40 36 C49 35 55 36 62 39" />
+      <path class="rz-spider-legs" d="M25 43 C18 48 12 54 7 62 M39 43 C46 48 52 54 57 62" />
       <path class="rz-spider-mark" d="M32 31 L35 38 L32 48 L29 38 Z" />
     </svg>
   `;
@@ -62,36 +62,42 @@
       }
 
       .rz-auth-button-bound {
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
         padding: 0;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: visible;
         background:
-          radial-gradient(circle at 50% 30%, rgba(255,244,214,0.20), rgba(216,163,77,0.10) 42%, rgba(12,10,8,0.90) 100%);
-        border-color: rgba(255,220,150,0.28);
+          radial-gradient(circle at 50% 34%, rgba(255,252,239,0.96) 0%, rgba(247,231,190,0.88) 34%, rgba(64,42,18,0.92) 100%);
+        border-color: rgba(216,163,77,0.58);
         box-shadow:
-          0 8px 32px rgba(0,0,0,0.38),
-          0 0 22px rgba(216,163,77,0.22),
-          inset 0 1px 0 rgba(255,255,255,0.08);
+          0 9px 30px rgba(0,0,0,0.30),
+          0 0 0 1px rgba(255,255,255,0.46),
+          0 0 24px rgba(216,163,77,0.30),
+          inset 0 1px 0 rgba(255,255,255,0.58),
+          inset 0 -12px 22px rgba(40,24,8,0.20);
       }
 
       .rz-auth-button-bound:hover {
         background:
-          radial-gradient(circle at 50% 30%, rgba(255,244,214,0.28), rgba(216,163,77,0.16) 45%, rgba(12,10,8,0.95) 100%);
+          radial-gradient(circle at 50% 34%, rgba(255,252,239,1) 0%, rgba(255,235,185,0.94) 36%, rgba(54,34,14,0.96) 100%);
         box-shadow:
-          0 10px 36px rgba(0,0,0,0.45),
-          0 0 30px rgba(216,163,77,0.32),
-          inset 0 1px 0 rgba(255,255,255,0.10);
+          0 11px 34px rgba(0,0,0,0.36),
+          0 0 0 1px rgba(255,255,255,0.55),
+          0 0 32px rgba(216,163,77,0.42),
+          inset 0 1px 0 rgba(255,255,255,0.65),
+          inset 0 -12px 24px rgba(40,24,8,0.24);
       }
 
       .rz-fate-spider {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
         overflow: visible;
-        filter: drop-shadow(0 0 7px rgba(216,163,77,0.55));
+        display: block;
+        filter: drop-shadow(0 0 5px rgba(216,163,77,0.72)) drop-shadow(0 1px 1px rgba(0,0,0,0.28));
       }
 
       .rz-fate-spider .rz-spider-head,
@@ -103,16 +109,16 @@
       .rz-fate-spider .rz-spider-web,
       .rz-fate-spider .rz-spider-legs {
         fill: none;
-        stroke: #d8a34d;
-        stroke-width: 3.2;
+        stroke: #b77a25;
+        stroke-width: 2.65;
         stroke-linecap: round;
         stroke-linejoin: round;
-        opacity: 0.92;
+        opacity: 0.98;
       }
 
       .rz-fate-spider .rz-spider-web {
-        stroke-width: 2;
-        opacity: 0.55;
+        stroke-width: 1.75;
+        opacity: 0.68;
       }
 
       .rz-fate-spider .rz-spider-mark {
@@ -299,9 +305,14 @@
         }
 
         .rz-auth-button-bound {
-          width: 42px;
-          height: 42px;
+          width: 46px;
+          height: 46px;
           padding: 0;
+        }
+
+        .rz-fate-spider {
+          width: 27px;
+          height: 27px;
         }
 
         .rz-auth-backdrop {
