@@ -323,7 +323,7 @@
             loggedIn
               ? `
                 <div class="rz-auth-text">
-                  Your reading identity is now linked to Supabase. Later, this can sync essence, purchases, Gu collection, bookmarks, and progress.
+                  Your reading identity is now linked to The Omniarch. Later, this can sync essence, purchases, Gu collection, bookmarks, and progress.
                 </div>
 
                 <div class="rz-auth-profile-row">
@@ -345,7 +345,7 @@
               `
               : `
                 <div class="rz-auth-text">
-                  Login with email. No password needed. Supabase will send you a magic link.
+                  Enter your email. No password needed. The Omniarch will send you a sacred login link.
                 </div>
 
                 <input class="rz-auth-input" id="rz-auth-email" type="email" placeholder="you@example.com" />
