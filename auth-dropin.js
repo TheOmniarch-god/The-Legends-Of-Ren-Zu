@@ -1,6 +1,7 @@
 (function () {
   const STYLE_ID = "renzu-auth-dropin-style";
   const ROOT_ID = "renzu-auth-dropin-root";
+  const MODAL_ID = "rz-auth-modal-root";
 
   let supabaseClient = null;
   let session = null;
@@ -40,17 +41,18 @@
 
       .rz-auth-backdrop {
         position: fixed;
-        inset: 0;
+        right: 14px;
+        bottom: 62px;
         z-index: 99998;
-        background: rgba(0,0,0,0.58);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 18px;
+        width: min(420px, calc(100vw - 24px));
+        background: transparent;
+        display: block;
+        padding: 0;
+        font-family: Georgia, serif;
       }
 
       .rz-auth-modal {
-        width: min(420px, 94vw);
+        width: 100%;
         border-radius: 24px;
         border: 1px solid rgba(255,220,150,0.24);
         background:
@@ -59,6 +61,18 @@
         color: #f7ead0;
         box-shadow: 0 22px 80px rgba(0,0,0,0.65);
         overflow: hidden;
+        animation: rzAuthRise 0.18s ease both;
+      }
+
+      @keyframes rzAuthRise {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
       }
 
       .rz-auth-head {
@@ -78,6 +92,7 @@
         font-size: 22px;
         line-height: 1.15;
         font-weight: 700;
+        color: #fff4d6;
       }
 
       .rz-auth-body {
@@ -101,6 +116,11 @@
         outline: none;
         font-size: 14px;
         margin-bottom: 10px;
+        box-sizing: border-box;
+      }
+
+      .rz-auth-input::placeholder {
+        color: rgba(247,234,208,0.36);
       }
 
       .rz-auth-input:focus {
@@ -120,6 +140,7 @@
         font-size: 12px;
         cursor: pointer;
         border: 1px solid rgba(255,255,255,0.12);
+        font-family: Georgia, serif;
       }
 
       .rz-auth-primary {
@@ -128,9 +149,17 @@
         color: #fff4d6;
       }
 
+      .rz-auth-primary:hover {
+        background: rgba(255,220,150,0.24);
+      }
+
       .rz-auth-secondary {
         background: transparent;
         color: rgba(247,234,208,0.68);
+      }
+
+      .rz-auth-secondary:hover {
+        background: rgba(255,255,255,0.06);
       }
 
       .rz-auth-status {
@@ -156,6 +185,14 @@
       .rz-auth-profile-row span:last-child {
         color: #fff4d6;
         text-align: right;
+        overflow-wrap: anywhere;
+      }
+
+      .rz-auth-code-wrap {
+        display: none;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255,255,255,0.08);
       }
 
       @media (max-width: 520px) {
@@ -167,6 +204,25 @@
         .rz-auth-button {
           padding: 9px 12px;
           font-size: 11px;
+        }
+
+        .rz-auth-backdrop {
+          right: 10px;
+          left: 10px;
+          bottom: 58px;
+          width: auto;
+        }
+
+        .rz-auth-head {
+          padding: 18px 20px 12px;
+        }
+
+        .rz-auth-body {
+          padding: 16px 20px 20px;
+        }
+
+        .rz-auth-title {
+          font-size: 20px;
         }
       }
     `;
@@ -275,7 +331,7 @@
     const deviceId = getDeviceId();
 
     try {
-      await fetch("/api/link-device", {
+      const res = await fetch("/api/link-device", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -285,27 +341,38 @@
           deviceId
         })
       });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        console.warn("Device link failed:", data.error || res.status);
+      }
     } catch (err) {
       console.warn("Device link failed:", err);
     }
   }
 
   function closeModal() {
-    const modal = document.getElementById("rz-auth-modal-root");
+    const modal = document.getElementById(MODAL_ID);
 
     if (modal) modal.remove();
+  }
+
+  function toggleModal() {
+    const modal = document.getElementById(MODAL_ID);
+
+    if (modal) {
+      closeModal();
+    } else {
+      openModal();
+    }
   }
 
   function openModal() {
     closeModal();
 
     const root = document.createElement("div");
-    root.id = "rz-auth-modal-root";
+    root.id = MODAL_ID;
     root.className = "rz-auth-backdrop";
-
-    root.addEventListener("click", function (e) {
-      if (e.target === root) closeModal();
-    });
 
     const loggedIn = !!currentUser;
 
@@ -314,7 +381,7 @@
         <div class="rz-auth-head">
           <div class="rz-auth-kicker">The Legends of Ren Zu</div>
           <div class="rz-auth-title">${
-            loggedIn ? "Your Account" : "ENTER EMAIL"
+            loggedIn ? "Your Account" : "Open the Archive"
           }</div>
         </div>
 
@@ -323,7 +390,8 @@
             loggedIn
               ? `
                 <div class="rz-auth-text">
-Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection, bookmarks, and progress can follow you across devices.                </div>
+                  Your reading identity is now bound to The Omniarch. Your essence, realm, Gu collection, bookmarks, and progress can follow you across devices.
+                </div>
 
                 <div class="rz-auth-profile-row">
                   <span>Email</span>
@@ -344,14 +412,23 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
               `
               : `
                 <div class="rz-auth-text">
-                  Enter your email. No password needed. The Omniarch will send you a sacred login link.
+                  Enter your email. No password needed. The Omniarch will send your sacred code.
                 </div>
 
                 <input class="rz-auth-input" id="rz-auth-email" type="email" placeholder="you@example.com" />
 
                 <div class="rz-auth-actions">
                   <button class="rz-auth-secondary" id="rz-auth-close">Cancel</button>
-                  <button class="rz-auth-primary" id="rz-auth-send">Send magic link</button>
+                  <button class="rz-auth-primary" id="rz-auth-send">Send code</button>
+                </div>
+
+                <div class="rz-auth-code-wrap" id="rz-auth-code-wrap">
+                  <input class="rz-auth-input" id="rz-auth-code" type="text" inputmode="numeric" maxlength="8" placeholder="Enter sacred code" />
+
+                  <div class="rz-auth-actions">
+                    <button class="rz-auth-secondary" id="rz-auth-resend">Resend</button>
+                    <button class="rz-auth-primary" id="rz-auth-verify">Open Archive</button>
+                  </div>
                 </div>
 
                 <div class="rz-auth-status" id="rz-auth-status"></div>
@@ -372,13 +449,45 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
     const sendBtn = document.getElementById("rz-auth-send");
 
     if (sendBtn) {
-      sendBtn.onclick = sendMagicLink;
+      sendBtn.onclick = sendLoginCode;
     }
 
-    const signoutBtn = document.getElementById("rz-auth-signout");
+    const resendBtn = document.getElementById("rz-auth-resend");
 
-    if (signoutBtn) {
-      signoutBtn.onclick = signOut;
+    if (resendBtn) {
+      resendBtn.onclick = sendLoginCode;
+    }
+
+    const verifyBtn = document.getElementById("rz-auth-verify");
+
+    if (verifyBtn) {
+      verifyBtn.onclick = verifyLoginCode;
+    }
+
+    const codeInput = document.getElementById("rz-auth-code");
+
+    if (codeInput) {
+      codeInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          verifyLoginCode();
+        }
+      });
+    }
+
+    const emailInput = document.getElementById("rz-auth-email");
+
+    if (emailInput) {
+      emailInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          sendLoginCode();
+        }
+      });
+
+      setTimeout(() => {
+        try {
+          emailInput.focus();
+        } catch (_) {}
+      }, 50);
     }
   }
 
@@ -390,7 +499,7 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
     }
   }
 
-  async function sendMagicLink() {
+  async function sendLoginCode() {
     const emailInput = document.getElementById("rz-auth-email");
     const email = emailInput ? emailInput.value.trim() : "";
 
@@ -399,15 +508,12 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
       return;
     }
 
-    setStatus("Sending magic link…");
+    setStatus("The Omniarch is sending your code…");
 
     try {
       const client = await initSupabase();
 
-      const redirectTo =
-        window.location.origin +
-        window.location.pathname +
-        window.location.hash;
+      const redirectTo = window.location.origin + "/";
 
       const { error } = await client.auth.signInWithOtp({
         email,
@@ -419,9 +525,78 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
 
       if (error) throw error;
 
-      setStatus("Magic link sent. Check your email.");
+      const codeWrap = document.getElementById("rz-auth-code-wrap");
+
+      if (codeWrap) {
+        codeWrap.style.display = "block";
+      }
+
+      const codeInput = document.getElementById("rz-auth-code");
+
+      if (codeInput) {
+        setTimeout(() => {
+          try {
+            codeInput.focus();
+          } catch (_) {}
+        }, 50);
+      }
+
+      setStatus("Code sent by The Omniarch. Check your email.");
     } catch (err) {
-      setStatus(err.message || "Could not send magic link.");
+      setStatus(err.message || "Could not send login code.");
+    }
+  }
+
+  async function verifyLoginCode() {
+    const emailInput = document.getElementById("rz-auth-email");
+    const codeInput = document.getElementById("rz-auth-code");
+
+    const email = emailInput ? emailInput.value.trim() : "";
+    const token = codeInput ? codeInput.value.trim().replace(/\s+/g, "") : "";
+
+    if (!email) {
+      setStatus("Enter your email first.");
+      return;
+    }
+
+    if (!token || token.length < 6) {
+      setStatus("Enter the sacred code.");
+      return;
+    }
+
+    setStatus("Opening the archive…");
+
+    try {
+      const client = await initSupabase();
+
+      const { data, error } = await client.auth.verifyOtp({
+        email,
+        token,
+        type: "email"
+      });
+
+      if (error) throw error;
+
+      session = data.session || null;
+      currentUser = data.user || (session ? session.user : null);
+
+      if (session) {
+        await linkDevice();
+      }
+
+      closeModal();
+      renderButton();
+
+      window.dispatchEvent(
+        new CustomEvent("renzu-auth-change", {
+          detail: {
+            session,
+            user: currentUser
+          }
+        })
+      );
+    } catch (err) {
+      setStatus(err.message || "Invalid or expired code.");
     }
   }
 
@@ -438,6 +613,15 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
 
       closeModal();
       renderButton();
+
+      window.dispatchEvent(
+        new CustomEvent("renzu-auth-change", {
+          detail: {
+            session: null,
+            user: null
+          }
+        })
+      );
     } catch (err) {
       setStatus(err.message || "Could not sign out.");
     }
@@ -470,7 +654,7 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
       </button>
     `;
 
-    document.getElementById("rz-auth-open").onclick = openModal;
+    document.getElementById("rz-auth-open").onclick = toggleModal;
   }
 
   window.RenZuAuth = {
@@ -494,6 +678,18 @@ Your soul mark is now bound to The Omniarch. Your essence, realm, Gu collection,
 
     signOut
   };
+
+  document.addEventListener("click", function (e) {
+    const modal = document.getElementById(MODAL_ID);
+    const root = document.getElementById(ROOT_ID);
+
+    if (!modal) return;
+
+    if (modal.contains(e.target)) return;
+    if (root && root.contains(e.target)) return;
+
+    closeModal();
+  });
 
   document.addEventListener("DOMContentLoaded", async function () {
     renderButton();
