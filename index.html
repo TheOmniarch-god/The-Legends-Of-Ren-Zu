@@ -494,6 +494,8 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
   const [cryptoLoading, setCryptoLoading] = useState(false);
   const [cryptoMsg, setCryptoMsg] = useState("");
   const [cryptoErr, setCryptoErr] = useState("");
+  const [cryptoOpen, setCryptoOpen] = useState(false);
+  const [tokenOpen, setTokenOpen] = useState(false);
   if (!open) return null;
 
   const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
@@ -686,25 +688,25 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
       animation: "fadeUp 0.22s ease",
     }} onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{
-        width: "min(460px, 94vw)", maxHeight: "90vh", overflow: "auto",
+        width: "min(430px, calc(100vw - 24px))", maxHeight: "min(86dvh, 760px)", overflow: "auto",
         background: surface, border: `1px solid ${border}`, borderRadius: 26,
         boxShadow: "0 28px 90px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.04)",
-        padding: "30px 26px 24px", textAlign: "center", position: "relative",
+        padding: "22px 18px 18px", textAlign: "center", position: "relative",
       }}>
         <button onClick={onClose} style={{
           position: "absolute", top: 12, right: 14, width: 32, height: 32, borderRadius: "50%",
           background: "transparent", border: "none", color: textDim, fontSize: 18, cursor: "pointer",
         }}>✕</button>
 
-        <div style={{ fontSize: 42, marginBottom: 8 }}>🏛️</div>
-        <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, color: text, marginBottom: 6 }}>
+        <div style={{ fontSize: 30, marginBottom: 6 }}>🏛️</div>
+        <div style={{ fontFamily: headFont, fontSize: 18, fontWeight: 700, color: text, marginBottom: 6 }}>
           Treasure Yellow Heaven
         </div>
-        <div style={{ fontSize: 13, color: textDim, lineHeight: 1.55, marginBottom: 20, fontFamily: "'IM Fell English', Georgia, serif" }}>
+        <div style={{ fontSize: 12.2, color: textDim, lineHeight: 1.5, marginBottom: 14, fontFamily: "'IM Fell English', Georgia, serif" }}>
           Ascend, redeem a realm token, or make an offering. Treasure Yellow Heaven is open only to soul-bound cultivators so every realm follows your account across devices.
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
           <Tier
             title="Mortal Aperture"
             realm="Free Realm"
@@ -741,128 +743,184 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
             href={`https://flutterwave.com/pay/rhmf6ndvpanr?deviceId=${encodeURIComponent(deviceId || '')}&plan=venerable`}
           />
 
-          <button onClick={copyCrypto}
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "11px 22px", borderRadius: 14, border: `1px solid ${border}`,
-              background: "transparent", color: text, fontFamily: headFont, fontSize: 12, cursor: "pointer",
-            }}>
-            {copied ? "✓ USDT TRC-20 address copied" : "₮ Copy USDT TRC-20 Address"}
-          </button>
           <div style={{
-            marginTop: -2,
-            padding: "8px 10px",
-            borderRadius: 12,
-            border: `1px dashed ${border}`,
-            color: textDim,
-            fontSize: 10.5,
-            lineHeight: 1.45,
-            wordBreak: "break-all",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-            background: D ? "rgba(255,255,255,0.025)" : S ? "rgba(139,94,26,0.06)" : "rgba(0,0,0,0.025)",
-          }}>
-            USDT TRC-20 · {USDT_TRC20_ADDRESS}
-          </div>
-
-          <div style={{
-            padding: "12px 12px 13px",
             borderRadius: 16,
             border: `1px solid ${border}`,
-            background: D ? "rgba(255,255,255,0.035)" : S ? "rgba(139,94,26,0.075)" : "rgba(0,0,0,0.025)",
-            textAlign: "left",
+            background: D ? "rgba(255,255,255,0.025)" : S ? "rgba(139,94,26,0.055)" : "rgba(0,0,0,0.02)",
+            overflow: "hidden",
           }}>
-            <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: textDim, marginBottom: 8 }}>
-              On-chain Offering · Auto Verify
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6, marginBottom: 10 }}>
-              {Object.entries(CRYPTO_PLANS).map(([key, plan]) => {
-                const active = cryptoPlan === key;
-                return (
-                  <button key={key} onClick={() => { setCryptoPlan(key); setCryptoErr(""); setCryptoMsg(""); }} style={{
-                    padding: "8px 6px",
-                    borderRadius: 10,
-                    border: `1px solid ${active ? borderStrong || border : border}`,
-                    background: active
-                      ? (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.20)" : "rgba(0,0,0,0.075)")
-                      : "transparent",
-                    color: text,
-                    cursor: "pointer",
-                    fontFamily: headFont,
-                    fontSize: 9.5,
-                    lineHeight: 1.35,
-                  }}>
-                    <div>{plan.label}</div>
-                    <div style={{ color: textDim, fontFamily: "Georgia, serif", fontSize: 10, marginTop: 2 }}>{plan.amount}</div>
-                  </button>
-                );
-              })}
-            </div>
-            <div style={{ fontSize: 10.5, color: textDim, lineHeight: 1.55, marginBottom: 8 }}>
-              Send the exact USDT amount on TRON (TRC-20), then paste the transaction hash below. Verification is automatic.
-            </div>
-            <input
-              value={cryptoHash}
-              onChange={e => { setCryptoHash(e.target.value); setCryptoErr(""); setCryptoMsg(""); }}
-              placeholder="Paste TRON transaction hash"
-              style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "10px 12px",
-                borderRadius: 12,
-                fontSize: 12,
-                background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-                border: `1px solid ${cryptoErr ? "tomato" : border}`,
-                color: text,
-                fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-                outline: "none",
-                marginBottom: 8,
-              }}
-            />
-            <button onClick={verifyCryptoPayment} disabled={cryptoLoading || !cryptoHash.trim()} style={{
+            <button onClick={() => setCryptoOpen(o => !o)} style={{
               width: "100%",
-              padding: "10px 14px",
-              borderRadius: 12,
-              border: `1px solid ${border}`,
-              background: cryptoLoading || !cryptoHash.trim()
-                ? (D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)")
-                : (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.22)" : "rgba(0,0,0,0.10)"),
-              color: cryptoLoading || !cryptoHash.trim() ? textDim : text,
-              cursor: cryptoLoading || !cryptoHash.trim() ? "not-allowed" : "pointer",
+              padding: "12px 14px",
+              border: "none",
+              background: "transparent",
+              color: text,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
               fontFamily: headFont,
-              fontSize: 11.5,
-              fontWeight: 600,
+              textAlign: "left",
             }}>
-              {cryptoLoading ? "Verifying on-chain…" : "Verify Offering"}
+              <span>
+                <span style={{ display: "block", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" }}>On-chain Offering</span>
+                <span style={{ display: "block", fontSize: 10, color: textDim, marginTop: 3, fontFamily: "Georgia, serif", letterSpacing: 0 }}>USDT TRC-20 · Auto verify</span>
+              </span>
+              <span style={{ color: textDim }}>{cryptoOpen ? "▲" : "▼"}</span>
             </button>
-            {cryptoErr && <div style={{ fontSize: 10.5, color: "tomato", marginTop: 7, lineHeight: 1.45 }}>{cryptoErr}</div>}
-            {cryptoMsg && <div style={{ fontSize: 10.5, color: D ? "#d8f0d8" : "#355b1f", marginTop: 7, lineHeight: 1.45 }}>{cryptoMsg}</div>}
+
+            {cryptoOpen && (
+              <div style={{ padding: "0 12px 13px", textAlign: "left" }}>
+                <button onClick={copyCrypto}
+                  style={{
+                    width: "100%",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                    padding: "10px 14px", borderRadius: 12, border: `1px solid ${border}`,
+                    background: "transparent", color: text, fontFamily: headFont, fontSize: 11.5, cursor: "pointer",
+                    marginBottom: 8,
+                  }}>
+                  {copied ? "✓ USDT TRC-20 address copied" : "₮ Copy USDT TRC-20 Address"}
+                </button>
+                <div style={{
+                  padding: "8px 10px",
+                  borderRadius: 12,
+                  border: `1px dashed ${border}`,
+                  color: textDim,
+                  fontSize: 10.5,
+                  lineHeight: 1.45,
+                  wordBreak: "break-all",
+                  fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+                  background: D ? "rgba(255,255,255,0.025)" : S ? "rgba(139,94,26,0.06)" : "rgba(0,0,0,0.025)",
+                  marginBottom: 10,
+                }}>
+                  USDT TRC-20 · {USDT_TRC20_ADDRESS}
+                </div>
+
+                <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: textDim, marginBottom: 8 }}>
+                  Choose realm
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6, marginBottom: 10 }}>
+                  {Object.entries(CRYPTO_PLANS).map(([key, plan]) => {
+                    const active = cryptoPlan === key;
+                    return (
+                      <button key={key} onClick={() => { setCryptoPlan(key); setCryptoErr(""); setCryptoMsg(""); }} style={{
+                        padding: "8px 6px",
+                        borderRadius: 10,
+                        border: `1px solid ${active ? borderStrong || border : border}`,
+                        background: active
+                          ? (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.20)" : "rgba(0,0,0,0.075)")
+                          : "transparent",
+                        color: text,
+                        cursor: "pointer",
+                        fontFamily: headFont,
+                        fontSize: 9.5,
+                        lineHeight: 1.35,
+                      }}>
+                        <div>{plan.label}</div>
+                        <div style={{ color: textDim, fontFamily: "Georgia, serif", fontSize: 10, marginTop: 2 }}>{plan.amount}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ fontSize: 10.5, color: textDim, lineHeight: 1.55, marginBottom: 8 }}>
+                  Send the exact USDT amount on TRON (TRC-20), then paste the transaction hash below.
+                </div>
+                <input
+                  value={cryptoHash}
+                  onChange={e => { setCryptoHash(e.target.value); setCryptoErr(""); setCryptoMsg(""); }}
+                  placeholder="Paste TRON transaction hash"
+                  style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    fontSize: 12,
+                    background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+                    border: `1px solid ${cryptoErr ? "tomato" : border}`,
+                    color: text,
+                    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+                    outline: "none",
+                    marginBottom: 8,
+                  }}
+                />
+                <button onClick={verifyCryptoPayment} disabled={cryptoLoading || !cryptoHash.trim()} style={{
+                  width: "100%",
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  border: `1px solid ${border}`,
+                  background: cryptoLoading || !cryptoHash.trim()
+                    ? (D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)")
+                    : (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.22)" : "rgba(0,0,0,0.10)"),
+                  color: cryptoLoading || !cryptoHash.trim() ? textDim : text,
+                  cursor: cryptoLoading || !cryptoHash.trim() ? "not-allowed" : "pointer",
+                  fontFamily: headFont,
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                }}>
+                  {cryptoLoading ? "Verifying on-chain…" : "Verify Offering"}
+                </button>
+                {cryptoErr && <div style={{ fontSize: 10.5, color: "tomato", marginTop: 7, lineHeight: 1.45 }}>{cryptoErr}</div>}
+                {cryptoMsg && <div style={{ fontSize: 10.5, color: D ? "#d8f0d8" : "#355b1f", marginTop: 7, lineHeight: 1.45 }}>{cryptoMsg}</div>}
+              </div>
+            )}
           </div>
         </div>
 
-        <div style={{ height: 1, background: border, margin: "8px 0 14px" }} />
+        <div style={{ height: 1, background: border, margin: "8px 0 12px" }} />
 
-        <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: headFont, marginBottom: 8 }}>
-          Cultivator token (received after offering)
+        <div style={{
+          borderRadius: 16,
+          border: `1px solid ${border}`,
+          background: D ? "rgba(255,255,255,0.025)" : S ? "rgba(139,94,26,0.055)" : "rgba(0,0,0,0.02)",
+          overflow: "hidden",
+          marginBottom: 10,
+        }}>
+          <button onClick={() => setTokenOpen(o => !o)} style={{
+            width: "100%",
+            padding: "11px 14px",
+            border: "none",
+            background: "transparent",
+            color: text,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            fontFamily: headFont,
+            textAlign: "left",
+          }}>
+            <span>
+              <span style={{ display: "block", fontSize: 10.5, letterSpacing: "0.12em", textTransform: "uppercase" }}>Realm Token</span>
+              <span style={{ display: "block", fontSize: 10, color: textDim, marginTop: 3, fontFamily: "Georgia, serif", letterSpacing: 0 }}>Redeem a code received after payment</span>
+            </span>
+            <span style={{ color: textDim }}>{tokenOpen ? "▲" : "▼"}</span>
+          </button>
+
+          {tokenOpen && (
+            <div style={{ padding: "0 12px 13px" }}>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                  value={code}
+                  onChange={e => { setCode(e.target.value); setError(""); }}
+                  placeholder="Enter token"
+                  onKeyDown={e => { if (e.key === "Enter") tryUnlock(); }}
+                  style={{
+                    flex: 1, minWidth: 0, padding: "10px 14px", borderRadius: 12, fontSize: 12,
+                    background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+                    border: `1px solid ${error ? "tomato" : border}`, color: text, fontFamily: "inherit", outline: "none",
+                  }}
+                />
+                <button onClick={tryUnlock}
+                  style={{
+                    padding: "10px 16px", borderRadius: 12, border: `1px solid ${border}`,
+                    background: "transparent", color: text, fontSize: 12, cursor: "pointer", fontFamily: headFont, fontWeight: 600,
+                  }}>Redeem</button>
+              </div>
+              {error && <div style={{ fontSize: 11, color: "tomato", marginTop: 6 }}>{error}</div>}
+            </div>
+          )}
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <input
-            value={code}
-            onChange={e => { setCode(e.target.value); setError(""); }}
-            placeholder="Enter token"
-            onKeyDown={e => { if (e.key === "Enter") tryUnlock(); }}
-            style={{
-              flex: 1, minWidth: 0, padding: "10px 14px", borderRadius: 12, fontSize: 12,
-              background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-              border: `1px solid ${error ? "tomato" : border}`, color: text, fontFamily: "inherit", outline: "none",
-            }}
-          />
-          <button onClick={tryUnlock}
-            style={{
-              padding: "10px 16px", borderRadius: 12, border: `1px solid ${border}`,
-              background: "transparent", color: text, fontSize: 12, cursor: "pointer", fontFamily: headFont, fontWeight: 600,
-            }}>Refine</button>
-        </div>
-        {error && <div style={{ fontSize: 11, color: "tomato", marginTop: 6 }}>{error}</div>}
 
         <button onClick={onClose}
           style={{
@@ -930,10 +988,10 @@ function PaymentRecoveryModal({ data, onClose, onRedeem, onRetry, D, S }) {
       animation: "fadeUp 0.22s ease",
     }} onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{
-        width: "min(460px, 94vw)", maxHeight: "90vh", overflow: "auto",
+        width: "min(430px, calc(100vw - 24px))", maxHeight: "min(86dvh, 760px)", overflow: "auto",
         background: surface, border: `1px solid ${border}`, borderRadius: 26,
         boxShadow: "0 28px 90px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.04)",
-        padding: "30px 26px 24px", textAlign: "center", position: "relative",
+        padding: "22px 18px 18px", textAlign: "center", position: "relative",
       }}>
         <button onClick={onClose} style={{
           position: "absolute", top: 12, right: 14, width: 32, height: 32, borderRadius: "50%",
