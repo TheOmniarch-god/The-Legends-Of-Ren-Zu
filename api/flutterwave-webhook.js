@@ -34,15 +34,15 @@ const TIER_NAMES = {
 };
 
 // IMPORTANT:
-// Keep this matched to your actual live prices.
-// Current frontend prices are 4.99 / 9.99 / 29.99
+// Keep this matched to your actual live Flutterwave prices.
+// Current frontend prices are 4.99 / 9.99 / 29.99.
 const AMOUNT_TO_TIER = {
   499: "gu_master",
   999: "gu_immortal",
   2999: "venerable",
 };
 
-function generateLoreCode(tier) {
+function generateRealmToken(tier) {
   const bank = WORDS[tier] || WORDS.gu_master;
   const word = bank[Math.floor(Math.random() * bank.length)];
   const suffix = crypto.randomBytes(3).toString("hex");
@@ -71,11 +71,88 @@ async function verifyFlutterwaveTransaction(id) {
   return data.data;
 }
 
-async function sendCodeEmail(email, code, tier) {
+function realmTokenEmailHtml({ tierName, code, appUrl }) {
+  return `
+    <div style="margin:0;padding:0;background:#0b0907;font-family:Georgia,serif;color:#f7ead0;">
+      <div style="max-width:560px;margin:0 auto;padding:32px 18px;">
+        <div style="
+          border:1px solid rgba(255,220,150,0.28);
+          border-radius:24px;
+          overflow:hidden;
+          background:
+            radial-gradient(circle at 50% 0%, rgba(255,220,150,0.16), transparent 35%),
+            linear-gradient(180deg, #18110b 0%, #080604 100%);
+          box-shadow:0 18px 60px rgba(0,0,0,0.55);
+        ">
+          <div style="padding:28px 28px 18px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,230,180,0.62);margin-bottom:10px;">
+              The Legends of Ren Zu
+            </div>
+            <div style="font-size:28px;line-height:1.15;font-weight:bold;color:#fff4d6;">
+              Your Realm Token
+            </div>
+          </div>
+
+          <div style="padding:26px 28px 30px;">
+            <p style="font-size:15px;line-height:1.7;color:rgba(247,234,208,0.78);margin:0 0 18px;">
+              Your Flutterwave payment has been verified. This token unlocks your <strong style="color:#fff4d6;">${tierName}</strong> realm.
+            </p>
+
+            <div style="
+              text-align:center;
+              font-size:24px;
+              letter-spacing:0.12em;
+              font-weight:bold;
+              color:#fff4d6;
+              padding:18px 16px;
+              margin:20px 0;
+              border-radius:18px;
+              border:1px solid rgba(255,220,150,0.35);
+              background:rgba(255,220,150,0.10);
+              word-break:break-word;
+            ">
+              ${code}
+            </div>
+
+            <p style="font-size:13px;line-height:1.65;color:rgba(247,234,208,0.66);margin:0 0 22px;">
+              Sign in to The Legends of Ren Zu, open Treasure Yellow Heaven, then redeem this token under <strong>Realm Token</strong>.
+            </p>
+
+            <div style="text-align:center;margin:24px 0;">
+              <a href="${appUrl}" style="
+                display:inline-block;
+                padding:13px 22px;
+                border-radius:999px;
+                background:rgba(255,220,150,0.18);
+                border:1px solid rgba(255,220,150,0.38);
+                color:#fff4d6;
+                text-decoration:none;
+                font-size:14px;
+                letter-spacing:0.08em;
+              ">
+                Open Treasure Yellow Heaven
+              </a>
+            </div>
+
+            <p style="font-size:12px;line-height:1.6;color:rgba(247,234,208,0.45);margin:22px 0 0;">
+              If you did not make this payment, ignore this email or contact The Omniarch support.
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:18px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(247,234,208,0.35);">
+          The Omniarch
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function sendRealmTokenEmail(email, code, tier) {
   if (!email) return;
 
   const tierName = TIER_NAMES[tier] || tier;
-  const appUrl = process.env.PUBLIC_SITE_URL || "https://renzu.theomniarch.com.ng";
+  const appUrl = process.env.PUBLIC_SITE_URL || "https://thelegendsofrenzu.theomniarch.com.ng";
 
   const emailRes = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -84,27 +161,10 @@ async function sendCodeEmail(email, code, tier) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "The Omniarch <noreply@theomniarch.com.ng>",
+      from: "The Omniarch <no-reply@theomniarch.com.ng>",
       to: email,
-      subject: `Your ${tierName} Realm Access Code`,
-      html: `
-        <div style="background:#0a0a0a;color:#e8d5a3;font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:40px;border:1px solid #2a1f0a;">
-          <h1 style="color:#c9a84c;font-size:28px;text-align:center;letter-spacing:4px;margin-bottom:8px;">THE LEGENDS OF REN ZU</h1>
-          <p style="text-align:center;color:#8a7040;font-size:12px;letter-spacing:6px;margin-bottom:40px;">TREASURE YELLOW HEAVEN</p>
-          <p style="font-size:16px;line-height:1.8;">Cultivator,</p>
-          <p style="font-size:16px;line-height:1.8;">Your payment has been verified. Heaven acknowledges your dedication. You have been granted access to the <strong style="color:#c9a84c;">${tierName} Realm</strong>.</p>
-          <div style="background:#1a1000;border:1px solid #c9a84c;padding:24px;text-align:center;margin:32px 0;border-radius:4px;">
-            <p style="color:#8a7040;font-size:11px;letter-spacing:4px;margin:0 0 12px;">YOUR ACCESS CODE</p>
-            <p style="color:#c9a84c;font-size:28px;font-family:monospace;letter-spacing:6px;margin:0;">${code}</p>
-          </div>
-          <ol style="font-size:15px;line-height:2;color:#a08050;">
-            <li>Visit <a href="${appUrl}" style="color:#c9a84c;">${appUrl}</a></li>
-            <li>Tap <strong>Treasure Yellow Heaven</strong></li>
-            <li>Paste your code</li>
-            <li>Ascend</li>
-          </ol>
-        </div>
-      `,
+      subject: `Your ${tierName} Realm Token`,
+      html: realmTokenEmailHtml({ tierName, code, appUrl }),
     }),
   });
 
@@ -141,7 +201,9 @@ export default async function handler(req, res) {
       return res.status(200).json({ received: true, ignored: true, reason: "missing id/tx_ref" });
     }
 
-    // Idempotency guard: if we already created a code for this payment reference, stop here.
+    // Legacy DB note:
+    // payment_codes.paystack_reference now stores Flutterwave tx_ref.
+    // We keep this column name for compatibility until a safe DB migration renames it.
     const { data: existingCode, error: existingErr } = await supabase
       .from("payment_codes")
       .select("id, code, tier")
@@ -149,7 +211,7 @@ export default async function handler(req, res) {
       .maybeSingle();
 
     if (existingErr) {
-      console.error("Existing code lookup failed:", existingErr);
+      console.error("Existing realm token lookup failed:", existingErr);
       return res.status(500).json({ error: "Could not check existing payment" });
     }
 
@@ -157,7 +219,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ received: true, duplicate: true });
     }
 
-    // Verify directly with Flutterwave. Never trust the webhook body alone for live fulfilment.
     const verified = await verifyFlutterwaveTransaction(transactionId);
 
     if (verified.status !== "successful") {
@@ -175,6 +236,7 @@ export default async function handler(req, res) {
     if (process.env.FLW_EXPECTED_CURRENCY) {
       const expectedCurrency = process.env.FLW_EXPECTED_CURRENCY.trim().toUpperCase();
       const actualCurrency = String(verified.currency || "").trim().toUpperCase();
+
       if (expectedCurrency && actualCurrency !== expectedCurrency) {
         console.error("Currency mismatch:", { expectedCurrency, actualCurrency, txRef });
         return res.status(200).json({ received: true, ignored: true, reason: "currency mismatch" });
@@ -182,7 +244,7 @@ export default async function handler(req, res) {
     }
 
     const email = verified?.customer?.email || webhookData?.customer?.email || null;
-    const code = generateLoreCode(tier);
+    const code = generateRealmToken(tier);
 
     const { error: codeInsertErr } = await supabase
       .from("payment_codes")
@@ -196,17 +258,16 @@ export default async function handler(req, res) {
       });
 
     if (codeInsertErr) {
-      console.error("Failed to store payment code:", codeInsertErr);
-      return res.status(500).json({ error: "Could not save payment code" });
+      console.error("Failed to store realm token:", codeInsertErr);
+      return res.status(500).json({ error: "Could not save realm token" });
     }
 
-    // Best-effort bookkeeping
     const { error: txInsertErr } = await supabase.from("transactions").insert({
       reference: txRef,
       amount: amountMinor,
       currency: verified.currency || "",
       plan: tier,
-      status: "successful",
+      status: "successful_flutterwave",
       email,
     });
 
@@ -216,9 +277,9 @@ export default async function handler(req, res) {
 
     if (email && process.env.RESEND_API_KEY) {
       try {
-        await sendCodeEmail(email, code, tier);
+        await sendRealmTokenEmail(email, code, tier);
       } catch (emailErr) {
-        console.error("Email send failed:", emailErr);
+        console.error("Realm token email send failed:", emailErr);
       }
     }
 
