@@ -4087,6 +4087,9 @@ function getOrBuildSentences() {
     ? Math.round((chaptersReadCount / TAGGED.length) * 100)
     : 0;
   const lastProgressText = formatProgressDate(readingProgress?.lastOpenedAt);
+  const selectedIndex = selected ? TAGGED.findIndex(c => c.num === selected.num) : -1;
+  const prevChapter = selectedIndex > 0 ? TAGGED[selectedIndex - 1] : null;
+  const nextChapter = selectedIndex >= 0 && selectedIndex < TAGGED.length - 1 ? TAGGED[selectedIndex + 1] : null;
 
   // Scroll progress bar color
   const progressColor = S
@@ -4809,6 +4812,54 @@ function getOrBuildSentences() {
                 touchAction: "pan-y"
               }}>
                 {renderBodyWithHighlight()}
+              </div>
+            </div>
+
+            <div style={{ ...sq(22), padding: "14px 16px", marginBottom: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <button
+                  onClick={() => prevChapter && select(prevChapter)}
+                  disabled={!prevChapter}
+                  style={{
+                    minHeight: 58,
+                    padding: "10px 12px",
+                    borderRadius: 14,
+                    border: `1px solid ${prevChapter ? border : "transparent"}`,
+                    background: prevChapter ? (D ? "rgba(255,255,255,0.055)" : S ? "rgba(139,94,26,0.10)" : "rgba(0,0,0,0.035)") : "transparent",
+                    color: prevChapter ? text : textDim,
+                    opacity: prevChapter ? 1 : 0.45,
+                    cursor: prevChapter ? "pointer" : "default",
+                    textAlign: "left",
+                    fontFamily: headFont,
+                  }}
+                >
+                  <div style={{ fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 5 }}>← Previous</div>
+                  <div style={{ fontSize: 12, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                    {prevChapter ? `Part ${prevChapter.num}: ${prevChapter.title}` : "Beginning of archive"}
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => nextChapter && select(nextChapter)}
+                  disabled={!nextChapter}
+                  style={{
+                    minHeight: 58,
+                    padding: "10px 12px",
+                    borderRadius: 14,
+                    border: `1px solid ${nextChapter ? border : "transparent"}`,
+                    background: nextChapter ? (D ? "rgba(255,255,255,0.075)" : S ? "rgba(139,94,26,0.14)" : "rgba(0,0,0,0.055)") : "transparent",
+                    color: nextChapter ? text : textDim,
+                    opacity: nextChapter ? 1 : 0.45,
+                    cursor: nextChapter ? "pointer" : "default",
+                    textAlign: "right",
+                    fontFamily: headFont,
+                  }}
+                >
+                  <div style={{ fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 5 }}>Next →</div>
+                  <div style={{ fontSize: 12, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                    {nextChapter ? `Part ${nextChapter.num}: ${nextChapter.title}` : "End of archive"}
+                  </div>
+                </button>
               </div>
             </div>
 
