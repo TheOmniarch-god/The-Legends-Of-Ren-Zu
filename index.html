@@ -971,6 +971,124 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
   );
 }
 
+function NoteEditorModal({ open, data, D, S, saving, onClose, onSave, onDelete }) {
+  const [draft, setDraft] = React.useState(data?.note || "");
+
+  React.useEffect(() => {
+    setDraft(data?.note || "");
+  }, [data?.sentenceIdx, data?.note, open]);
+
+  if (!open || !data) return null;
+
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const borderStrong = D ? "rgba(255,255,255,0.22)" : S ? "rgba(120,80,20,0.55)" : "rgba(0,0,0,0.24)";
+  const surface = D ? "rgba(8,8,10,0.98)" : S ? "rgba(245,230,200,0.98)" : "rgba(255,255,255,0.99)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
+  const bodyFont = "'IM Fell English', Georgia, serif";
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 10020,
+      background: "rgba(0,0,0,0.68)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+      animation: "fadeUp 0.18s ease",
+    }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: "min(460px, calc(100vw - 24px))",
+        maxHeight: "min(86dvh, 720px)",
+        overflow: "auto",
+        background: surface,
+        border: `1px solid ${border}`,
+        borderRadius: 26,
+        boxShadow: "0 28px 90px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04)",
+        padding: "22px 18px 18px",
+        position: "relative",
+      }}>
+        <button onClick={onClose} style={{
+          position: "absolute", top: 12, right: 14, width: 32, height: 32, borderRadius: "50%",
+          background: "transparent", border: "none", color: textDim, fontSize: 18, cursor: "pointer",
+        }}>✕</button>
+
+        <div style={{ fontFamily: headFont, fontSize: 18, fontWeight: 700, color: text, marginBottom: 6 }}>
+          {data.existing ? "Edit Note" : "Add Note"}
+        </div>
+        <div style={{ fontSize: 12.5, color: textDim, lineHeight: 1.55, marginBottom: 14, fontFamily: bodyFont }}>
+          Save a private note on this passage. Notes are synced to your account.
+        </div>
+
+        <div style={{
+          padding: "12px 14px",
+          borderRadius: 16,
+          border: `1px solid ${border}`,
+          background: D ? "rgba(255,255,255,0.035)" : S ? "rgba(139,94,26,0.06)" : "rgba(0,0,0,0.025)",
+          color: textDim,
+          fontFamily: bodyFont,
+          fontSize: 12.5,
+          lineHeight: 1.6,
+          marginBottom: 12,
+        }}>
+          “{String(data.text || "").slice(0, 260)}{String(data.text || "").length > 260 ? "…" : ""}”
+        </div>
+
+        <textarea
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          placeholder="Write your note…"
+          rows={6}
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            resize: "vertical",
+            minHeight: 130,
+            padding: "12px 14px",
+            borderRadius: 16,
+            border: `1px solid ${borderStrong}`,
+            background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.035)",
+            color: text,
+            outline: "none",
+            fontFamily: bodyFont,
+            fontSize: 14,
+            lineHeight: 1.6,
+            marginBottom: 12,
+          }}
+        />
+
+        <div style={{ display: "grid", gridTemplateColumns: data.existing ? "1fr 1fr" : "1fr", gap: 8 }}>
+          {data.existing && (
+            <button onClick={onDelete} disabled={saving} style={{
+              padding: "11px 14px", borderRadius: 14,
+              border: `1px solid ${border}`,
+              background: "transparent",
+              color: textDim,
+              cursor: saving ? "default" : "pointer",
+              fontFamily: headFont,
+              fontSize: 11,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              opacity: saving ? 0.7 : 1,
+            }}>Delete Note</button>
+          )}
+          <button onClick={() => onSave(draft)} disabled={saving} style={{
+            padding: "11px 14px", borderRadius: 14,
+            border: `1px solid ${borderStrong}`,
+            background: D ? "rgba(255,255,255,0.12)" : S ? "rgba(139,94,26,0.22)" : "rgba(0,0,0,0.10)",
+            color: text,
+            cursor: saving ? "default" : "pointer",
+            fontFamily: headFont,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            opacity: saving ? 0.7 : 1,
+          }}>{saving ? "Saving…" : "Save Note"}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BookmarksModal({ open, onClose, D, S, bookmarks, onOpenBookmark, onDeleteBookmark }) {
   if (!open) return null;
 
@@ -2516,6 +2634,7 @@ function RenZuReader() {
   const [bookmarkBusy, setBookmarkBusy] = useState(false);
   const [annotations, setAnnotations] = useState([]);
   const [annotationBusy, setAnnotationBusy] = useState(false);
+  const [noteEditor, setNoteEditor] = useState(null); // { text, sentenceIdx, existing }
   const chapterCanvasRef = useRef(null);
 const chapterKeyRef = useRef(null);
   const [headerSticky, setHeaderSticky] = useState(false);
@@ -3165,18 +3284,59 @@ const chapterKeyRef = useRef(null);
     setTappedSentenceIdx(-1);
   }
 
-  async function addNote(text, sentenceIdx) {
+  function addNote(text, sentenceIdx) {
     if (!selected) return;
     if (!isSoulBound()) { openGateOfFate(); return; }
+
     const existing = noteFor(selected, sentenceIdx);
-    const note = window.prompt("Add note", existing?.note || "");
-    if (note === null) return;
-    if (!note.trim() && existing) {
-      await deleteAnnotation(existing.id);
-    } else if (note.trim()) {
-      await saveAnnotation({ type: "note", chapterNum: selected.num, chapterTitle: selected.title, sentenceIdx, text, note: note.trim(), color: "gold" });
-    }
+    setNoteEditor({
+      text,
+      sentenceIdx,
+      existing: existing || null,
+      note: existing?.note || ""
+    });
     setSelectionMenu(null);
+    setTappedSentenceIdx(sentenceIdx);
+  }
+
+  async function saveNoteFromEditor(noteText) {
+    if (!selected || !noteEditor) return;
+
+    const clean = String(noteText || "").trim();
+
+    if (!clean && noteEditor.existing) {
+      await deleteAnnotation(noteEditor.existing.id);
+      setNoteEditor(null);
+      setTappedSentenceIdx(-1);
+      return;
+    }
+
+    if (!clean) {
+      setNoteEditor(null);
+      setTappedSentenceIdx(-1);
+      return;
+    }
+
+    await saveAnnotation({
+      type: "note",
+      chapterNum: selected.num,
+      chapterTitle: selected.title,
+      sentenceIdx: noteEditor.sentenceIdx,
+      text: noteEditor.text,
+      note: clean,
+      color: "gold"
+    });
+
+    setNoteEditor(null);
+    setTappedSentenceIdx(-1);
+  }
+
+  async function deleteNoteFromEditor() {
+    if (noteEditor?.existing?.id) {
+      await deleteAnnotation(noteEditor.existing.id);
+    }
+
+    setNoteEditor(null);
     setTappedSentenceIdx(-1);
   }
 
@@ -5455,6 +5615,17 @@ function getOrBuildSentences() {
           ))}
         </div>
       )}
+
+      <NoteEditorModal
+        open={!!noteEditor}
+        data={noteEditor}
+        D={D}
+        S={S}
+        saving={annotationBusy}
+        onClose={() => { setNoteEditor(null); setTappedSentenceIdx(-1); }}
+        onSave={saveNoteFromEditor}
+        onDelete={deleteNoteFromEditor}
+      />
 
       {/* ── Treasure Yellow Heaven — cultivation billing modal ── */}
       {showTreasure && (
