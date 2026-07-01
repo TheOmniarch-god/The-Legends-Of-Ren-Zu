@@ -971,6 +971,70 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
   );
 }
 
+function BookmarksModal({ open, onClose, D, S, bookmarks, onOpenBookmark, onDeleteBookmark }) {
+  if (!open) return null;
+
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const surface = D ? "rgba(8,8,10,0.97)" : S ? "rgba(245,230,200,0.98)" : "rgba(255,255,255,0.99)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 10001,
+      background: "rgba(0,0,0,0.72)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+      animation: "fadeUp 0.22s ease",
+    }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: "min(520px, calc(100vw - 24px))", maxHeight: "min(86dvh, 760px)", overflow: "auto",
+        background: surface, border: `1px solid ${border}`, borderRadius: 26,
+        boxShadow: "0 28px 90px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.04)",
+        padding: "22px 18px 18px", position: "relative",
+      }}>
+        <button onClick={onClose} style={{
+          position: "absolute", top: 12, right: 14, width: 32, height: 32, borderRadius: "50%",
+          background: "transparent", border: "none", color: textDim, fontSize: 18, cursor: "pointer",
+        }}>✕</button>
+
+        <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, color: text, marginBottom: 6 }}>
+          Bookmarks
+        </div>
+        <div style={{ fontSize: 12.5, color: textDim, lineHeight: 1.55, marginBottom: 16, fontFamily: "'IM Fell English', Georgia, serif" }}>
+          Saved chapters and passages from your account.
+        </div>
+
+        {bookmarks.length === 0 ? (
+          <div style={{ padding: "34px 14px", textAlign: "center", border: `1px solid ${border}`, borderRadius: 18, color: textDim, fontSize: 12 }}>
+            No bookmarks yet. Open a chapter and save a passage.
+          </div>
+        ) : (
+          <div style={{ display: "grid", gap: 10 }}>
+            {bookmarks.map(b => (
+              <div key={b.id} style={{ border: `1px solid ${border}`, borderRadius: 16, padding: 12, background: D ? "rgba(255,255,255,0.035)" : S ? "rgba(139,94,26,0.06)" : "rgba(0,0,0,0.025)" }}>
+                <button onClick={() => onOpenBookmark(b)} style={{ width: "100%", textAlign: "left", background: "transparent", border: "none", color: text, cursor: "pointer", padding: 0 }}>
+                  <div style={{ fontFamily: headFont, fontSize: 10, color: textDim, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 5 }}>
+                    {b.type === "chapter" ? "Chapter" : "Passage"} · Part {b.chapterNum}
+                  </div>
+                  <div style={{ fontFamily: headFont, fontSize: 13, color: text, lineHeight: 1.35, marginBottom: b.text ? 6 : 0 }}>
+                    {b.chapterTitle}
+                  </div>
+                  {b.text && <div style={{ fontSize: 12, color: textDim, lineHeight: 1.55, fontFamily: "'IM Fell English', Georgia, serif" }}>“{b.text.slice(0, 180)}{b.text.length > 180 ? "…" : ""}”</div>}
+                </button>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 10 }}>
+                  <div style={{ fontSize: 10, color: textDim }}>{b.createdAt ? new Date(b.createdAt).toLocaleDateString() : ""}</div>
+                  <button onClick={() => onDeleteBookmark(b.id)} style={{ background: "transparent", border: `1px solid ${border}`, borderRadius: 10, padding: "6px 10px", color: textDim, fontSize: 10, cursor: "pointer" }}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function PaymentRecoveryModal({ data, onClose, onRedeem, onRetry, D, S }) {
   const [copied, setCopied] = useState(false);
 
@@ -1104,7 +1168,7 @@ function PaymentRecoveryModal({ data, onClose, onRedeem, onRetry, D, S }) {
 }
 
 // ─── Profile Modal — realm, username, essence balance ─────────────────────────
-function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex }) {
+function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex, bookmarks, onOpenBookmarks }) {
   const [editName, setEditName] = useState(username || "");
   const [editEmail, setEditEmail] = useState(email || "");
   const [saving, setSaving] = useState(false);
@@ -1261,6 +1325,20 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
               {codexCount > 0 ? `You have discovered ${codexCount} of ${totalGu} Gu. Open the Codex to inspect the full gallery.` : "No Gu discovered yet. Keep reading and refining to wake the codex."}
             </div>
             <button onClick={onOpenCodex} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Codex</button>
+          </div>
+
+          <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Bookmarks</div>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.08em" }}>{bookmarks.length} saved</div>
+            </div>
+            <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
+              {bookmarks.length ? "Your saved chapters and passages are available here." : "No bookmarks yet. Save a chapter or passage while reading."}
+            </div>
+            <button onClick={() => {
+              if (!isEmailBound) { onBindAccount(); return; }
+              onOpenBookmarks();
+            }} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Bookmarks</button>
           </div>
 
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
@@ -2433,6 +2511,11 @@ function RenZuReader() {
 
     return defaults;
   });
+  const [bookmarks, setBookmarks] = useState([]);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  const [bookmarkBusy, setBookmarkBusy] = useState(false);
+  const [annotations, setAnnotations] = useState([]);
+  const [annotationBusy, setAnnotationBusy] = useState(false);
   const chapterCanvasRef = useRef(null);
 const chapterKeyRef = useRef(null);
   const [headerSticky, setHeaderSticky] = useState(false);
@@ -2855,6 +2938,280 @@ const chapterKeyRef = useRef(null);
     return {};
   }
 
+  async function loadBookmarks() {
+    try {
+      const authHeaders = await getAuthHeaders();
+      if (!authHeaders.Authorization) {
+        setBookmarks([]);
+        return;
+      }
+
+      const res = await fetch("/api/bookmarks", {
+        headers: { ...authHeaders }
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && Array.isArray(data.bookmarks)) {
+        setBookmarks(data.bookmarks);
+      }
+    } catch (_) {}
+  }
+
+  function chapterBookmarkFor(chapter) {
+    if (!chapter) return null;
+    return bookmarks.find(b => b.type === "chapter" && b.chapterNum === chapter.num) || null;
+  }
+
+  function sentenceBookmarkFor(chapter, sentenceIdx) {
+    if (!chapter) return null;
+    return bookmarks.find(b => b.type === "sentence" && b.chapterNum === chapter.num && Number(b.sentenceIdx) === Number(sentenceIdx)) || null;
+  }
+
+  async function deleteBookmark(id) {
+    if (!id) return;
+    setBookmarkBusy(true);
+
+    try {
+      const authHeaders = await getAuthHeaders();
+
+      const res = await fetch(`/api/bookmarks?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { ...authHeaders }
+      });
+
+      if (!res.ok) throw new Error("Could not delete bookmark.");
+
+      setBookmarks(prev => prev.filter(b => b.id !== id));
+    } catch (err) {
+      console.error("deleteBookmark failed", err);
+    } finally {
+      setBookmarkBusy(false);
+    }
+  }
+
+  async function saveBookmark(payload) {
+    if (!isSoulBound()) {
+      openGateOfFate();
+      return null;
+    }
+
+    setBookmarkBusy(true);
+
+    try {
+      const authHeaders = await getAuthHeaders();
+
+      const res = await fetch("/api/bookmarks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeaders
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Could not save bookmark.");
+      }
+
+      if (data.bookmark) {
+        setBookmarks(prev => {
+          const exists = prev.some(b => b.id === data.bookmark.id);
+          return exists ? prev : [data.bookmark, ...prev];
+        });
+      }
+
+      return data.bookmark || null;
+    } catch (err) {
+      console.error("saveBookmark failed", err);
+      return null;
+    } finally {
+      setBookmarkBusy(false);
+    }
+  }
+
+  async function toggleChapterBookmark(chapter) {
+    if (!chapter) return;
+
+    const existing = chapterBookmarkFor(chapter);
+
+    if (existing) {
+      await deleteBookmark(existing.id);
+      return;
+    }
+
+    await saveBookmark({
+      type: "chapter",
+      chapterNum: chapter.num,
+      chapterTitle: chapter.title,
+      sentenceIdx: -1,
+      text: ""
+    });
+  }
+
+  async function bookmarkSentence(text, sentenceIdx) {
+    if (!selected) return;
+
+    const existing = sentenceBookmarkFor(selected, sentenceIdx);
+
+    if (existing) {
+      setSelectionMenu(null);
+      setTappedSentenceIdx(-1);
+      return;
+    }
+
+    await saveBookmark({
+      type: "sentence",
+      chapterNum: selected.num,
+      chapterTitle: selected.title,
+      sentenceIdx,
+      text
+    });
+
+    setSelectionMenu(null);
+    setTappedSentenceIdx(-1);
+  }
+
+  async function loadAnnotations() {
+    try {
+      const authHeaders = await getAuthHeaders();
+      if (!authHeaders.Authorization) {
+        setAnnotations([]);
+        return;
+      }
+
+      const res = await fetch("/api/annotations", { headers: { ...authHeaders } });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && Array.isArray(data.annotations)) {
+        setAnnotations(data.annotations);
+      }
+    } catch (_) {}
+  }
+
+  function annotationFor(type, chapter, sentenceIdx) {
+    if (!chapter) return null;
+    return annotations.find(a => a.type === type && a.chapterNum === chapter.num && Number(a.sentenceIdx) === Number(sentenceIdx)) || null;
+  }
+
+  function highlightFor(chapter, sentenceIdx) {
+    return annotationFor("highlight", chapter, sentenceIdx);
+  }
+
+  function noteFor(chapter, sentenceIdx) {
+    return annotationFor("note", chapter, sentenceIdx);
+  }
+
+  async function saveAnnotation(payload) {
+    if (!isSoulBound()) {
+      openGateOfFate();
+      return null;
+    }
+
+    setAnnotationBusy(true);
+
+    try {
+      const authHeaders = await getAuthHeaders();
+      const res = await fetch("/api/annotations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.error || "Could not save.");
+
+      if (data.annotation) {
+        setAnnotations(prev => {
+          const without = prev.filter(a => a.id !== data.annotation.id && !(a.type === data.annotation.type && a.chapterNum === data.annotation.chapterNum && Number(a.sentenceIdx) === Number(data.annotation.sentenceIdx)));
+          return [data.annotation, ...without];
+        });
+      }
+
+      return data.annotation || null;
+    } catch (err) {
+      console.error("saveAnnotation failed", err);
+      return null;
+    } finally {
+      setAnnotationBusy(false);
+    }
+  }
+
+  async function deleteAnnotation(id) {
+    if (!id) return;
+    setAnnotationBusy(true);
+    try {
+      const authHeaders = await getAuthHeaders();
+      const res = await fetch(`/api/annotations?id=${encodeURIComponent(id)}`, { method: "DELETE", headers: { ...authHeaders } });
+      if (!res.ok) throw new Error("Could not remove.");
+      setAnnotations(prev => prev.filter(a => a.id !== id));
+    } catch (err) {
+      console.error("deleteAnnotation failed", err);
+    } finally {
+      setAnnotationBusy(false);
+    }
+  }
+
+  async function toggleHighlight(text, sentenceIdx) {
+    if (!selected) return;
+    const existing = highlightFor(selected, sentenceIdx);
+    if (existing) {
+      await deleteAnnotation(existing.id);
+    } else {
+      await saveAnnotation({ type: "highlight", chapterNum: selected.num, chapterTitle: selected.title, sentenceIdx, text, color: "gold" });
+    }
+    setSelectionMenu(null);
+    setTappedSentenceIdx(-1);
+  }
+
+  async function addNote(text, sentenceIdx) {
+    if (!selected) return;
+    if (!isSoulBound()) { openGateOfFate(); return; }
+    const existing = noteFor(selected, sentenceIdx);
+    const note = window.prompt("Add note", existing?.note || "");
+    if (note === null) return;
+    if (!note.trim() && existing) {
+      await deleteAnnotation(existing.id);
+    } else if (note.trim()) {
+      await saveAnnotation({ type: "note", chapterNum: selected.num, chapterTitle: selected.title, sentenceIdx, text, note: note.trim(), color: "gold" });
+    }
+    setSelectionMenu(null);
+    setTappedSentenceIdx(-1);
+  }
+
+  async function shareQuote(text) {
+    const shareText = `${text}
+
+— The Legends of Ren Zu`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "The Legends of Ren Zu", text: shareText, url: window.location.href });
+      } else {
+        await navigator.clipboard?.writeText(shareText + "
+" + window.location.href);
+      }
+    } catch (_) {}
+    setSelectionMenu(null);
+    setTappedSentenceIdx(-1);
+  }
+
+  function openBookmark(bookmark) {
+    const chapter = TAGGED.find(c => c.num === bookmark.chapterNum);
+    if (!chapter) return;
+
+    setShowBookmarks(false);
+    select(chapter);
+
+    if (bookmark.type === "sentence" && Number(bookmark.sentenceIdx) >= 0) {
+      setTimeout(() => {
+        setTappedSentenceIdx(Number(bookmark.sentenceIdx));
+        setSelectionMenu({ text: bookmark.text || "", sentenceIdx: Number(bookmark.sentenceIdx) });
+        menuShownAtRef.current = Date.now();
+      }, 260);
+    }
+  }
+
   async function syncWithBackend(id) {
     if (!id) return;
 
@@ -2894,6 +3251,8 @@ const chapterKeyRef = useRef(null);
   useEffect(() => {
     function onAuthChange(e) {
       if (deviceId) syncWithBackend(deviceId);
+      loadBookmarks();
+      loadAnnotations();
 
       if (e?.detail?.user && pendingTreasureAfterLoginRef.current) {
         pendingTreasureAfterLoginRef.current = false;
@@ -2913,6 +3272,11 @@ const chapterKeyRef = useRef(null);
       window.removeEventListener("renzu-open-profile", onOpenProfile);
     };
   }, [deviceId]);
+
+  useEffect(() => {
+    const t = setTimeout(() => { loadBookmarks(); loadAnnotations(); }, 900);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     try {
@@ -4059,11 +4423,15 @@ function getOrBuildSentences() {
                             cursor: "default",
                             background: isActive
                                 ? (D ? "rgba(255,255,255,0.13)" : S ? "rgba(139,94,26,0.20)" : "rgba(212,168,60,0.28)")
-                                : "transparent",
+                                : highlightFor(selected, i)
+                                  ? (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.20)" : "rgba(212,168,60,0.22)")
+                                  : "transparent",
                             borderRadius: 3,
                             boxShadow: isActive
                                 ? `0 0 0 1.5px ${D ? "rgba(255,255,255,0.28)" : S ? "rgba(139,94,26,0.40)" : "rgba(200,150,30,0.48)"}`
-                                : "none",
+                                : highlightFor(selected, i)
+                                  ? `0 0 0 1px ${D ? "rgba(216,163,77,0.28)" : S ? "rgba(139,94,26,0.34)" : "rgba(200,150,30,0.35)"}`
+                                  : "none",
                             transition: "background 0.18s, box-shadow 0.18s",
                             WebkitTapHighlightColor: "transparent",
                             WebkitTouchCallout: "none",
@@ -4639,6 +5007,45 @@ function getOrBuildSentences() {
                   </div>
                 )}
 
+                <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button
+                    onClick={() => toggleChapterBookmark(selected)}
+                    disabled={bookmarkBusy}
+                    style={{
+                      padding: "8px 13px", borderRadius: 999,
+                      border: `1px solid ${chapterBookmarkFor(selected) ? borderHov : border}`,
+                      background: chapterBookmarkFor(selected) ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
+                      color: chapterBookmarkFor(selected) ? text : textDim,
+                      cursor: bookmarkBusy ? "default" : "pointer",
+                      fontFamily: headFont,
+                      fontSize: 11,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase"
+                    }}
+                  >
+                    {chapterBookmarkFor(selected) ? "★ Bookmarked" : "☆ Bookmark Chapter"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!isSoulBound()) { openGateOfFate(); return; }
+                      setShowBookmarks(true);
+                    }}
+                    style={{
+                      padding: "8px 13px", borderRadius: 999,
+                      border: `1px solid ${border}`,
+                      background: "transparent",
+                      color: textDim,
+                      cursor: "pointer",
+                      fontFamily: headFont,
+                      fontSize: 11,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase"
+                    }}
+                  >
+                    Bookmarks ({bookmarks.length})
+                  </button>
+                </div>
+
                 {/* ── Narration player ── */}
                 <div style={{ marginTop: 18 }}>
                   {(() => {
@@ -4999,6 +5406,26 @@ function getOrBuildSentences() {
               }
             },
             {
+              icon: sentenceBookmarkFor(selected, selectionMenu.sentenceIdx) ? "★" : "☆",
+              label: sentenceBookmarkFor(selected, selectionMenu.sentenceIdx) ? "Saved" : "Bookmark",
+              action: () => bookmarkSentence(selectionMenu.text, selectionMenu.sentenceIdx)
+            },
+            {
+              icon: highlightFor(selected, selectionMenu.sentenceIdx) ? "◩" : "▣",
+              label: highlightFor(selected, selectionMenu.sentenceIdx) ? "Unhighlight" : "Highlight",
+              action: () => toggleHighlight(selectionMenu.text, selectionMenu.sentenceIdx)
+            },
+            {
+              icon: noteFor(selected, selectionMenu.sentenceIdx) ? "✎" : "＋",
+              label: noteFor(selected, selectionMenu.sentenceIdx) ? "Edit Note" : "Note",
+              action: () => addNote(selectionMenu.text, selectionMenu.sentenceIdx)
+            },
+            {
+              icon: "↗",
+              label: "Share",
+              action: () => shareQuote(selectionMenu.text)
+            },
+            {
               icon: "📋",
               label: "Copy",
               action: () => {
@@ -5067,6 +5494,8 @@ function getOrBuildSentences() {
           onContinueReading={continueReading}
           onResetReadingProgress={resetReadingProgress}
           onOpenCodex={() => { setShowProfile(false); setShowCodex(true); }}
+          bookmarks={bookmarks}
+          onOpenBookmarks={() => { setShowProfile(false); setShowBookmarks(true); }}
         />
       )}
 
@@ -5079,6 +5508,18 @@ function getOrBuildSentences() {
           onRetry={() => lookupPaymentCode(paymentReturn.txRef, paymentReturn.status || "successful", paymentReturn.transactionId || "", 0)}
           D={D}
           S={S}
+        />
+      )}
+
+      {showBookmarks && (
+        <BookmarksModal
+          open={showBookmarks}
+          onClose={() => setShowBookmarks(false)}
+          D={D}
+          S={S}
+          bookmarks={bookmarks}
+          onOpenBookmark={openBookmark}
+          onDeleteBookmark={deleteBookmark}
         />
       )}
 
