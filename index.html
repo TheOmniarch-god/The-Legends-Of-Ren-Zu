@@ -2411,6 +2411,23 @@ function RenZuReader() {
   const [accentRegion, setAccentRegion] = useState("british");
   const [highlightStart, setHighlightStart] = useState(0);
   const [selectionMenu, setSelectionMenu] = useState(null); // {x,y,text,sentenceIdx}
+  const [readerSettingsOpen, setReaderSettingsOpen] = useState(false);
+  const [readerSettings, setReaderSettings] = useState(() => {
+    const defaults = {
+      fontSize: 15,
+      lineHeight: 2.05,
+      textWidth: "comfort",
+      paragraphSpacing: "comfort",
+      justify: false
+    };
+
+    try {
+      const saved = localStorage.getItem("renzu_reader_settings");
+      if (saved) return { ...defaults, ...JSON.parse(saved) };
+    } catch (_) {}
+
+    return defaults;
+  });
   const chapterCanvasRef = useRef(null);
 const chapterKeyRef = useRef(null);
   const [headerSticky, setHeaderSticky] = useState(false);
@@ -2930,6 +2947,26 @@ const chapterKeyRef = useRef(null);
       localStorage.setItem("renzu_collection", JSON.stringify(collectedGu));
     } catch (_) {}
   }, [collectedGu]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("renzu_reader_settings", JSON.stringify(readerSettings));
+    } catch (_) {}
+  }, [readerSettings]);
+
+  function updateReaderSetting(key, value) {
+    setReaderSettings(prev => ({ ...prev, [key]: value }));
+  }
+
+  function resetReaderSettings() {
+    setReaderSettings({
+      fontSize: 15,
+      lineHeight: 2.05,
+      textWidth: "comfort",
+      paragraphSpacing: "comfort",
+      justify: false
+    });
+  }
 
   function resetDailyIfNeeded() {
     const today = getTodayKey();
@@ -3917,6 +3954,22 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
   const firstLetter = selected ? selected.body.charAt(0) : "";
   const restOfBody  = selected ? selected.body.slice(1) : "";
 
+  const readerTextMaxWidth = readerSettings.textWidth === "narrow"
+    ? 620
+    : readerSettings.textWidth === "wide"
+      ? 820
+      : 720;
+  const readerCardPadding = readerSettings.textWidth === "narrow"
+    ? "34px clamp(24px, 7vw, 64px)"
+    : readerSettings.textWidth === "wide"
+      ? "34px clamp(22px, 4vw, 44px)"
+      : "36px clamp(24px, 5vw, 52px)";
+  const readerSentenceGap = readerSettings.paragraphSpacing === "compact"
+    ? 0
+    : readerSettings.paragraphSpacing === "airy"
+      ? 0.14
+      : 0.06;
+
   // Sentences are always split from restOfBody (body minus the drop-cap letter)
   // so the big first letter never appears twice.
 function getOrBuildSentences() {
@@ -4434,6 +4487,122 @@ function getOrBuildSentences() {
                 {/* Divider */}
                 <div style={{ marginTop: 20, height: 1, background: D ? `linear-gradient(90deg, ${accentLine} 0%, rgba(255,255,255,0.06) 50%, transparent 80%)` : `linear-gradient(90deg, ${accentLine} 0%, transparent 70%)` }} />
 
+                {/* ── Reader settings ── */}
+                <div style={{ marginTop: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+                  <button
+                    onClick={() => setReaderSettingsOpen(o => !o)}
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 8,
+                      padding: "8px 13px", borderRadius: 999,
+                      background: readerSettingsOpen ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
+                      border: `1px solid ${readerSettingsOpen ? borderHov : border}`,
+                      color: text, cursor: "pointer", fontFamily: headFont, fontSize: 11,
+                      letterSpacing: "0.08em", transition: "all 0.15s"
+                    }}
+                  >
+                    <span style={{ fontSize: 13, fontWeight: 700 }}>Aa</span>
+                    <span>Reader Settings</span>
+                    <span style={{ color: textDim }}>{readerSettingsOpen ? "▲" : "▼"}</span>
+                  </button>
+                  <div style={{ fontSize: 10, color: textDim, fontFamily: bodyFont, fontStyle: "italic" }}>
+                    {readerSettings.fontSize}px · {readerSettings.textWidth} · {readerSettings.paragraphSpacing}
+                  </div>
+                </div>
+
+                {readerSettingsOpen && (
+                  <div style={{
+                    ...sq(18),
+                    marginTop: 10,
+                    padding: "16px 18px",
+                    display: "grid",
+                    gap: 14,
+                    animation: "fadeUp 0.18s ease both"
+                  }}>
+                    <div style={{ display: "grid", gap: 8 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+                        <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Text size</div>
+                        <div style={{ fontFamily: headFont, fontSize: 11, color: text }}>{readerSettings.fontSize}px</div>
+                      </div>
+                      <input
+                        type="range"
+                        min="13"
+                        max="22"
+                        step="1"
+                        value={readerSettings.fontSize}
+                        onChange={e => updateReaderSetting("fontSize", Number(e.target.value))}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+
+                    <div style={{ display: "grid", gap: 8 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+                        <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Line height</div>
+                        <div style={{ fontFamily: headFont, fontSize: 11, color: text }}>{readerSettings.lineHeight.toFixed(2)}</div>
+                      </div>
+                      <input
+                        type="range"
+                        min="1.55"
+                        max="2.45"
+                        step="0.05"
+                        value={readerSettings.lineHeight}
+                        onChange={e => updateReaderSetting("lineHeight", Number(e.target.value))}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+
+                    <div style={{ display: "grid", gap: 7 }}>
+                      <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Text width</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+                        {["narrow", "comfort", "wide"].map(w => (
+                          <button key={w} onClick={() => updateReaderSetting("textWidth", w)} style={{
+                            padding: "8px 8px", borderRadius: 10,
+                            border: `1px solid ${readerSettings.textWidth === w ? borderHov : border}`,
+                            background: readerSettings.textWidth === w ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
+                            color: readerSettings.textWidth === w ? text : textDim,
+                            cursor: "pointer", fontFamily: headFont, fontSize: 10, textTransform: "capitalize"
+                          }}>{w}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ display: "grid", gap: 7 }}>
+                      <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Word spacing</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+                        {["compact", "comfort", "airy"].map(sp => (
+                          <button key={sp} onClick={() => updateReaderSetting("paragraphSpacing", sp)} style={{
+                            padding: "8px 8px", borderRadius: 10,
+                            border: `1px solid ${readerSettings.paragraphSpacing === sp ? borderHov : border}`,
+                            background: readerSettings.paragraphSpacing === sp ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
+                            color: readerSettings.paragraphSpacing === sp ? text : textDim,
+                            cursor: "pointer", fontFamily: headFont, fontSize: 10, textTransform: "capitalize"
+                          }}>{sp}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                      <button onClick={() => updateReaderSetting("justify", !readerSettings.justify)} style={{
+                        padding: "8px 12px", borderRadius: 10,
+                        border: `1px solid ${readerSettings.justify ? borderHov : border}`,
+                        background: readerSettings.justify ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
+                        color: readerSettings.justify ? text : textDim,
+                        cursor: "pointer", fontFamily: headFont, fontSize: 10,
+                        letterSpacing: "0.08em", textTransform: "uppercase"
+                      }}>
+                        {readerSettings.justify ? "Justified On" : "Justified Off"}
+                      </button>
+                      <button onClick={resetReaderSettings} style={{
+                        padding: "8px 12px", borderRadius: 10,
+                        border: `1px solid ${border}`,
+                        background: "transparent",
+                        color: textDim,
+                        cursor: "pointer", fontFamily: headFont, fontSize: 10,
+                        letterSpacing: "0.08em", textTransform: "uppercase"
+                      }}>Reset</button>
+                    </div>
+                  </div>
+                )}
+
                 {/* ── Narration player ── */}
                 <div style={{ marginTop: 18 }}>
                   {(() => {
@@ -4596,9 +4765,21 @@ function getOrBuildSentences() {
               </div>
             </div>
 
-            <div ref={chapterCanvasRef} style={{ ...sq(26), padding: "36px 40px", marginBottom: 16, position: "relative" }}
+            <div ref={chapterCanvasRef} style={{ ...sq(26), padding: readerCardPadding, marginBottom: 16, position: "relative" }}
             >
-              <div style={{ fontSize: 15, color: text, lineHeight: 2.05, fontFamily: bodyFont, letterSpacing: "0.008em", touchAction: "pan-y" }}>
+              <div style={{
+                maxWidth: readerTextMaxWidth,
+                margin: "0 auto",
+                fontSize: readerSettings.fontSize,
+                color: text,
+                lineHeight: readerSettings.lineHeight,
+                fontFamily: bodyFont,
+                letterSpacing: "0.008em",
+                wordSpacing: `${readerSentenceGap}em`,
+                textAlign: readerSettings.justify ? "justify" : "left",
+                textWrap: "pretty",
+                touchAction: "pan-y"
+              }}>
                 {renderBodyWithHighlight()}
               </div>
             </div>
