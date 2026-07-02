@@ -27,6 +27,7 @@
   let supabaseClient = null;
   let session = null;
   let currentUser = null;
+  let audioState = { playing: false, paused: false, loading: false };
 
   function injectStyle() {
     if (document.getElementById(STYLE_ID)) return;
@@ -142,6 +143,13 @@
           0 0 32px rgba(216,163,77,0.42),
           inset 0 1px 0 rgba(255,255,255,0.65),
           inset 0 -12px 24px rgba(40,24,8,0.24);
+      }
+
+      .rz-auth-button-audio {
+        font-family: Georgia, serif;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0;
       }
 
       .rz-fate-spider {
@@ -1451,21 +1459,36 @@
     }
 
     const isBound = !!currentUser;
+    const audioActive = !!(audioState.playing || audioState.paused || audioState.loading);
+    const buttonLabel = audioActive
+      ? (audioState.loading ? "…" : audioState.paused ? "▶" : "Ⅱ")
+      : isBound
+        ? FATE_SPIDER_SVG
+        : "Login";
+    const buttonTitle = audioActive
+      ? (audioState.paused ? "Resume narration" : audioState.loading ? "Preparing narration" : "Pause narration")
+      : isBound
+        ? "Open Profile"
+        : "Login";
 
     root.innerHTML = `
       <button
-        class="rz-auth-button ${isBound ? "rz-auth-button-bound" : ""}"
+        class="rz-auth-button ${(isBound || audioActive) ? "rz-auth-button-bound" : ""} ${audioActive ? "rz-auth-button-audio" : ""}"
         id="rz-auth-open"
-        aria-label="${isBound ? "Open bound profile" : "Login"}"
-        title="${isBound ? "Open Profile" : "Login"}"
+        aria-label="${buttonTitle}"
+        title="${buttonTitle}"
       >
-        ${isBound ? FATE_SPIDER_SVG : "Login"}
+        ${buttonLabel}
       </button>
     `;
 
     const openBtn = document.getElementById("rz-auth-open");
 
-    if (isBound) {
+    if (audioActive) {
+      openBtn.onclick = () => {
+        window.dispatchEvent(new CustomEvent("renzu-audio-toggle"));
+      };
+    } else if (isBound) {
       openBtn.onclick = () => {
         window.dispatchEvent(new CustomEvent("renzu-open-profile"));
       };
@@ -1497,6 +1520,15 @@
 
     signOut
   };
+
+  window.addEventListener("renzu-audio-state", function (e) {
+    audioState = {
+      playing: !!e.detail?.playing,
+      paused: !!e.detail?.paused,
+      loading: !!e.detail?.loading
+    };
+    renderButton();
+  });
 
   document.addEventListener("click", function (e) {
     const modal = document.getElementById(MODAL_ID);
