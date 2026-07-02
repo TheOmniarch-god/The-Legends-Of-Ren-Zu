@@ -91,6 +91,20 @@ async function getOrCreateProfile(supabase, authUser) {
   return profile;
 }
 
+async function getLinkedDeviceUserId(supabase, deviceId) {
+  if (!deviceId) return null;
+
+  const { data, error } = await supabase
+    .from("device_links")
+    .select("user_id")
+    .eq("device_id", deviceId)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return data?.user_id || null;
+}
+
 function responseFromRow(row) {
   return {
     success: true,
@@ -332,9 +346,21 @@ export default async function handler(req, res) {
       });
     }
 
-    // Guest mode: spend from device row.
+    // Guest mode: spend from device row only if this browser has never been
+    // bound to an email account. This prevents cycling logout/login to claim
+    // both guest daily usage and account daily usage on the same device.
     if (!deviceId) {
       return sendJson(res, 400, { error: "Missing deviceId" });
+    }
+
+    const linkedUserId = await getLinkedDeviceUserId(supabase, deviceId);
+
+    if (linkedUserId) {
+      return sendJson(res, 401, {
+        success: false,
+        loginRequired: true,
+        error: "This device is linked to an account. Sign in to continue using AI or narration."
+      });
     }
 
     const guest = await getOrCreateGuestUser(supabase, deviceId);
