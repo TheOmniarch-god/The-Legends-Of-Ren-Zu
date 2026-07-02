@@ -3594,6 +3594,11 @@ const chapterKeyRef = useRef(null);
           setEssenceLoading(false);
           return true;
         }
+        if (res.status === 401 && data.loginRequired) {
+          setEssenceLoading(false);
+          openGateOfFate();
+          return false;
+        }
         if (res.status === 402) {
           setEssenceLoading(false);
           openTreasureYellowHeaven();
