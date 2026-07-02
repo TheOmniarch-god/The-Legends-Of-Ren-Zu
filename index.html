@@ -2694,6 +2694,7 @@ const chapterKeyRef = useRef(null);
   const pausedRef = useRef(false);
   const audioContextRef = useRef(null);
   const currentSourceRef = useRef(null);
+  const ttsBlobCacheRef = useRef(new Map());
   const chainIdRef = useRef(0);
   const aiRef    = useRef(null);
   const customRef = useRef(null);
@@ -3870,6 +3871,7 @@ const chapterKeyRef = useRef(null);
       currentSourceRef.current = null;
     }
     sentencesRef.current = [];
+    ttsBlobCacheRef.current.clear();
     sentenceIndexRef.current = 0;
     setActiveSentenceIdx(-1);
   }
@@ -3912,6 +3914,40 @@ const chapterKeyRef = useRef(null);
     });
   }
 
+  function getTtsCacheKey(idx) {
+    return `${idx}|${voice}|${speechRateRef.current}`;
+  }
+
+  function fetchTtsBlob(idx, myChainId) {
+    const sentences = sentencesRef.current;
+    if (idx < 0 || idx >= sentences.length) return null;
+    if (chainIdRef.current !== myChainId || !playbackActiveRef.current) return null;
+
+    const key = getTtsCacheKey(idx);
+    const cached = ttsBlobCacheRef.current.get(key);
+    if (cached) return cached;
+
+    const promise = fetch("/api/ai-chat-tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: sentences[idx], voice, speakingRate: speechRateRef.current })
+    }).then(async (ttsRes) => {
+      if (!ttsRes.ok) {
+        let errMsg = `TTS failed: ${ttsRes.status}`;
+        try { const b = await ttsRes.json(); if (b.error) errMsg += ` — ${b.error}`; } catch (_) {}
+        throw new Error(errMsg);
+      }
+      return ttsRes.blob();
+    });
+
+    ttsBlobCacheRef.current.set(key, promise);
+    return promise;
+  }
+
+  function prefetchTts(idx, myChainId) {
+    try { fetchTtsBlob(idx, myChainId); } catch (_) {}
+  }
+
   async function runChain(myChainId) {
     while (true) {
       // Abort if chain was superseded
@@ -3932,22 +3968,19 @@ const chapterKeyRef = useRef(null);
       setActiveSentenceIdx(idx);
 
       try {
-        const ttsRes = await fetch("/api/ai-chat-tts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: sentences[idx], voice, speakingRate: speechRateRef.current })
-        });
+        // Start fetching the next lines while this one is being prepared/played.
+        // This removes most of the dead air between sentences.
+        prefetchTts(idx + 1, myChainId);
+        prefetchTts(idx + 2, myChainId);
 
+        const audioBlob = await fetchTtsBlob(idx, myChainId);
         if (chainIdRef.current !== myChainId || !playbackActiveRef.current) return;
 
-        if (!ttsRes.ok) {
-          let errMsg = `TTS failed: ${ttsRes.status}`;
-          try { const b = await ttsRes.json(); if (b.error) errMsg += ` — ${b.error}`; } catch (_) {}
-          throw new Error(errMsg);
-        }
-
-        const audioBlob = await ttsRes.blob();
-        if (chainIdRef.current !== myChainId || !playbackActiveRef.current) return;
+        // Keep the queue warm. By the time the current audio ends, the next
+        // blob is usually already waiting in memory.
+        prefetchTts(idx + 1, myChainId);
+        prefetchTts(idx + 2, myChainId);
+        prefetchTts(idx + 3, myChainId);
 
         if (idx === 0) { setAudioLoading(false); setAudioPlaying(true); }
 
@@ -4153,6 +4186,25 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
       setAudioError(true); setAudioLoading(false);
     });
   }
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("renzu-audio-state", {
+      detail: {
+        playing: audioPlaying,
+        paused: audioPaused,
+        loading: audioLoading
+      }
+    }));
+  }, [audioPlaying, audioPaused, audioLoading]);
+
+  useEffect(() => {
+    function onFloatingAudioToggle() {
+      toggleAudio();
+    }
+
+    window.addEventListener("renzu-audio-toggle", onFloatingAudioToggle);
+    return () => window.removeEventListener("renzu-audio-toggle", onFloatingAudioToggle);
+  }, [audioPlaying, audioPaused, audioLoading, selected, deviceId, tier, backendMode]);
 
   // ── Read from here — start narration at a specific sentence index ──
   async function readFromHere(sentenceIdx) {
@@ -4541,26 +4593,12 @@ function getOrBuildSentences() {
   function renderBodyWithHighlight() {
     const sentences = getOrBuildSentences();
 
-    // During narration, render each sentence highlighted on the active one
-    if (audioPlaying || audioPaused) {
-      if (sentences.length > 0) {
-        return sentences.map((s, i) => (
-          <span key={i} style={i === activeSentenceIdx ? {
-            background: D ? "rgba(255,255,255,0.14)" : S ? "rgba(139,94,26,0.22)" : "rgba(212,168,60,0.30)",
-            borderRadius: 3,
-            boxShadow: `0 0 0 1.5px ${D ? "rgba(255,255,255,0.30)" : S ? "rgba(139,94,26,0.4)" : "rgba(200,150,30,0.5)"}`,
-            transition: "background 0.3s",
-          } : { transition: "background 0.3s" }}>
-            {highlightThemed(s, query, S, D)}{" "}
-          </span>
-        ));
-      }
-    }
-
     // Long-press select mode: every sentence responds to long press
     if (sentences.length > 0) {
       return sentences.map((s, i) => {
         const isActive = i === tappedSentenceIdx;
+        const isNarrating = i === activeSentenceIdx && (audioPlaying || audioPaused);
+        const isHighlighted = !!highlightFor(selected, i);
         return (
                     <span
                         key={i}
@@ -4580,17 +4618,21 @@ function getOrBuildSentences() {
                         }}
                         style={{
                             cursor: "default",
-                            background: isActive
-                                ? (D ? "rgba(255,255,255,0.13)" : S ? "rgba(139,94,26,0.20)" : "rgba(212,168,60,0.28)")
-                                : highlightFor(selected, i)
-                                  ? (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.20)" : "rgba(212,168,60,0.22)")
-                                  : "transparent",
+                            background: isNarrating
+                                ? (D ? "rgba(255,255,255,0.14)" : S ? "rgba(139,94,26,0.24)" : "rgba(212,168,60,0.32)")
+                                : isActive
+                                  ? (D ? "rgba(255,255,255,0.13)" : S ? "rgba(139,94,26,0.20)" : "rgba(212,168,60,0.28)")
+                                  : isHighlighted
+                                    ? (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.20)" : "rgba(212,168,60,0.22)")
+                                    : "transparent",
                             borderRadius: 3,
-                            boxShadow: isActive
-                                ? `0 0 0 1.5px ${D ? "rgba(255,255,255,0.28)" : S ? "rgba(139,94,26,0.40)" : "rgba(200,150,30,0.48)"}`
-                                : highlightFor(selected, i)
-                                  ? `0 0 0 1px ${D ? "rgba(216,163,77,0.28)" : S ? "rgba(139,94,26,0.34)" : "rgba(200,150,30,0.35)"}`
-                                  : "none",
+                            boxShadow: isNarrating
+                                ? `0 0 0 1.5px ${D ? "rgba(255,255,255,0.30)" : S ? "rgba(139,94,26,0.42)" : "rgba(200,150,30,0.52)"}`
+                                : isActive
+                                  ? `0 0 0 1.5px ${D ? "rgba(255,255,255,0.28)" : S ? "rgba(139,94,26,0.40)" : "rgba(200,150,30,0.48)"}`
+                                  : isHighlighted
+                                    ? `0 0 0 1px ${D ? "rgba(216,163,77,0.28)" : S ? "rgba(139,94,26,0.34)" : "rgba(200,150,30,0.35)"}`
+                                    : "none",
                             transition: "background 0.18s, box-shadow 0.18s",
                             WebkitTapHighlightColor: "transparent",
                             WebkitTouchCallout: "none",
@@ -5876,6 +5918,5 @@ function getOrBuildSentences() {
     }
   </script>
   <script src="/auth-dropin.js" defer></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
