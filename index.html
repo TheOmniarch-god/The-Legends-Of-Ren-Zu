@@ -5835,31 +5835,36 @@ function getOrBuildSentences() {
       )}
 
 
-      {/* ── Invisible 5-tap zone — tap top-right corner 5× within 1.8s to open the dev panel ── */}
-      {((typeof window !== "undefined") && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) && (
-        <div
-          onPointerDown={(e) => {
-            e.preventDefault();
-            setDevTapCount((n) => {
-              const next = n + 1;
-              if (devTapTimerRef.current) clearTimeout(devTapTimerRef.current);
-              if (next >= 5) {
-                setShowDevPanel((p) => !p);
-                return 0;
-              }
-              devTapTimerRef.current = setTimeout(() => setDevTapCount(0), 1800);
-              return next;
-            });
-          }}
-          style={{
-            position: "fixed", top: 0, right: 0,
-            width: 28, height: 28, zIndex: 20,
-            WebkitTapHighlightColor: "transparent",
-            cursor: "default",
-          }}
-          aria-label="Dev panel toggle"
-        />
-      )}
+      {/* ── Invisible 5-tap zone — tap top-right corner 5× within 1.8s to open preview panel ── */}
+      <div
+        onPointerDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setDevTapCount((n) => {
+            const next = n + 1;
+            if (devTapTimerRef.current) clearTimeout(devTapTimerRef.current);
+            if (next >= 5) {
+              setShowDevPanel((p) => !p);
+              return 0;
+            }
+            devTapTimerRef.current = setTimeout(() => setDevTapCount(0), 1800);
+            return next;
+          });
+        }}
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          width: 64,
+          height: 64,
+          zIndex: 100000,
+          WebkitTapHighlightColor: "transparent",
+          cursor: "default",
+          background: "transparent",
+          touchAction: "manipulation",
+        }}
+        aria-label="Preview panel toggle"
+      />
 
       {/* ── DEV-ONLY: ascension animation preview — auto-shown on localhost, or via 5-tap top-right anywhere ── */}
       {(((typeof window !== "undefined") && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) || showDevPanel) && (
