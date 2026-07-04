@@ -1739,7 +1739,7 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onProfile, onCodex, onTreasure, onBookmarks, onAnnotations, onReaderSettings, onAudioSettings, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onProfile, onCodex, onTreasure, onBookmarks, onAnnotations, onReaderSettings, onAudioSettings, onBookmarkChapter, onToggleAudio, isReading, isChapterBookmarked, audioPlaying, audioPaused, audioLoading, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -1747,8 +1747,9 @@ function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onP
 
   const menuItems = [
     ...(isReading ? [
+      { id: "play-audio", label: audioLoading ? "Preparing Audio" : audioPlaying ? "Pause Audio" : audioPaused ? "Resume Audio" : "Play Audio", note: "Start or pause narration", onClick: () => { onClose(); onToggleAudio(); }, disabled: audioLoading },
       { id: "reader", label: "Reader Settings", note: "Text size, width, spacing", onClick: () => { onClose(); onReaderSettings(); }, disabled: false },
-      { id: "audio", label: "Audio Gu", note: "Voice, speed, narration", onClick: () => { onClose(); onAudioSettings(); }, disabled: false },
+      { id: "audio", label: "Audio Settings", note: "Voice, speed, narration", onClick: () => { onClose(); onAudioSettings(); }, disabled: false },
       { id: "bookmark-chapter", label: isChapterBookmarked ? "Remove Bookmark" : "Bookmark Chapter", note: isChapterBookmarked ? "Unsave this chapter" : "Save this chapter", onClick: () => { onClose(); onBookmarkChapter(); }, disabled: false },
     ] : []),
     { id: "bookmarks", label: "Bookmarks", note: "Saved chapters and passages", onClick: () => { onClose(); onBookmarks(); }, disabled: false },
@@ -5141,8 +5142,12 @@ function getOrBuildSentences() {
                     setShowAudioSettingsPage(true);
                   }}
                   onBookmarkChapter={() => selected && toggleChapterBookmark(selected)}
+                  onToggleAudio={toggleAudio}
                   isReading={!!selected}
                   isChapterBookmarked={!!chapterBookmarkFor(selected)}
+                  audioPlaying={audioPlaying}
+                  audioPaused={audioPaused}
+                  audioLoading={audioLoading}
                   hasContinue={!!continueChapter}
                 />
               </div>
@@ -5412,68 +5417,6 @@ function getOrBuildSentences() {
                 </h2>
                 {/* Divider */}
                 <div style={{ marginTop: 20, height: 1, background: D ? `linear-gradient(90deg, ${accentLine} 0%, rgba(255,255,255,0.06) 50%, transparent 80%)` : `linear-gradient(90deg, ${accentLine} 0%, transparent 70%)` }} />
-
-                {/* ── Current reader/audio summary ── */}
-                <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-                  <button onClick={() => setShowReaderSettingsPage(true)} style={{ padding: "7px 11px", borderRadius: 999, border: `1px solid ${border}`, background: "transparent", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                    Aa {readerSettings.fontSize}px · {readerSettings.textWidth}
-                  </button>
-                  <button onClick={() => setShowAudioSettingsPage(true)} style={{ padding: "7px 11px", borderRadius: 999, border: `1px solid ${border}`, background: "transparent", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                    Audio · {voice.includes("GB") ? "Edmund" : voice.includes("Studio-C") ? "Rowena" : voice.includes("Studio-M") ? "Marcus" : "Aldric"} · {speechRate}x
-                  </button>
-                </div>
-
-                {/* ── Narration player ── */}
-                <div style={{ marginTop: 18 }}>
-                  {(() => {
-                    const VOICES = [
-                      // American — only two confirmed en-US Studio voices (both male)
-                      { key: "en-US-Studio-O", name: "Aldric",  gender: "♂", desc: "Deep · Commanding",  accent: "🇺🇸", region: "american" },
-                      { key: "en-US-Studio-M", name: "Marcus",  gender: "♂", desc: "Warm · Storyteller", accent: "🇺🇸", region: "american" },
-                      // British — both confirmed en-GB Studio voices
-                      { key: "en-GB-Studio-B", name: "Edmund",  gender: "♂", desc: "Noble · Measured",   accent: "🇬🇧", region: "british" },
-                      { key: "en-GB-Studio-C", name: "Rowena",  gender: "♀", desc: "Crisp · Classical",  accent: "🇬🇧", region: "british" },
-                    ];
-                    const activeVoice = VOICES.find(v => v.key === voice) || VOICES[0];
-                    return (
-                      <div style={{ ...sq(20), padding: "13px 16px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                        <button onClick={() => toggleAudio()} aria-label={audioPlaying ? "Pause" : audioPaused ? "Resume" : "Play"}
-                          disabled={audioLoading}
-                          style={{
-                            flexShrink: 0, width: 40, height: 40, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-                            background: D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.12)" : "rgba(0,0,0,0.07)",
-                            border: `1px solid ${border}`, color: text, cursor: audioLoading ? "default" : "pointer", transition: "all 0.17s",
-                            opacity: audioLoading ? 0.6 : 1,
-                          }}>
-                          {audioLoading ? "…" : audioPlaying ? "Ⅱ" : "▶"}
-                        </button>
-                        <button onClick={() => setShowAudioSettingsPage(true)} style={{
-                          flex: 1,
-                          minWidth: 180,
-                          padding: "8px 10px",
-                          borderRadius: 12,
-                          border: `1px solid ${border}`,
-                          background: "transparent",
-                          color: text,
-                          cursor: "pointer",
-                          fontFamily: headFont,
-                          textAlign: "left"
-                        }}>
-                          <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 3 }}>Narration</div>
-                          <div style={{ fontSize: 12, lineHeight: 1.35 }}>{activeVoice.name} · {activeVoice.accent} · {speechRate}x</div>
-                        </button>
-                        <span style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: audioError ? "tomato" : textDim, fontFamily: headFont }}>
-                          {audioError
-                            ? (audioStatus ? audioStatus.slice(0,50) : "Unavailable")
-                            : audioPlaying ? "Reading…"
-                            : audioPaused ? "Paused"
-                            : audioLoading ? "Preparing…"
-                            : essenceStatus()}
-                        </span>
-                      </div>
-                    );
-                  })()}
-                </div>
               </div>
             </div>
 
@@ -5630,23 +5573,24 @@ function getOrBuildSentences() {
       {selectionMenu && (
         <div id="sel-menu-popup" style={{
           position: "fixed",
-          bottom: "max(28px, env(safe-area-inset-bottom, 28px))",
-          left: 0,
-          right: 0,
-          margin: "0 auto",
-          width: "fit-content",
+          bottom: "max(18px, env(safe-area-inset-bottom, 18px))",
+          left: "50%",
+          right: "auto",
+          margin: 0,
+          width: "min(360px, calc(100vw - 22px))",
           zIndex: 9999,
-          display: "flex",
-          flexWrap: "wrap",
+          display: "grid",
+          gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
           justifyContent: "center",
           gap: 2,
-          background: D ? "rgba(18,18,22,0.97)" : S ? "rgba(42,21,4,0.96)" : "rgba(20,18,16,0.95)",
+          background: D ? "rgba(18,18,22,0.98)" : S ? "rgba(42,21,4,0.97)" : "rgba(20,18,16,0.96)",
           border: `1px solid ${D ? "rgba(255,255,255,0.14)" : S ? "rgba(180,130,40,0.35)" : "rgba(255,255,255,0.14)"}`,
-          borderRadius: 16,
-          padding: "6px 8px",
+          borderRadius: 14,
+          padding: "5px",
           boxShadow: "0 8px 40px rgba(0,0,0,0.55), 0 2px 10px rgba(0,0,0,0.35)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
+          transform: "translateX(-50%)",
           animation: "fadeUp 0.18s ease",
         }}>
           {[
@@ -5710,9 +5654,9 @@ function getOrBuildSentences() {
               style={{
                 background: "transparent", border: "none", cursor: "pointer",
                 color: "rgba(255,255,255,0.90)", fontFamily: headFont,
-                padding: "9px 13px", borderRadius: 10,
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                minWidth: 52,
+                padding: "7px 4px", borderRadius: 9,
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
+                minWidth: 0,
                 touchAction: "manipulation",
                 transition: "background 0.12s",
                 WebkitTapHighlightColor: "transparent",
@@ -5720,8 +5664,8 @@ function getOrBuildSentences() {
               onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.10)"}
               onMouseLeave={e => e.currentTarget.style.background = "transparent"}
             >
-              <span style={{ fontSize: 15 }}>{icon}</span>
-              <span style={{ fontSize: 8.5, opacity: 0.7, letterSpacing: "0.10em", textTransform: "uppercase" }}>{label}</span>
+              <span style={{ fontSize: 14, lineHeight: 1 }}>{icon}</span>
+              <span style={{ fontSize: 7.5, opacity: 0.74, letterSpacing: "0.04em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{label}</span>
             </button>
           ))}
         </div>
