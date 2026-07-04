@@ -5090,10 +5090,10 @@ function getOrBuildSentences() {
         .prompt-btn:hover { color: ${text} !important; border-color: ${borderHov} !important; background: ${D ? "rgba(255,255,255,0.05)" : S ? "rgba(80,42,8,0.08)" : "rgba(0,0,0,0.04)"} !important; }
         span[data-sent-idx] { outline: none !important; -webkit-tap-highlight-color: transparent; }
         span[data-sent-idx]:focus { outline: none !important; }
-        .chapter-audio-whisper { position: absolute; right: 22px; top: 34px; z-index: 2; width: min(360px, 44vw); text-align: center; pointer-events: none; }
+        .chapter-audio-whisper { position: absolute; right: 22px; top: 20px; z-index: 2; width: min(320px, 42vw); text-align: right; pointer-events: none; }
         .chapter-audio-hero { position: absolute; right: 6px; top: 74px; z-index: 3; }
         @media (max-width: 620px) {
-          .chapter-audio-whisper { position: relative; right: auto; top: auto; width: 100%; text-align: left; margin-top: 14px; }
+          .chapter-audio-whisper { position: relative; right: auto; top: auto; width: 100%; text-align: left; margin-top: 10px; }
           .chapter-audio-hero { position: relative; right: auto; top: auto; margin-top: 12px; width: 100%; }
         }
       `}</style>
@@ -5471,33 +5471,50 @@ function getOrBuildSentences() {
                   {selected.title}
                 </h2>
 
-                {(audioLoading || audioPlaying || audioPaused) && (
-                  <div className="chapter-audio-whisper" style={{
+                <div className="chapter-audio-whisper" style={{
+                  opacity: 0.78,
+                }}>
+                  <div style={{
                     fontFamily: headFont,
-                    fontSize: "clamp(18px, 3vw, 28px)",
+                    fontSize: "clamp(9px, 1.4vw, 11px)",
                     fontWeight: 700,
-                    letterSpacing: "0.12em",
+                    letterSpacing: "0.20em",
                     textTransform: "uppercase",
-                    lineHeight: 1.25,
+                    lineHeight: 1.35,
                     color: audioLoading
-                      ? (D ? "rgba(255,232,170,0.96)" : S ? "rgba(82,46,8,0.88)" : "rgba(52,31,8,0.78)")
+                      ? (D ? "rgba(255,232,170,0.92)" : S ? "rgba(82,46,8,0.72)" : "rgba(52,31,8,0.60)")
                       : audioPlaying
-                        ? (D ? "rgba(255,244,210,0.92)" : S ? "rgba(64,36,7,0.82)" : "rgba(40,25,8,0.72)")
+                        ? (D ? "rgba(255,244,210,0.86)" : S ? "rgba(64,36,7,0.70)" : "rgba(40,25,8,0.58)")
                         : textDim,
-                    textShadow: D
-                      ? "0 0 24px rgba(216,163,77,0.45), 0 2px 12px rgba(0,0,0,0.9)"
-                      : S
-                        ? "0 0 18px rgba(120,72,12,0.18)"
-                        : "0 0 24px rgba(216,163,77,0.20)",
-                    opacity: 0.96,
+                    textShadow: audioLoading
+                      ? (D ? "0 0 18px rgba(216,163,77,0.36)" : "0 0 16px rgba(216,163,77,0.16)")
+                      : "none",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}>
                     {audioLoading
                       ? "Communing with Heaven…"
                       : audioPlaying
                         ? "Heaven Is Speaking…"
-                        : "Narration Paused"}
+                        : audioPaused
+                          ? "Narration Paused"
+                          : "Narration Ready"}
                   </div>
-                )}
+                  <div style={{
+                    marginTop: 4,
+                    fontFamily: "'IM Fell English', Georgia, serif",
+                    fontSize: "clamp(9px, 1.35vw, 11px)",
+                    color: textDim,
+                    lineHeight: 1.35,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    opacity: 0.76,
+                  }}>
+                    {essenceStatus()}
+                  </div>
+                </div>
 
                 <div className="chapter-audio-hero">
                   <div style={{
