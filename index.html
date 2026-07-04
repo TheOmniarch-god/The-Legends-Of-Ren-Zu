@@ -249,7 +249,7 @@ function IntroScreen({ onDone }) {
   return (
     <div onClick={handleTap} style={{
       position: "fixed", inset: 0, zIndex: 999,
-      background: "radial-gradient(ellipse at 50% 40%, #1c1408 0%, #0a0704 100%)",
+      background: "radial-gradient(ellipse at 50% 38%, #3a250d 0%, #130c05 56%, #070402 100%)",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       cursor: "pointer",
       opacity: leaving ? 0 : 1,
@@ -261,31 +261,31 @@ function IntroScreen({ onDone }) {
         @keyframes introT1 { 0%{opacity:0;transform:translateY(10px);} 100%{opacity:1;transform:translateY(0);} }
         @keyframes introT2 { 0%{opacity:0;transform:translateY(8px);} 100%{opacity:1;transform:translateY(0);} }
         @keyframes introT3 { 0%{opacity:0;} 100%{opacity:0.42;} }
-        @keyframes introGlow { 0%,100%{box-shadow:0 0 50px rgba(180,120,30,0.22),0 0 100px rgba(120,70,5,0.10);} 50%{box-shadow:0 0 80px rgba(200,140,40,0.32),0 0 140px rgba(150,90,15,0.15);} }
-        @keyframes tapGlow { 0%,100%{ color: rgba(180,148,82,0.30); text-shadow:0 0 6px rgba(212,175,100,0.10); } 50%{ color: rgba(228,192,116,0.65); text-shadow:0 0 18px rgba(228,192,116,0.65); } }
+        @keyframes introGlow { 0%,100%{box-shadow:0 0 70px rgba(220,160,55,0.36),0 0 130px rgba(160,95,18,0.18);} 50%{box-shadow:0 0 105px rgba(255,190,75,0.52),0 0 175px rgba(190,115,25,0.24);} }
+        @keyframes tapGlow { 0%,100%{ color: rgba(255,220,140,0.70); text-shadow:0 0 10px rgba(255,205,110,0.30); } 50%{ color: rgba(255,240,180,1); text-shadow:0 0 24px rgba(255,210,120,0.85),0 0 48px rgba(215,150,55,0.45); } }
       `}</style>
-      <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 60% 50% at 50% 42%, rgba(100,55,8,0.42) 0%, transparent 70%)", pointerEvents:"none" }} />
+      <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 60% 50% at 50% 42%, rgba(170,95,18,0.56) 0%, transparent 70%)", pointerEvents:"none" }} />
       <div style={{
         position:"relative", width:"min(320px,68vw)", height:"min(415px,88vw)",
         borderRadius:"28% / 22%", overflow:"hidden",
         animation:"introImgIn 1.1s cubic-bezier(.2,.8,.3,1) both, introGlow 4s ease-in-out 1.2s infinite",
-        border:"1px solid rgba(180,130,40,0.20)", marginBottom:32,
+        border:"1px solid rgba(230,175,75,0.42)", marginBottom:32,
       }}>
         <img src={IMG_COLOR} alt="Legends of Ren Zu" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top", display:"block" }} />
         <img src={IMG_LINE} alt="" style={{
           position:"absolute", inset:0, width:"100%", height:"100%",
           objectFit:"cover", objectPosition:"center top",
-          mixBlendMode:"screen", filter:"invert(1) brightness(0.55)",
+          mixBlendMode:"screen", filter:"invert(1) brightness(0.82)",
           opacity:0, animation:"introLineIn 2.2s 0.5s ease both",
         }} />
-        <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg, rgba(0,0,0,0.28) 0%, transparent 28%, transparent 55%, rgba(0,0,0,0.75) 82%, rgba(0,0,0,0.97) 100%)", pointerEvents:"none" }} />
+        <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg, rgba(0,0,0,0.16) 0%, transparent 30%, transparent 58%, rgba(0,0,0,0.58) 84%, rgba(0,0,0,0.90) 100%)", pointerEvents:"none" }} />
       </div>
       <div style={{ textAlign:"center", padding:"0 16px", width:"100%", maxWidth:"min(580px,94vw)" }}>
         {phase >= 1 && (<>
-          <div style={{ fontFamily:"'Cinzel Decorative', Georgia, serif", fontSize:"clamp(9px,2.5vw,11px)", letterSpacing:"0.38em", color:"rgba(200,155,60,0.75)", textTransform:"uppercase", marginBottom:10, animation:"introT3 0.8s ease both" }}>Reverend Insanity · Gu Zhen Ren</div>
-          <div style={{ fontFamily:"'Cinzel Decorative', Georgia, serif", fontSize:"clamp(16px,4.2vw,28px)", fontWeight:700, color:"#ede0bb", letterSpacing:"0.04em", lineHeight:1.2, marginBottom:16, animation:"introT1 0.7s 0.1s ease both", textShadow:"0 2px 28px rgba(200,140,30,0.55)", whiteSpace:"nowrap" }}>The Legends of Ren Zu</div>
-          <div style={{ fontFamily:"'EB Garamond', 'Cormorant Garamond', Georgia, serif", fontStyle:"italic", fontWeight:400, fontSize:"clamp(8px,1.1vw,9px)", color:"rgba(226,206,165,0.68)", letterSpacing:"0.04em", lineHeight:1.35, maxWidth:"min(360px,80vw)", margin:"0 auto 16px", textAlign:"center", animation:"introT2 0.7s 0.22s ease both" }}>The Legends of Ren Zu is an esoteric tragedy chronicling how humanity's first ancestor, Ren Zu, bartered his very essence to primordial concepts in a relentless, brutal pursuit to ultimately conquer Fate itself.</div>
-          <div style={{ fontFamily:"'Poppins', sans-serif", fontWeight:300, fontSize:"clamp(8px,1.8vw,9px)", color:"rgba(180,148,82,0.30)", letterSpacing:"0.30em", textTransform:"uppercase", animation:"introT3 0.5s 0.5s ease both, tapGlow 2.6s ease-in-out 1.2s infinite" }}>Tap to enter</div>
+          <div style={{ fontFamily:"'Cinzel Decorative', Georgia, serif", fontSize:"clamp(9px,2.5vw,11px)", letterSpacing:"0.38em", color:"rgba(238,190,92,0.92)", textTransform:"uppercase", marginBottom:10, animation:"introT3 0.8s ease both" }}>Reverend Insanity · Gu Zhen Ren</div>
+          <div style={{ fontFamily:"'Cinzel Decorative', Georgia, serif", fontSize:"clamp(16px,4.2vw,28px)", fontWeight:700, color:"#fff0c8", letterSpacing:"0.04em", lineHeight:1.2, marginBottom:16, animation:"introT1 0.7s 0.1s ease both", textShadow:"0 2px 34px rgba(255,185,70,0.82),0 0 10px rgba(255,240,190,0.35)", whiteSpace:"nowrap" }}>The Legends of Ren Zu</div>
+          <div style={{ fontFamily:"'EB Garamond', 'Cormorant Garamond', Georgia, serif", fontStyle:"italic", fontWeight:400, fontSize:"clamp(8px,1.1vw,9px)", color:"rgba(255,235,195,0.82)", letterSpacing:"0.04em", lineHeight:1.35, maxWidth:"min(360px,80vw)", margin:"0 auto 16px", textAlign:"center", animation:"introT2 0.7s 0.22s ease both" }}>The Legends of Ren Zu is an esoteric tragedy chronicling how humanity's first ancestor, Ren Zu, bartered his very essence to primordial concepts in a relentless, brutal pursuit to ultimately conquer Fate itself.</div>
+          <div style={{ fontFamily:"'Poppins', sans-serif", fontWeight:300, fontSize:"clamp(8px,1.8vw,9px)", color:"rgba(255,220,140,0.72)", letterSpacing:"0.30em", textTransform:"uppercase", animation:"introT3 0.5s 0.5s ease both, tapGlow 2.6s ease-in-out 1.2s infinite" }}>Tap to enter</div>
         </>)}
       </div>
     </div>
@@ -5033,6 +5033,10 @@ function getOrBuildSentences() {
         .prompt-btn:hover { color: ${text} !important; border-color: ${borderHov} !important; background: ${D ? "rgba(255,255,255,0.05)" : S ? "rgba(80,42,8,0.08)" : "rgba(0,0,0,0.04)"} !important; }
         span[data-sent-idx] { outline: none !important; -webkit-tap-highlight-color: transparent; }
         span[data-sent-idx]:focus { outline: none !important; }
+        .chapter-audio-hero { position: absolute; right: 6px; top: 74px; z-index: 3; }
+        @media (max-width: 620px) {
+          .chapter-audio-hero { position: relative; right: auto; top: auto; margin-top: 16px; width: 100%; }
+        }
       `}</style>
 
       {showIntro && <IntroScreen onDone={() => setShowIntro(false)} />}
@@ -5415,6 +5419,55 @@ function getOrBuildSentences() {
                 <h2 style={{ margin: 0, fontSize: "clamp(22px, 4vw, 34px)", fontWeight: 700, fontFamily: headFont, color: text, letterSpacing: S ? "0.01em" : "-0.025em", lineHeight: 1.15 }}>
                   {selected.title}
                 </h2>
+
+                <div className="chapter-audio-hero">
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 9,
+                    padding: "8px 10px", borderRadius: 16,
+                    border: `1px solid ${border}`,
+                    background: D ? "rgba(0,0,0,0.54)" : S ? "rgba(242,223,182,0.72)" : "rgba(255,255,255,0.72)",
+                    boxShadow: D ? "0 8px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)" : "0 8px 28px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.70)",
+                    backdropFilter: blur,
+                    WebkitBackdropFilter: blur,
+                    maxWidth: "min(330px, 100%)",
+                  }}>
+                    <button onClick={() => toggleAudio()} disabled={audioLoading} aria-label={audioPlaying ? "Pause narration" : audioPaused ? "Resume narration" : "Play narration"}
+                      style={{
+                        width: 38, height: 38, borderRadius: "50%",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        flexShrink: 0,
+                        border: `1px solid ${borderHov}`,
+                        background: D ? "rgba(255,255,255,0.08)" : S ? "rgba(139,94,26,0.15)" : "rgba(0,0,0,0.06)",
+                        color: text,
+                        cursor: audioLoading ? "default" : "pointer",
+                        fontFamily: headFont,
+                        fontSize: 14,
+                        opacity: audioLoading ? 0.65 : 1,
+                      }}>
+                      {audioLoading ? "…" : audioPlaying ? "Ⅱ" : "▶"}
+                    </button>
+                    <button onClick={() => setShowAudioSettingsPage(true)}
+                      style={{
+                        minWidth: 0,
+                        flex: 1,
+                        background: "transparent",
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                        textAlign: "left",
+                        color: text,
+                        fontFamily: headFont,
+                      }}>
+                      <div style={{ fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 2 }}>
+                        Narration
+                      </div>
+                      <div style={{ fontSize: 12, lineHeight: 1.25, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {voice.includes("GB") ? "Edmund" : voice.includes("Studio-C") ? "Rowena" : voice.includes("Studio-M") ? "Marcus" : "Aldric"} · {speechRate}x
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Divider */}
                 <div style={{ marginTop: 20, height: 1, background: D ? `linear-gradient(90deg, ${accentLine} 0%, rgba(255,255,255,0.06) 50%, transparent 80%)` : `linear-gradient(90deg, ${accentLine} 0%, transparent 70%)` }} />
               </div>
