@@ -1077,6 +1077,72 @@ function NoteEditorModal({ open, data, D, S, saving, onClose, onSave, onDelete }
   );
 }
 
+function AnnotationsModal({ open, onClose, D, S, annotations, onOpenAnnotation, onDeleteAnnotation }) {
+  if (!open) return null;
+
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const surface = D ? "rgba(8,8,10,0.97)" : S ? "rgba(245,230,200,0.98)" : "rgba(255,255,255,0.99)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
+  const items = Array.isArray(annotations) ? annotations : [];
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 10001,
+      background: "rgba(0,0,0,0.72)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+      animation: "fadeUp 0.22s ease",
+    }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: "min(540px, calc(100vw - 24px))", maxHeight: "min(86dvh, 760px)", overflow: "auto",
+        background: surface, border: `1px solid ${border}`, borderRadius: 26,
+        boxShadow: "0 28px 90px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.04)",
+        padding: "22px 18px 18px", position: "relative",
+      }}>
+        <button onClick={onClose} style={{
+          position: "absolute", top: 12, right: 14, width: 32, height: 32, borderRadius: "50%",
+          background: "transparent", border: "none", color: textDim, fontSize: 18, cursor: "pointer",
+        }}>✕</button>
+
+        <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, color: text, marginBottom: 6 }}>
+          Highlights & Notes
+        </div>
+        <div style={{ fontSize: 12.5, color: textDim, lineHeight: 1.55, marginBottom: 16, fontFamily: "'IM Fell English', Georgia, serif" }}>
+          Passages you highlighted or annotated.
+        </div>
+
+        {items.length === 0 ? (
+          <div style={{ padding: "34px 14px", textAlign: "center", border: `1px solid ${border}`, borderRadius: 18, color: textDim, fontSize: 12 }}>
+            No highlights or notes yet. Long-press a passage while reading.
+          </div>
+        ) : (
+          <div style={{ display: "grid", gap: 10 }}>
+            {items.map(item => (
+              <div key={item.id} style={{ border: `1px solid ${border}`, borderRadius: 16, padding: 12, background: D ? "rgba(255,255,255,0.035)" : S ? "rgba(139,94,26,0.06)" : "rgba(0,0,0,0.025)" }}>
+                <button onClick={() => onOpenAnnotation(item)} style={{ width: "100%", textAlign: "left", background: "transparent", border: "none", color: text, cursor: "pointer", padding: 0 }}>
+                  <div style={{ fontFamily: headFont, fontSize: 10, color: textDim, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 5 }}>
+                    {item.type === "note" ? "Note" : "Highlight"} · Part {item.chapterNum}
+                  </div>
+                  <div style={{ fontFamily: headFont, fontSize: 13, color: text, lineHeight: 1.35, marginBottom: 6 }}>
+                    {item.chapterTitle}
+                  </div>
+                  <div style={{ fontSize: 12, color: textDim, lineHeight: 1.55, fontFamily: "'IM Fell English', Georgia, serif" }}>“{String(item.text || "").slice(0, 170)}{String(item.text || "").length > 170 ? "…" : ""}”</div>
+                  {item.note && <div style={{ marginTop: 8, padding: "8px 10px", borderRadius: 12, border: `1px solid ${border}`, color: text, fontSize: 12, lineHeight: 1.5, fontFamily: "'IM Fell English', Georgia, serif" }}>{item.note}</div>}
+                </button>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 10 }}>
+                  <div style={{ fontSize: 10, color: textDim }}>{item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : ""}</div>
+                  <button onClick={() => onDeleteAnnotation(item.id)} style={{ background: "transparent", border: `1px solid ${border}`, borderRadius: 10, padding: "6px 10px", color: textDim, fontSize: 10, cursor: "pointer" }}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function BookmarksModal({ open, onClose, D, S, bookmarks, onOpenBookmark, onDeleteBookmark }) {
   if (!open) return null;
 
@@ -1274,7 +1340,7 @@ function PaymentRecoveryModal({ data, onClose, onRedeem, onRetry, D, S }) {
 }
 
 // ─── Profile Modal — realm, username, essence balance ─────────────────────────
-function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex, bookmarks, onOpenBookmarks }) {
+function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex, bookmarks, onOpenBookmarks, annotations, onOpenAnnotations }) {
   const [editName, setEditName] = useState(username || "");
   const [editEmail, setEditEmail] = useState(email || "");
   const [saving, setSaving] = useState(false);
@@ -1448,6 +1514,20 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
           </div>
 
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Highlights & Notes</div>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.08em" }}>{annotations.length} saved</div>
+            </div>
+            <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
+              {annotations.length ? "Review highlighted passages and personal notes." : "No highlights or notes yet. Long-press a passage while reading."}
+            </div>
+            <button onClick={() => {
+              if (!isEmailBound) { onBindAccount(); return; }
+              onOpenAnnotations();
+            }} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Highlights & Notes</button>
+          </div>
+
+          <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
             <button onClick={() => setManageOpen(v => !v)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "transparent", border: "none", color: text, cursor: "pointer", padding: 0, fontFamily: headFont, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" }}>
               <span>Account Details</span>
               <span style={{ color: textDim, display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -1552,7 +1632,7 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onProfile, onCodex, onTreasure, onBookmarks, onReaderSettings, onAudioSettings, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onProfile, onCodex, onTreasure, onBookmarks, onAnnotations, onReaderSettings, onAudioSettings, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -1565,6 +1645,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onP
       { id: "bookmark-chapter", label: isChapterBookmarked ? "Remove Bookmark" : "Bookmark Chapter", note: isChapterBookmarked ? "Unsave this chapter" : "Save this chapter", onClick: () => { onClose(); onBookmarkChapter(); }, disabled: false },
     ] : []),
     { id: "bookmarks", label: "Bookmarks", note: "Saved chapters and passages", onClick: () => { onClose(); onBookmarks(); }, disabled: false },
+    { id: "annotations", label: "Highlights & Notes", note: "Marked passages and notes", onClick: () => { onClose(); onAnnotations(); }, disabled: false },
     { id: "profile", label: "Profile", note: "Account and realm", onClick: () => { onClose(); onProfile(); }, disabled: false },
     { id: "treasure", label: "Treasure Yellow Heaven", note: "Ascend or redeem realm tokens", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     { id: "codex", label: "Codex", note: "Gu gallery and lore", onClick: () => { onClose(); onCodex(); }, disabled: false },
@@ -2650,6 +2731,7 @@ function RenZuReader() {
   const [bookmarks, setBookmarks] = useState([]);
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [bookmarkBusy, setBookmarkBusy] = useState(false);
+  const [showAnnotations, setShowAnnotations] = useState(false);
   const [annotations, setAnnotations] = useState([]);
   const [annotationBusy, setAnnotationBusy] = useState(false);
   const [noteEditor, setNoteEditor] = useState(null); // { text, sentenceIdx, existing }
@@ -3388,6 +3470,22 @@ const chapterKeyRef = useRef(null);
       setTimeout(() => {
         setTappedSentenceIdx(Number(bookmark.sentenceIdx));
         setSelectionMenu({ text: bookmark.text || "", sentenceIdx: Number(bookmark.sentenceIdx) });
+        menuShownAtRef.current = Date.now();
+      }, 260);
+    }
+  }
+
+  function openAnnotation(annotation) {
+    const chapter = TAGGED.find(c => c.num === annotation.chapterNum);
+    if (!chapter) return;
+
+    setShowAnnotations(false);
+    select(chapter);
+
+    if (Number(annotation.sentenceIdx) >= 0) {
+      setTimeout(() => {
+        setTappedSentenceIdx(Number(annotation.sentenceIdx));
+        setSelectionMenu({ text: annotation.text || "", sentenceIdx: Number(annotation.sentenceIdx) });
         menuShownAtRef.current = Date.now();
       }, 260);
     }
@@ -4921,6 +5019,10 @@ function getOrBuildSentences() {
                     if (!isSoulBound()) { openGateOfFate(); return; }
                     setShowBookmarks(true);
                   }}
+                  onAnnotations={() => {
+                    if (!isSoulBound()) { openGateOfFate(); return; }
+                    setShowAnnotations(true);
+                  }}
                   onReaderSettings={() => {
                     if (!selected) return;
                     setReaderSettingsOpen(o => !o);
@@ -5763,6 +5865,8 @@ function getOrBuildSentences() {
           onOpenCodex={() => { setShowProfile(false); setShowCodex(true); }}
           bookmarks={bookmarks}
           onOpenBookmarks={() => { setShowProfile(false); setShowBookmarks(true); }}
+          annotations={annotations}
+          onOpenAnnotations={() => { setShowProfile(false); setShowAnnotations(true); }}
         />
       )}
 
@@ -5775,6 +5879,18 @@ function getOrBuildSentences() {
           onRetry={() => lookupPaymentCode(paymentReturn.txRef, paymentReturn.status || "successful", paymentReturn.transactionId || "", 0)}
           D={D}
           S={S}
+        />
+      )}
+
+      {showAnnotations && (
+        <AnnotationsModal
+          open={showAnnotations}
+          onClose={() => setShowAnnotations(false)}
+          D={D}
+          S={S}
+          annotations={annotations}
+          onOpenAnnotation={openAnnotation}
+          onDeleteAnnotation={deleteAnnotation}
         />
       )}
 
