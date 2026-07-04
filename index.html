@@ -837,7 +837,7 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
                   style={{
                     width: "100%",
                     boxSizing: "border-box",
-                    padding: "10px 12px",
+                    padding: "9px 11px",
                     borderRadius: 12,
                     fontSize: 12,
                     background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
@@ -1060,6 +1060,66 @@ function AudioSettingsModal({ open, onClose, D, S, voice, speechRate, accentRegi
               <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>{[0.5,0.75,1,1.5,2].map(rate => <button key={rate} onClick={() => onRate(rate)} style={{ padding: "9px 6px", borderRadius: 12, border: `1px solid ${speechRate===rate ? borderStrong : border}`, background: speechRate===rate ? (D ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.07)") : "transparent", color: speechRate===rate ? text : textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10 }}>{rate}x</button>)}</div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SettingsHubModal({ open, onClose, D, S, onReader, onAudio }) {
+  if (!open) return null;
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const surface = D ? "#08080a" : S ? "#f2dfb6" : "#fffaf0";
+  const pageBg = D ? "rgba(0,0,0,0.78)" : S ? "rgba(88,48,8,0.30)" : "rgba(236,232,222,0.72)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, Georgia, serif";
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:10014, background:pageBg, backdropFilter:"blur(12px)", WebkitBackdropFilter:"blur(12px)", overflowY:"auto" }}>
+      <div style={{ maxWidth:560, margin:"0 auto", padding:"18px 16px 42px" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+          <button onClick={onClose} style={{ background:"transparent", border:"none", color:textDim, cursor:"pointer", fontFamily:headFont, fontSize:12 }}>← Back</button>
+          <div style={{ fontFamily:headFont, fontSize:13, letterSpacing:"0.16em", textTransform:"uppercase", color:text }}>Settings</div>
+          <div style={{ width:42 }} />
+        </div>
+        <div style={{ display:"grid", gap:10 }}>
+          {[{t:"Reader Settings", d:"Text size, spacing, width", a:onReader}, {t:"Audio Settings", d:"Voice, accent, speed", a:onAudio}].map(x => (
+            <button key={x.t} onClick={x.a} style={{ padding:"16px", borderRadius:18, border:`1px solid ${border}`, background:surface, color:text, textAlign:"left", cursor:"pointer", fontFamily:headFont }}>
+              <div style={{ fontSize:13, fontWeight:700 }}>{x.t}</div>
+              <div style={{ fontSize:12, color:textDim, marginTop:4, fontFamily:"'IM Fell English', Georgia, serif" }}>{x.d}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SavedHubModal({ open, onClose, D, S, bookmarksCount, annotationsCount, onBookmarks, onAnnotations }) {
+  if (!open) return null;
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const surface = D ? "#08080a" : S ? "#f2dfb6" : "#fffaf0";
+  const pageBg = D ? "rgba(0,0,0,0.78)" : S ? "rgba(88,48,8,0.30)" : "rgba(236,232,222,0.72)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, Georgia, serif";
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:10014, background:pageBg, backdropFilter:"blur(12px)", WebkitBackdropFilter:"blur(12px)", overflowY:"auto" }}>
+      <div style={{ maxWidth:560, margin:"0 auto", padding:"18px 16px 42px" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+          <button onClick={onClose} style={{ background:"transparent", border:"none", color:textDim, cursor:"pointer", fontFamily:headFont, fontSize:12 }}>← Back</button>
+          <div style={{ fontFamily:headFont, fontSize:13, letterSpacing:"0.16em", textTransform:"uppercase", color:text }}>Saved</div>
+          <div style={{ width:42 }} />
+        </div>
+        <div style={{ display:"grid", gap:10 }}>
+          <button onClick={onBookmarks} style={{ padding:"16px", borderRadius:18, border:`1px solid ${border}`, background:surface, color:text, textAlign:"left", cursor:"pointer", fontFamily:headFont }}>
+            <div style={{ fontSize:13, fontWeight:700 }}>Bookmarks</div>
+            <div style={{ fontSize:12, color:textDim, marginTop:4, fontFamily:"'IM Fell English', Georgia, serif" }}>{bookmarksCount} saved chapters/passages</div>
+          </button>
+          <button onClick={onAnnotations} style={{ padding:"16px", borderRadius:18, border:`1px solid ${border}`, background:surface, color:text, textAlign:"left", cursor:"pointer", fontFamily:headFont }}>
+            <div style={{ fontSize:13, fontWeight:700 }}>Highlights & Notes</div>
+            <div style={{ fontSize:12, color:textDim, marginTop:4, fontFamily:"'IM Fell English', Georgia, serif" }}>{annotationsCount} saved marks/notes</div>
+          </button>
         </div>
       </div>
     </div>
@@ -1739,7 +1799,7 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onProfile, onCodex, onTreasure, onBookmarks, onAnnotations, onReaderSettings, onAudioSettings, onBookmarkChapter, onToggleAudio, isReading, isChapterBookmarked, audioPlaying, audioPaused, audioLoading, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onProfile, onCodex, onTreasure, onSaved, onSettings, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -1747,19 +1807,15 @@ function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onP
 
   const menuItems = [
     ...(isReading ? [
-      { id: "play-audio", label: audioLoading ? "Preparing Audio" : audioPlaying ? "Pause Audio" : audioPaused ? "Resume Audio" : "Play Audio", note: "Start or pause narration", onClick: () => { onClose(); onToggleAudio(); }, disabled: audioLoading },
-      { id: "reader", label: "Reader Settings", note: "Text size, width, spacing", onClick: () => { onClose(); onReaderSettings(); }, disabled: false },
-      { id: "audio", label: "Audio Settings", note: "Voice, speed, narration", onClick: () => { onClose(); onAudioSettings(); }, disabled: false },
-      { id: "bookmark-chapter", label: isChapterBookmarked ? "Remove Bookmark" : "Bookmark Chapter", note: isChapterBookmarked ? "Unsave this chapter" : "Save this chapter", onClick: () => { onClose(); onBookmarkChapter(); }, disabled: false },
+      { id: "settings", label: "Settings", onClick: () => { onClose(); onSettings(); }, disabled: false },
+      { id: "bookmark-chapter", label: isChapterBookmarked ? "Unbookmark" : "Bookmark", onClick: () => { onClose(); onBookmarkChapter(); }, disabled: false },
     ] : []),
-    { id: "bookmarks", label: "Bookmarks", note: "Saved chapters and passages", onClick: () => { onClose(); onBookmarks(); }, disabled: false },
-    { id: "annotations", label: "Highlights & Notes", note: "Marked passages and notes", onClick: () => { onClose(); onAnnotations(); }, disabled: false },
-    { id: "profile", label: "Profile", note: "Account and realm", onClick: () => { onClose(); onProfile(); }, disabled: false },
-    { id: "treasure", label: "Treasure Yellow Heaven", note: "Ascend or redeem realm tokens", onClick: () => { onClose(); onTreasure(); }, disabled: false },
-    { id: "codex", label: "Codex", note: "Gu gallery and lore", onClick: () => { onClose(); onCodex(); }, disabled: false },
-    { id: "home", label: "Home", note: "Return to archive", onClick: () => { onClose(); onHome(); }, disabled: false },
+    { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
+    { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
+    { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
+    { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
+    { id: "home", label: "Home", onClick: () => { onClose(); onHome(); }, disabled: false },
   ];
-
   return (
     <>
       {open && <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 44, background: "transparent" }} />}
@@ -1786,7 +1842,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onP
             position: "absolute",
             top: "calc(100% + 10px)",
             right: 0,
-            width: "min(236px, calc(100vw - 36px))",
+            width: "min(184px, calc(100vw - 36px))",
             background: surface,
             backdropFilter: "blur(22px)", WebkitBackdropFilter: "blur(22px)",
             border: `1px solid ${border}`,
@@ -1810,7 +1866,6 @@ function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onP
                 borderTop: i === 0 ? "none" : `1px solid ${D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"}`
               }}>
                 <div style={{ fontFamily: "Metamorphous, Georgia, serif", fontSize: 10.5, letterSpacing: "0.08em", textTransform: "uppercase" }}>{item.label}</div>
-                <div style={{ fontSize: 10.5, color: textDim, fontFamily: "'IM Fell English', Georgia, serif", lineHeight: 1.45, marginTop: 2 }}>{item.note}</div>
               </button>
             ))}
           </div>
@@ -2842,6 +2897,8 @@ function RenZuReader() {
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [bookmarkBusy, setBookmarkBusy] = useState(false);
   const [showAnnotations, setShowAnnotations] = useState(false);
+  const [showSettingsHub, setShowSettingsHub] = useState(false);
+  const [showSavedHub, setShowSavedHub] = useState(false);
   const [annotations, setAnnotations] = useState([]);
   const [annotationBusy, setAnnotationBusy] = useState(false);
   const [noteEditor, setNoteEditor] = useState(null); // { text, sentenceIdx, existing }
@@ -5033,10 +5090,10 @@ function getOrBuildSentences() {
         .prompt-btn:hover { color: ${text} !important; border-color: ${borderHov} !important; background: ${D ? "rgba(255,255,255,0.05)" : S ? "rgba(80,42,8,0.08)" : "rgba(0,0,0,0.04)"} !important; }
         span[data-sent-idx] { outline: none !important; -webkit-tap-highlight-color: transparent; }
         span[data-sent-idx]:focus { outline: none !important; }
-        .chapter-audio-whisper { position: absolute; right: 12px; top: 16px; z-index: 2; max-width: 310px; text-align: right; pointer-events: none; }
+        .chapter-audio-whisper { position: absolute; right: 22px; top: 20px; z-index: 2; width: min(320px, 42vw); text-align: right; pointer-events: none; }
         .chapter-audio-hero { position: absolute; right: 6px; top: 74px; z-index: 3; }
         @media (max-width: 620px) {
-          .chapter-audio-whisper { position: relative; right: auto; top: auto; max-width: 100%; text-align: left; margin-top: 14px; }
+          .chapter-audio-whisper { position: relative; right: auto; top: auto; width: 100%; text-align: left; margin-top: 10px; }
           .chapter-audio-hero { position: relative; right: auto; top: auto; margin-top: 12px; width: 100%; }
         }
       `}</style>
@@ -5131,21 +5188,13 @@ function getOrBuildSentences() {
                   onProfile={() => setShowProfile(true)}
                   onTreasure={() => openTreasureYellowHeaven()}
                   onCodex={() => setShowCodex(true)}
-                  onBookmarks={() => {
+                  onSaved={() => {
                     if (!isSoulBound()) { openGateOfFate(); return; }
-                    setShowBookmarks(true);
+                    setShowSavedHub(true);
                   }}
-                  onAnnotations={() => {
-                    if (!isSoulBound()) { openGateOfFate(); return; }
-                    setShowAnnotations(true);
-                  }}
-                  onReaderSettings={() => {
+                  onSettings={() => {
                     if (!selected) return;
-                    setShowReaderSettingsPage(true);
-                  }}
-                  onAudioSettings={() => {
-                    if (!selected) return;
-                    setShowAudioSettingsPage(true);
+                    setShowSettingsHub(true);
                   }}
                   onBookmarkChapter={() => selected && toggleChapterBookmark(selected)}
                   onToggleAudio={toggleAudio}
@@ -5423,23 +5472,48 @@ function getOrBuildSentences() {
                 </h2>
 
                 <div className="chapter-audio-whisper" style={{
-                  fontFamily: headFont,
-                  fontSize: "clamp(9px, 1.8vw, 11px)",
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  color: audioLoading
-                    ? (D ? "rgba(255,225,160,0.82)" : S ? "rgba(112,68,14,0.78)" : "rgba(90,60,20,0.62)")
-                    : textDim,
-                  textShadow: audioLoading ? "0 0 18px rgba(216,163,77,0.35)" : "none",
-                  opacity: audioPlaying || audioLoading || audioPaused ? 0.95 : 0.58,
+                  opacity: 0.78,
                 }}>
-                  {audioLoading
-                    ? "Communing with heaven…"
-                    : audioPlaying
-                      ? "Heaven is speaking…"
-                      : audioPaused
-                        ? "Narration paused"
-                        : "Communing with heaven awaits"}
+                  <div style={{
+                    fontFamily: headFont,
+                    fontSize: "clamp(9px, 1.4vw, 11px)",
+                    fontWeight: 700,
+                    letterSpacing: "0.20em",
+                    textTransform: "uppercase",
+                    lineHeight: 1.35,
+                    color: audioLoading
+                      ? (D ? "rgba(255,232,170,0.92)" : S ? "rgba(82,46,8,0.72)" : "rgba(52,31,8,0.60)")
+                      : audioPlaying
+                        ? (D ? "rgba(255,244,210,0.86)" : S ? "rgba(64,36,7,0.70)" : "rgba(40,25,8,0.58)")
+                        : textDim,
+                    textShadow: audioLoading
+                      ? (D ? "0 0 18px rgba(216,163,77,0.36)" : "0 0 16px rgba(216,163,77,0.16)")
+                      : "none",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}>
+                    {audioLoading
+                      ? "Communing with Heaven…"
+                      : audioPlaying
+                        ? "Heaven Is Speaking…"
+                        : audioPaused
+                          ? "Narration Paused"
+                          : "Narration Ready"}
+                  </div>
+                  <div style={{
+                    marginTop: 4,
+                    fontFamily: "'IM Fell English', Georgia, serif",
+                    fontSize: "clamp(9px, 1.35vw, 11px)",
+                    color: textDim,
+                    lineHeight: 1.35,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    opacity: 0.76,
+                  }}>
+                    {essenceStatus()}
+                  </div>
                 </div>
 
                 <div className="chapter-audio-hero">
@@ -5482,7 +5556,7 @@ function getOrBuildSentences() {
                       {audioLoading ? (
                         <>
                           <span style={{ fontSize: 16, lineHeight: 1 }}>…</span>
-                          <span>Wait</span>
+                          <span>Summoning</span>
                         </>
                       ) : audioPlaying ? (
                         <>
@@ -5785,6 +5859,26 @@ function getOrBuildSentences() {
           ))}
         </div>
       )}
+
+      <SettingsHubModal
+        open={showSettingsHub}
+        onClose={() => setShowSettingsHub(false)}
+        D={D}
+        S={S}
+        onReader={() => { setShowSettingsHub(false); setShowReaderSettingsPage(true); }}
+        onAudio={() => { setShowSettingsHub(false); setShowAudioSettingsPage(true); }}
+      />
+
+      <SavedHubModal
+        open={showSavedHub}
+        onClose={() => setShowSavedHub(false)}
+        D={D}
+        S={S}
+        bookmarksCount={bookmarks.length}
+        annotationsCount={annotations.length}
+        onBookmarks={() => { setShowSavedHub(false); setShowBookmarks(true); }}
+        onAnnotations={() => { setShowSavedHub(false); setShowAnnotations(true); }}
+      />
 
       <ReaderSettingsModal
         open={showReaderSettingsPage}
