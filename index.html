@@ -5033,9 +5033,11 @@ function getOrBuildSentences() {
         .prompt-btn:hover { color: ${text} !important; border-color: ${borderHov} !important; background: ${D ? "rgba(255,255,255,0.05)" : S ? "rgba(80,42,8,0.08)" : "rgba(0,0,0,0.04)"} !important; }
         span[data-sent-idx] { outline: none !important; -webkit-tap-highlight-color: transparent; }
         span[data-sent-idx]:focus { outline: none !important; }
+        .chapter-audio-whisper { position: absolute; right: 22px; top: 34px; z-index: 2; width: min(360px, 44vw); text-align: center; pointer-events: none; }
         .chapter-audio-hero { position: absolute; right: 6px; top: 74px; z-index: 3; }
         @media (max-width: 620px) {
-          .chapter-audio-hero { position: relative; right: auto; top: auto; margin-top: 16px; width: 100%; }
+          .chapter-audio-whisper { position: relative; right: auto; top: auto; width: 100%; text-align: left; margin-top: 14px; }
+          .chapter-audio-hero { position: relative; right: auto; top: auto; margin-top: 12px; width: 100%; }
         }
       `}</style>
 
@@ -5420,6 +5422,34 @@ function getOrBuildSentences() {
                   {selected.title}
                 </h2>
 
+                {(audioLoading || audioPlaying || audioPaused) && (
+                  <div className="chapter-audio-whisper" style={{
+                    fontFamily: headFont,
+                    fontSize: "clamp(18px, 3vw, 28px)",
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    lineHeight: 1.25,
+                    color: audioLoading
+                      ? (D ? "rgba(255,232,170,0.96)" : S ? "rgba(82,46,8,0.88)" : "rgba(52,31,8,0.78)")
+                      : audioPlaying
+                        ? (D ? "rgba(255,244,210,0.92)" : S ? "rgba(64,36,7,0.82)" : "rgba(40,25,8,0.72)")
+                        : textDim,
+                    textShadow: D
+                      ? "0 0 24px rgba(216,163,77,0.45), 0 2px 12px rgba(0,0,0,0.9)"
+                      : S
+                        ? "0 0 18px rgba(120,72,12,0.18)"
+                        : "0 0 24px rgba(216,163,77,0.20)",
+                    opacity: 0.96,
+                  }}>
+                    {audioLoading
+                      ? "Communing with Heaven…"
+                      : audioPlaying
+                        ? "Heaven Is Speaking…"
+                        : "Narration Paused"}
+                  </div>
+                )}
+
                 <div className="chapter-audio-hero">
                   <div style={{
                     display: "flex", alignItems: "center", gap: 9,
@@ -5429,22 +5459,62 @@ function getOrBuildSentences() {
                     boxShadow: D ? "0 8px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)" : "0 8px 28px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.70)",
                     backdropFilter: blur,
                     WebkitBackdropFilter: blur,
-                    maxWidth: "min(330px, 100%)",
+                    maxWidth: "min(390px, 100%)",
                   }}>
                     <button onClick={() => toggleAudio()} disabled={audioLoading} aria-label={audioPlaying ? "Pause narration" : audioPaused ? "Resume narration" : "Play narration"}
                       style={{
-                        width: 38, height: 38, borderRadius: "50%",
-                        display: "flex", alignItems: "center", justifyContent: "center",
+                        minWidth: 86,
+                        height: 38,
+                        padding: "0 13px",
+                        borderRadius: 999,
+                        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7,
                         flexShrink: 0,
-                        border: `1px solid ${borderHov}`,
-                        background: D ? "rgba(255,255,255,0.08)" : S ? "rgba(139,94,26,0.15)" : "rgba(0,0,0,0.06)",
-                        color: text,
+                        border: `1px solid ${D ? "rgba(255,220,150,0.22)" : S ? "rgba(80,45,8,0.34)" : "rgba(35,20,8,0.26)"}`,
+                        background: D
+                          ? "linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.055))"
+                          : S
+                            ? "linear-gradient(180deg, #6b4310, #3f2407)"
+                            : "linear-gradient(180deg, #2f1b08, #171006)",
+                        color: D ? "#fff1c8" : "#fff4d6",
                         cursor: audioLoading ? "default" : "pointer",
                         fontFamily: headFont,
-                        fontSize: 14,
-                        opacity: audioLoading ? 0.65 : 1,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        boxShadow: D
+                          ? "0 6px 18px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10)"
+                          : "0 8px 22px rgba(47,27,8,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+                        opacity: audioLoading ? 0.72 : 1,
                       }}>
-                      {audioLoading ? "…" : audioPlaying ? "Ⅱ" : "▶"}
+                      {audioLoading ? (
+                        <>
+                          <span style={{ fontSize: 16, lineHeight: 1 }}>…</span>
+                          <span>Wait</span>
+                        </>
+                      ) : audioPlaying ? (
+                        <>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <rect x="5" y="4" width="5" height="16" rx="1.6" />
+                            <rect x="14" y="4" width="5" height="16" rx="1.6" />
+                          </svg>
+                          <span>Pause</span>
+                        </>
+                      ) : audioPaused ? (
+                        <>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M7 4.8v14.4c0 .9 1 1.45 1.78.98l11.1-7.2a1.15 1.15 0 0 0 0-1.96L8.78 3.82C8 3.35 7 3.9 7 4.8Z" />
+                          </svg>
+                          <span>Resume</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M7 4.8v14.4c0 .9 1 1.45 1.78.98l11.1-7.2a1.15 1.15 0 0 0 0-1.96L8.78 3.82C8 3.35 7 3.9 7 4.8Z" />
+                          </svg>
+                          <span>Play</span>
+                        </>
+                      )}
                     </button>
                     <button onClick={() => setShowAudioSettingsPage(true)}
                       style={{
