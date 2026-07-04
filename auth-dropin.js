@@ -24,6 +24,19 @@
     </svg>
   `;
 
+  const AUDIO_PAUSE_SVG = `
+    <svg class="rz-audio-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="6" y="4" width="4.7" height="16" rx="1.25"></rect>
+      <rect x="13.3" y="4" width="4.7" height="16" rx="1.25"></rect>
+    </svg>
+  `;
+
+  const AUDIO_PLAY_SVG = `
+    <svg class="rz-audio-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M7 4.8v14.4c0 .9 1 1.45 1.78.98l11.1-7.2a1.15 1.15 0 0 0 0-1.96L8.78 3.82C8 3.35 7 3.9 7 4.8Z"></path>
+    </svg>
+  `;
+
   let supabaseClient = null;
   let session = null;
   let currentUser = null;
@@ -150,6 +163,22 @@
         font-size: 18px;
         font-weight: 800;
         letter-spacing: 0;
+        color: #3a2109;
+      }
+
+      .rz-audio-icon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+        filter: drop-shadow(0 1px 1px rgba(255,255,255,0.35));
+      }
+
+      html[data-renzu-auth-theme="dark"] .rz-auth-button-audio {
+        color: #ffe3a0;
+      }
+
+      html[data-renzu-auth-theme="scroll"] .rz-auth-button-audio {
+        color: #2a1502;
       }
 
       .rz-fate-spider {
@@ -1461,7 +1490,7 @@
     const isBound = !!currentUser;
     const audioActive = !!(audioState.playing || audioState.paused || audioState.loading);
     const buttonLabel = audioActive
-      ? (audioState.loading ? "…" : audioState.paused ? "▶" : "Ⅱ")
+      ? (audioState.loading ? "…" : audioState.paused ? AUDIO_PLAY_SVG : AUDIO_PAUSE_SVG)
       : isBound
         ? FATE_SPIDER_SVG
         : "Login";
