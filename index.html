@@ -959,6 +959,113 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
   );
 }
 
+function ReaderSettingsModal({ open, onClose, D, S, settings, onUpdate, onReset }) {
+  if (!open) return null;
+
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const borderStrong = D ? "rgba(255,255,255,0.22)" : S ? "rgba(120,80,20,0.55)" : "rgba(0,0,0,0.24)";
+  const surface = D ? "#08080a" : S ? "#f2dfb6" : "#fffaf0";
+  const pageBg = D ? "rgba(0,0,0,0.78)" : S ? "rgba(88,48,8,0.30)" : "rgba(236,232,222,0.72)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
+  const bodyFont = "'IM Fell English', Georgia, serif";
+
+  function Pill({ active, children, onClick }) {
+    return <button onClick={onClick} style={{ padding: "9px 10px", borderRadius: 12, border: `1px solid ${active ? borderStrong : border}`, background: active ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent", color: active ? text : textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10, textTransform: "capitalize" }}>{children}</button>;
+  }
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 10015, background: pageBg, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", overflowY: "auto" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "18px 16px 42px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 14 }}>
+          <button onClick={onClose} style={{ background: "transparent", border: "none", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 12 }}>← Back</button>
+          <div style={{ fontFamily: headFont, fontSize: 13, letterSpacing: "0.16em", textTransform: "uppercase", color: text }}>Reader Settings</div>
+          <div style={{ width: 42 }} />
+        </div>
+
+        <div style={{ borderRadius: 26, border: `1px solid ${border}`, background: surface, boxShadow: D ? "0 22px 70px rgba(0,0,0,0.60)" : "0 22px 70px rgba(0,0,0,0.13)", padding: "22px 20px" }}>
+          <div style={{ fontFamily: headFont, fontSize: 22, fontWeight: 700, color: text, marginBottom: 6 }}>Reading Comfort</div>
+          <div style={{ fontFamily: bodyFont, fontSize: 13, color: textDim, lineHeight: 1.65, marginBottom: 18 }}>Tune the page until the text feels natural on your screen.</div>
+
+          <div style={{ display: "grid", gap: 18 }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}><span style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase" }}>Text size</span><span style={{ fontFamily: headFont, fontSize: 11, color: text }}>{settings.fontSize}px</span></div>
+              <input type="range" min="13" max="22" step="1" value={settings.fontSize} onChange={e => onUpdate("fontSize", Number(e.target.value))} style={{ width: "100%" }} />
+            </div>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}><span style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase" }}>Line height</span><span style={{ fontFamily: headFont, fontSize: 11, color: text }}>{settings.lineHeight.toFixed(2)}</span></div>
+              <input type="range" min="1.55" max="2.45" step="0.05" value={settings.lineHeight} onChange={e => onUpdate("lineHeight", Number(e.target.value))} style={{ width: "100%" }} />
+            </div>
+            <div>
+              <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase", marginBottom: 8 }}>Text width</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>{["narrow","comfort","wide"].map(w => <Pill key={w} active={settings.textWidth===w} onClick={() => onUpdate("textWidth", w)}>{w}</Pill>)}</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase", marginBottom: 8 }}>Word spacing</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>{["compact","comfort","airy"].map(s => <Pill key={s} active={settings.paragraphSpacing===s} onClick={() => onUpdate("paragraphSpacing", s)}>{s}</Pill>)}</div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+              <button onClick={() => onUpdate("justify", !settings.justify)} style={{ padding: "10px 14px", borderRadius: 12, border: `1px solid ${settings.justify ? borderStrong : border}`, background: settings.justify ? (D ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.07)") : "transparent", color: settings.justify ? text : textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase" }}>{settings.justify ? "Justified On" : "Justified Off"}</button>
+              <button onClick={onReset} style={{ padding: "10px 14px", borderRadius: 12, border: `1px solid ${border}`, background: "transparent", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase" }}>Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AudioSettingsModal({ open, onClose, D, S, voice, speechRate, accentRegion, onAccentRegion, onVoice, onRate }) {
+  if (!open) return null;
+
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const borderStrong = D ? "rgba(255,255,255,0.22)" : S ? "rgba(120,80,20,0.55)" : "rgba(0,0,0,0.24)";
+  const surface = D ? "#08080a" : S ? "#f2dfb6" : "#fffaf0";
+  const pageBg = D ? "rgba(0,0,0,0.78)" : S ? "rgba(88,48,8,0.30)" : "rgba(236,232,222,0.72)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
+  const bodyFont = "'IM Fell English', Georgia, serif";
+  const voices = [
+    { key: "en-US-Studio-O", name: "Aldric",  gender: "♂", desc: "Deep · Commanding",  accent: "🇺🇸", region: "american" },
+    { key: "en-US-Studio-M", name: "Marcus",  gender: "♂", desc: "Warm · Storyteller", accent: "🇺🇸", region: "american" },
+    { key: "en-GB-Studio-B", name: "Edmund",  gender: "♂", desc: "Noble · Measured",   accent: "🇬🇧", region: "british" },
+    { key: "en-GB-Studio-C", name: "Rowena",  gender: "♀", desc: "Crisp · Classical",  accent: "🇬🇧", region: "british" },
+  ];
+  const filtered = voices.filter(v => v.region === accentRegion);
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 10015, background: pageBg, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", overflowY: "auto" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "18px 16px 42px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 14 }}>
+          <button onClick={onClose} style={{ background: "transparent", border: "none", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 12 }}>← Back</button>
+          <div style={{ fontFamily: headFont, fontSize: 13, letterSpacing: "0.16em", textTransform: "uppercase", color: text }}>Audio Settings</div>
+          <div style={{ width: 42 }} />
+        </div>
+        <div style={{ borderRadius: 26, border: `1px solid ${border}`, background: surface, boxShadow: D ? "0 22px 70px rgba(0,0,0,0.60)" : "0 22px 70px rgba(0,0,0,0.13)", padding: "22px 20px" }}>
+          <div style={{ fontFamily: headFont, fontSize: 22, fontWeight: 700, color: text, marginBottom: 6 }}>Narration</div>
+          <div style={{ fontFamily: bodyFont, fontSize: 13, color: textDim, lineHeight: 1.65, marginBottom: 18 }}>Choose the voice and pace used when reading chapters aloud.</div>
+          <div style={{ display: "grid", gap: 16 }}>
+            <div>
+              <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase", marginBottom: 8 }}>Accent</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>{["british","american"].map(r => <button key={r} onClick={() => onAccentRegion(r)} style={{ padding: "10px 12px", borderRadius: 12, border: `1px solid ${accentRegion===r ? borderStrong : border}`, background: accentRegion===r ? (D ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.07)") : "transparent", color: accentRegion===r ? text : textDim, cursor: "pointer", fontFamily: headFont, fontSize: 11 }}>{r === "british" ? "🇬🇧 British" : "🇺🇸 American"}</button>)}</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase", marginBottom: 8 }}>Voice</div>
+              <div style={{ display: "grid", gap: 8 }}>{filtered.map(v => <button key={v.key} onClick={() => onVoice(v.key)} style={{ padding: "11px 12px", borderRadius: 14, border: `1px solid ${voice===v.key ? borderStrong : border}`, background: voice===v.key ? (D ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.07)") : "transparent", color: voice===v.key ? text : textDim, cursor: "pointer", fontFamily: headFont, textAlign: "left" }}><span style={{ fontSize: 13 }}>{v.gender}</span> <strong>{v.name}</strong> <span style={{ opacity: 0.8 }}>{v.accent}</span><div style={{ fontFamily: bodyFont, fontSize: 12, marginTop: 3 }}>{v.desc}</div></button>)}</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", color: textDim, textTransform: "uppercase", marginBottom: 8 }}>Speed</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>{[0.5,0.75,1,1.5,2].map(rate => <button key={rate} onClick={() => onRate(rate)} style={{ padding: "9px 6px", borderRadius: 12, border: `1px solid ${speechRate===rate ? borderStrong : border}`, background: speechRate===rate ? (D ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.07)") : "transparent", color: speechRate===rate ? text : textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10 }}>{rate}x</button>)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function NoteEditorModal({ open, data, D, S, saving, onClose, onSave, onDelete }) {
   const [draft, setDraft] = React.useState(data?.note || "");
 
@@ -2712,6 +2819,8 @@ function RenZuReader() {
   const [highlightStart, setHighlightStart] = useState(0);
   const [selectionMenu, setSelectionMenu] = useState(null); // {x,y,text,sentenceIdx}
   const [readerSettingsOpen, setReaderSettingsOpen] = useState(false);
+  const [showReaderSettingsPage, setShowReaderSettingsPage] = useState(false);
+  const [showAudioSettingsPage, setShowAudioSettingsPage] = useState(false);
   const [readerSettings, setReaderSettings] = useState(() => {
     const defaults = {
       fontSize: 15,
@@ -5025,13 +5134,11 @@ function getOrBuildSentences() {
                   }}
                   onReaderSettings={() => {
                     if (!selected) return;
-                    setReaderSettingsOpen(o => !o);
-                    setTimeout(() => topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+                    setShowReaderSettingsPage(true);
                   }}
                   onAudioSettings={() => {
                     if (!selected) return;
-                    setVoicePickerOpen(true);
-                    setTimeout(() => topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+                    setShowAudioSettingsPage(true);
                   }}
                   onBookmarkChapter={() => selected && toggleChapterBookmark(selected)}
                   isReading={!!selected}
@@ -5306,101 +5413,15 @@ function getOrBuildSentences() {
                 {/* Divider */}
                 <div style={{ marginTop: 20, height: 1, background: D ? `linear-gradient(90deg, ${accentLine} 0%, rgba(255,255,255,0.06) 50%, transparent 80%)` : `linear-gradient(90deg, ${accentLine} 0%, transparent 70%)` }} />
 
-                {/* ── Reader settings panel (opened from nav menu) ── */}
-                {readerSettingsOpen && (
-                  <div style={{
-                    ...sq(18),
-                    marginTop: 10,
-                    padding: "16px 18px",
-                    display: "grid",
-                    gap: 14,
-                    animation: "fadeUp 0.18s ease both"
-                  }}>
-                    <div style={{ display: "grid", gap: 8 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
-                        <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Text size</div>
-                        <div style={{ fontFamily: headFont, fontSize: 11, color: text }}>{readerSettings.fontSize}px</div>
-                      </div>
-                      <input
-                        type="range"
-                        min="13"
-                        max="22"
-                        step="1"
-                        value={readerSettings.fontSize}
-                        onChange={e => updateReaderSetting("fontSize", Number(e.target.value))}
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-
-                    <div style={{ display: "grid", gap: 8 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
-                        <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Line height</div>
-                        <div style={{ fontFamily: headFont, fontSize: 11, color: text }}>{readerSettings.lineHeight.toFixed(2)}</div>
-                      </div>
-                      <input
-                        type="range"
-                        min="1.55"
-                        max="2.45"
-                        step="0.05"
-                        value={readerSettings.lineHeight}
-                        onChange={e => updateReaderSetting("lineHeight", Number(e.target.value))}
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-
-                    <div style={{ display: "grid", gap: 7 }}>
-                      <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Text width</div>
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-                        {["narrow", "comfort", "wide"].map(w => (
-                          <button key={w} onClick={() => updateReaderSetting("textWidth", w)} style={{
-                            padding: "8px 8px", borderRadius: 10,
-                            border: `1px solid ${readerSettings.textWidth === w ? borderHov : border}`,
-                            background: readerSettings.textWidth === w ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
-                            color: readerSettings.textWidth === w ? text : textDim,
-                            cursor: "pointer", fontFamily: headFont, fontSize: 10, textTransform: "capitalize"
-                          }}>{w}</button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div style={{ display: "grid", gap: 7 }}>
-                      <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Word spacing</div>
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-                        {["compact", "comfort", "airy"].map(sp => (
-                          <button key={sp} onClick={() => updateReaderSetting("paragraphSpacing", sp)} style={{
-                            padding: "8px 8px", borderRadius: 10,
-                            border: `1px solid ${readerSettings.paragraphSpacing === sp ? borderHov : border}`,
-                            background: readerSettings.paragraphSpacing === sp ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
-                            color: readerSettings.paragraphSpacing === sp ? text : textDim,
-                            cursor: "pointer", fontFamily: headFont, fontSize: 10, textTransform: "capitalize"
-                          }}>{sp}</button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-                      <button onClick={() => updateReaderSetting("justify", !readerSettings.justify)} style={{
-                        padding: "8px 12px", borderRadius: 10,
-                        border: `1px solid ${readerSettings.justify ? borderHov : border}`,
-                        background: readerSettings.justify ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
-                        color: readerSettings.justify ? text : textDim,
-                        cursor: "pointer", fontFamily: headFont, fontSize: 10,
-                        letterSpacing: "0.08em", textTransform: "uppercase"
-                      }}>
-                        {readerSettings.justify ? "Justified On" : "Justified Off"}
-                      </button>
-                      <button onClick={resetReaderSettings} style={{
-                        padding: "8px 12px", borderRadius: 10,
-                        border: `1px solid ${border}`,
-                        background: "transparent",
-                        color: textDim,
-                        cursor: "pointer", fontFamily: headFont, fontSize: 10,
-                        letterSpacing: "0.08em", textTransform: "uppercase"
-                      }}>Reset</button>
-                    </div>
-                  </div>
-                )}
-
+                {/* ── Current reader/audio summary ── */}
+                <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                  <button onClick={() => setShowReaderSettingsPage(true)} style={{ padding: "7px 11px", borderRadius: 999, border: `1px solid ${border}`, background: "transparent", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                    Aa {readerSettings.fontSize}px · {readerSettings.textWidth}
+                  </button>
+                  <button onClick={() => setShowAudioSettingsPage(true)} style={{ padding: "7px 11px", borderRadius: 999, border: `1px solid ${border}`, background: "transparent", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                    Audio · {voice.includes("GB") ? "Edmund" : voice.includes("Studio-C") ? "Rowena" : voice.includes("Studio-M") ? "Marcus" : "Aldric"} · {speechRate}x
+                  </button>
+                </div>
 
                 {/* ── Narration player ── */}
                 <div style={{ marginTop: 18 }}>
@@ -5415,148 +5436,40 @@ function getOrBuildSentences() {
                     ];
                     const activeVoice = VOICES.find(v => v.key === voice) || VOICES[0];
                     return (
-                      <div style={{ ...sq(20), padding: "14px 18px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                          {/* Play/pause button */}
-                          <button onClick={() => toggleAudio()} aria-label={audioPlaying ? "Pause" : audioPaused ? "Resume" : "Play"}
-                            disabled={audioLoading}
-                            style={{
-                              flexShrink: 0, width: 38, height: 38, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-                              background: D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.12)" : "rgba(0,0,0,0.07)",
-                              border: `1px solid ${border}`, color: text, cursor: audioLoading ? "default" : "pointer", transition: "all 0.17s",
-                              opacity: audioLoading ? 0.6 : 1,
-                            }}
-                            onMouseEnter={e => { if (!audioLoading) e.currentTarget.style.borderColor = borderHov; }}
-                            onMouseLeave={e => { e.currentTarget.style.borderColor = border; }}
-                          >
-                            {audioLoading ? (
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={text} strokeWidth="2.5" strokeLinecap="round">
-                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
-                                  <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/>
-                                </path>
-                              </svg>
-                            ) : audioPlaying ? (
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill={text}><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg>
-                            ) : (
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill={text}><path d="M6 4 L20 12 L6 20 Z"/></svg>
-                            )}
-                          </button>
-
-                          {/* Voice selector button */}
-                          <button onClick={() => setVoicePickerOpen(o => !o)} style={{
-                            display: "flex", alignItems: "center", gap: 7, padding: "6px 12px 6px 10px",
-                            background: voicePickerOpen ? (D ? "rgba(255,255,255,0.09)" : S ? "rgba(101,66,20,0.16)" : "rgba(0,0,0,0.07)") : "transparent",
-                            border: `1px solid ${voicePickerOpen ? borderHov : border}`,
-                            borderRadius: 10, cursor: "pointer", color: text, fontFamily: headFont,
-                            transition: "all 0.15s",
-                          }}
-                            onMouseEnter={e => e.currentTarget.style.borderColor = borderHov}
-                            onMouseLeave={e => { if (!voicePickerOpen) e.currentTarget.style.borderColor = border; }}
-                          >
-                            <span style={{ fontSize: 13 }}>{activeVoice.gender}</span>
-                            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.04em" }}>{activeVoice.name}</span>
-                            <span style={{ fontSize: 11 }}>{activeVoice.accent}</span>
-                            <span style={{ fontSize: 9, color: textDim, letterSpacing: "0.06em" }}>{activeVoice.desc}</span>
-                            <span style={{ fontSize: 9, color: textDim, marginLeft: 2, transition: "transform 0.2s", display: "inline-block", transform: voicePickerOpen ? "rotate(180deg)" : "none" }}>▼</span>
-                          </button>
-
-                          {/* Speed control buttons */}
-                          <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                            {[0.5, 0.75, 1, 1.5, 2].map(speed => (
-                              <button key={speed} onClick={() => { setSpeechRate(speed); speechRateRef.current = speed; }} 
-                                style={{
-                                  padding: "5px 9px", fontSize: 10, fontWeight: speechRate === speed ? 600 : 400,
-                                  background: speechRate === speed ? (D ? "rgba(200,180,255,0.3)" : S ? "rgba(139,94,26,0.4)" : "rgba(0,0,0,0.12)") : "transparent",
-                                  border: `1px solid ${speechRate === speed ? borderHov : border}`,
-                                  borderRadius: 6, cursor: "pointer", color: text, fontFamily: headFont,
-                                  transition: "all 0.15s", letterSpacing: "0.02em"
-                                }}
-                                onMouseEnter={e => e.currentTarget.style.borderColor = borderHov}
-                                onMouseLeave={e => e.currentTarget.style.borderColor = speechRate === speed ? borderHov : border}
-                              >
-                                {speed}x
-                              </button>
-                            ))}
-                          </div>
-
-                          {/* Status text */}
-                          <span style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: audioError ? "tomato" : textDim, fontFamily: headFont }}>
-                            {audioError
-                              ? (audioStatus ? audioStatus.slice(0,50) : "Unavailable")
-                              : audioPlaying ? "Ren Zu Is Speaking…"
-                              : audioPaused ? "Paused"
-                              : audioLoading ? "Summoning…"
-                              : essenceStatus()}
-                          </span>
-
-                        {/* Voice picker dropdown with region tabs and highlight feature */}
-                        {voicePickerOpen && (
-                          <div style={{
-                            marginTop: 10, borderRadius: 14,
-                            background: D ? "rgba(0,0,0,0.90)" : S ? "rgba(232,210,158,0.95)" : "rgba(255,255,255,0.96)",
-                            border: `1px solid ${border}`,
-                            backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-                            boxShadow: D ? "0 8px 32px rgba(0,0,0,0.8)" : "0 8px 32px rgba(0,0,0,0.12)",
-                            overflow: "hidden", animation: "fadeUp 0.18s ease both",
+                      <div style={{ ...sq(20), padding: "13px 16px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                        <button onClick={() => toggleAudio()} aria-label={audioPlaying ? "Pause" : audioPaused ? "Resume" : "Play"}
+                          disabled={audioLoading}
+                          style={{
+                            flexShrink: 0, width: 40, height: 40, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                            background: D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.12)" : "rgba(0,0,0,0.07)",
+                            border: `1px solid ${border}`, color: text, cursor: audioLoading ? "default" : "pointer", transition: "all 0.17s",
+                            opacity: audioLoading ? 0.6 : 1,
                           }}>
-                            {/* Region selector tabs */}
-                            <div style={{ display: "flex", borderBottom: `1px solid ${border}`, padding: "8px 10px", gap: 8 }}>
-                              {["british", "american"].map(region => (
-                                <button key={region} onClick={() => setAccentRegion(region)}
-                                  style={{
-                                    flex: 1, padding: "6px 10px", fontSize: 10, fontWeight: accentRegion === region ? 700 : 500,
-                                    background: accentRegion === region ? (D ? "rgba(255,255,255,0.1)" : S ? "rgba(101,66,20,0.2)" : "rgba(0,0,0,0.08)") : "transparent",
-                                    border: `1px solid ${accentRegion === region ? borderHov : border}`,
-                                    borderRadius: 8, cursor: "pointer", color: text, fontFamily: headFont,
-                                    transition: "all 0.15s", textTransform: "capitalize", letterSpacing: "0.04em"
-                                  }}
-                                >
-                                  {region === "british" ? "🇬🇧 British" : "🇺🇸 American"}
-                                </button>
-                              ))}
-                            </div>
-
-                            {/* Highlight feature */}
-                            <div style={{ padding: "10px 14px", borderBottom: `1px solid ${border}`, fontSize: 9, color: textDim, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: headFont }}>
-                              ✨ Highlight to read from here
-                            </div>
-
-                            {/* Voices — male only for American (no female US Studio voices exist) */}
-                            {(() => {
-                              const males = VOICES.filter(v => v.gender === "♂" && v.region === accentRegion);
-                              const females = VOICES.filter(v => v.gender === "♀" && v.region === accentRegion);
-                              const VoiceRow = ({ v }) => (
-                                <button key={v.key} onClick={() => { switchVoice(v.key); setVoicePickerOpen(false); }} style={{
-                                  width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px",
-                                  background: voice === v.key ? (D ? "rgba(255,255,255,0.08)" : S ? "rgba(101,66,20,0.14)" : "rgba(0,0,0,0.05)") : "transparent",
-                                  border: "none", cursor: "pointer", textAlign: "left", fontFamily: headFont,
-                                  borderLeft: voice === v.key ? `2px solid ${D ? "rgba(200,180,255,0.6)" : S ? "rgba(139,94,26,0.8)" : "rgba(0,0,0,0.35)"}` : "2px solid transparent",
-                                  transition: "background 0.12s",
-                                }}
-                                  onMouseEnter={e => e.currentTarget.style.background = D ? "rgba(255,255,255,0.06)" : S ? "rgba(101,66,20,0.10)" : "rgba(0,0,0,0.04)"}
-                                  onMouseLeave={e => e.currentTarget.style.background = voice === v.key ? (D ? "rgba(255,255,255,0.08)" : S ? "rgba(101,66,20,0.14)" : "rgba(0,0,0,0.05)") : "transparent"}
-                                >
-                                  <span style={{ fontSize: 13 }}>{v.gender}</span>
-                                  <span style={{ fontSize: 12, fontWeight: 600, color: text, minWidth: 72 }}>{v.name}</span>
-                                  <span style={{ fontSize: 13 }}>{v.accent}</span>
-                                  <span style={{ fontSize: 10, color: textDim }}>{v.desc}</span>
-                                </button>
-                              );
-                              return (
-                                <>
-                                  {females.length > 0 && <div style={{ padding: "10px 14px 4px", fontSize: 8, letterSpacing: "0.28em", textTransform: "uppercase", color: textDim, fontFamily: headFont }}>Male</div>}
-                                  {males.map(v => <VoiceRow key={v.key} v={v} />)}
-                                  {females.length > 0 && (
-                                    <>
-                                      <div style={{ padding: "10px 14px 4px", fontSize: 8, letterSpacing: "0.28em", textTransform: "uppercase", color: textDim, fontFamily: headFont, borderTop: `1px solid ${border}`, marginTop: 4 }}>Female</div>
-                                      {females.map(v => <VoiceRow key={v.key} v={v} />)}
-                                    </>
-                                  )}
-                                </>
-                              );
-                            })()}
-                            <div style={{ height: 6 }} />
-                          </div>
-                        )}
+                          {audioLoading ? "…" : audioPlaying ? "Ⅱ" : "▶"}
+                        </button>
+                        <button onClick={() => setShowAudioSettingsPage(true)} style={{
+                          flex: 1,
+                          minWidth: 180,
+                          padding: "8px 10px",
+                          borderRadius: 12,
+                          border: `1px solid ${border}`,
+                          background: "transparent",
+                          color: text,
+                          cursor: "pointer",
+                          fontFamily: headFont,
+                          textAlign: "left"
+                        }}>
+                          <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 3 }}>Narration</div>
+                          <div style={{ fontSize: 12, lineHeight: 1.35 }}>{activeVoice.name} · {activeVoice.accent} · {speechRate}x</div>
+                        </button>
+                        <span style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: audioError ? "tomato" : textDim, fontFamily: headFont }}>
+                          {audioError
+                            ? (audioStatus ? audioStatus.slice(0,50) : "Unavailable")
+                            : audioPlaying ? "Reading…"
+                            : audioPaused ? "Paused"
+                            : audioLoading ? "Preparing…"
+                            : essenceStatus()}
+                        </span>
                       </div>
                     );
                   })()}
@@ -5813,6 +5726,29 @@ function getOrBuildSentences() {
           ))}
         </div>
       )}
+
+      <ReaderSettingsModal
+        open={showReaderSettingsPage}
+        onClose={() => setShowReaderSettingsPage(false)}
+        D={D}
+        S={S}
+        settings={readerSettings}
+        onUpdate={updateReaderSetting}
+        onReset={resetReaderSettings}
+      />
+
+      <AudioSettingsModal
+        open={showAudioSettingsPage}
+        onClose={() => setShowAudioSettingsPage(false)}
+        D={D}
+        S={S}
+        voice={voice}
+        speechRate={speechRate}
+        accentRegion={accentRegion}
+        onAccentRegion={setAccentRegion}
+        onVoice={switchVoice}
+        onRate={(rate) => { setSpeechRate(rate); speechRateRef.current = rate; }}
+      />
 
       <NoteEditorModal
         open={!!noteEditor}
