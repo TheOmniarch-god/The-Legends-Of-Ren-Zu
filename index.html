@@ -404,10 +404,76 @@ function ThemeCycler({ mode, onClick }) {
 }
 // ─── Typewriter ───────────────────────────────────────────────────────────────
 function Typewriter({ text, color, streaming, font }) {
-  // streaming=true: text grows live token-by-token from Groq stream, render directly
-  // streaming=false: Together AI non-stream, animate character-by-character on arrival
+  // Renders Ask Ren Zu output with basic markdown support so users don't see raw **asterisks**.
   const [displayed, setDisplayed] = useState("");
   const prevText = useRef("");
+
+  function renderInlineMarkdown(line, keyPrefix) {
+    const parts = [];
+    const regex = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)/g;
+    let last = 0;
+    let match;
+
+    while ((match = regex.exec(line)) !== null) {
+      if (match.index > last) parts.push(line.slice(last, match.index));
+
+      if (match[2]) {
+        parts.push(
+          <strong key={`${keyPrefix}-b-${match.index}`} style={{ fontWeight: 700, color: "inherit" }}>
+            {match[2]}
+          </strong>
+        );
+      } else if (match[4]) {
+        parts.push(
+          <em key={`${keyPrefix}-i-${match.index}`} style={{ fontStyle: "italic" }}>
+            {match[4]}
+          </em>
+        );
+      }
+
+      last = regex.lastIndex;
+    }
+
+    if (last < line.length) parts.push(line.slice(last));
+    return parts;
+  }
+
+  function renderMarkdown(content) {
+    const cleaned = String(content || "")
+      .replace(/\r\n/g, "\n")
+      .replace(/\*\*\s+/g, "**")
+      .replace(/\s+\*\*/g, "**");
+
+    const blocks = cleaned
+      .split(/\n{2,}/)
+      .map(p => p.trim())
+      .filter(Boolean);
+
+    if (blocks.length === 0) return null;
+
+    return blocks.map((block, i) => {
+      const lines = block.split(/\n/).map(x => x.trim()).filter(Boolean);
+      const isList = lines.every(line => /^([-•*]|\d+\.)\s+/.test(line));
+
+      if (isList) {
+        return (
+          <ul key={`md-ul-${i}`} style={{ margin: "0 0 12px 1.2em", padding: 0 }}>
+            {lines.map((line, j) => (
+              <li key={`md-li-${i}-${j}`} style={{ marginBottom: 6 }}>
+                {renderInlineMarkdown(line.replace(/^([-•*]|\d+\.)\s+/, ""), `li-${i}-${j}`)}
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      return (
+        <p key={`md-p-${i}`} style={{ margin: i === 0 ? "0 0 12px" : "12px 0", lineHeight: 1.9 }}>
+          {renderInlineMarkdown(lines.join(" "), `p-${i}`)}
+        </p>
+      );
+    });
+  }
 
   useEffect(() => {
     if (streaming) {
@@ -421,15 +487,19 @@ function Typewriter({ text, color, streaming, font }) {
     setDisplayed("");
     let i = 0;
     const interval = setInterval(() => {
-      i += 3; setDisplayed(text.slice(0, i));
+      i += 6;
+      setDisplayed(text.slice(0, i));
       if (i >= text.length) clearInterval(interval);
-    }, 10);
+    }, 8);
     return () => clearInterval(interval);
   }, [text, streaming]);
 
-  return <span style={{ color, fontFamily: font || "'IM Fell English', 'Palatino Linotype', Georgia, serif", fontSize: 14, lineHeight: 1.9 }}>{displayed}</span>;
+  return (
+    <div style={{ color, fontFamily: font || "'IM Fell English', 'Palatino Linotype', Georgia, serif", fontSize: 14, lineHeight: 1.9 }}>
+      {renderMarkdown(displayed)}
+    </div>
+  );
 }
-
 function highlight(text, q) {
   if (!q) return text;
   const parts = text.split(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
@@ -484,7 +554,7 @@ const GU_POOL_ORDERED = [
 ];
 
 // ─── Billing / Paywall Modal — support audio before use ───────────────────────
-function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuthHeaders }) {
+function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuthHeaders, currentTier }) {
   const [code, setCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
@@ -510,6 +580,22 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
     gu_immortal: { label: "Gu Immortal", amount: "10 USDT" },
     venerable: { label: "Venerable", amount: "30 USDT" },
   };
+
+  function tierRankValue(value) {
+    switch (value) {
+      case "venerable": return 4;
+      case "gu_immortal": return 3;
+      case "gu_master": return 2;
+      default: return 1;
+    }
+  }
+
+  function tierState(tierKey) {
+    const current = currentTier || "mortal";
+    const isCurrent = current === tierKey;
+    const isIncluded = tierRankValue(current) > tierRankValue(tierKey);
+    return { isCurrent, isIncluded, isOwned: isCurrent || isIncluded };
+  }
 
   async function tryUnlock() {
     const clean = code.trim().toLowerCase();
@@ -628,16 +714,24 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
     );
   }
 
-  const Tier = ({ title, realm, price, desc, icon, primary, href, onClick }) => (
+  const Tier = ({ title, realm, price, desc, icon, primary, href, onClick }) => {
+    const state = tierState(icon);
+    const active = state.isCurrent;
+    const included = state.isIncluded;
+    return (
     <div style={{
-      padding: "14px 16px", borderRadius: 16, border: `1px solid ${primary ? border : "transparent"}`,
-      background: primary
-        ? (D ? "rgba(255,255,255,0.07)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.05)")
-        : (D ? "rgba(255,255,255,0.03)" : S ? "rgba(139,94,26,0.10)" : "rgba(0,0,0,0.03)"),
+      padding: "14px 16px", borderRadius: 16,
+      border: `1px solid ${active ? borderStrong : primary ? border : "transparent"}`,
+      background: active
+        ? (D ? "linear-gradient(180deg, rgba(216,163,77,0.16), rgba(255,255,255,0.045))" : S ? "linear-gradient(180deg, rgba(139,94,26,0.22), rgba(139,94,26,0.10))" : "linear-gradient(180deg, rgba(216,163,77,0.14), rgba(0,0,0,0.035))")
+        : primary
+          ? (D ? "rgba(255,255,255,0.07)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.05)")
+          : (D ? "rgba(255,255,255,0.03)" : S ? "rgba(139,94,26,0.10)" : "rgba(0,0,0,0.03)"),
+      boxShadow: active ? (D ? "0 0 22px rgba(216,163,77,0.18), inset 0 1px 0 rgba(255,255,255,0.08)" : "0 0 22px rgba(139,94,26,0.10), inset 0 1px 0 rgba(255,255,255,0.50)") : "none",
       textAlign: "left",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-        <RealmSeal type={icon} strong={primary} />
+        <RealmSeal type={icon} strong={primary || active} />
         <div style={{ flex: 1 }}>
           <div style={{ fontFamily: headFont, fontSize: 13, fontWeight: 700, color: text }}>{title}</div>
           <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 2 }}>{realm}</div>
@@ -645,7 +739,21 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
         </div>
         <div style={{ fontFamily: headFont, fontSize: 14, fontWeight: 700, color: text }}>{price}</div>
       </div>
-      {href ? (
+      {state.isOwned ? (
+        <button onClick={onClick || (() => {})}
+          disabled
+          style={{
+            width: "100%", padding: "9px 16px", borderRadius: 12,
+            background: active ? (D ? "rgba(216,163,77,0.16)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
+            color: active ? text : textDim, fontFamily: headFont, fontSize: 12, fontWeight: 700,
+            border: `1px solid ${active ? borderStrong : border}`,
+            cursor: "default",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}>
+          {active ? "Current Realm" : "Included"}
+        </button>
+      ) : href ? (
         <a href={href} target="_blank" rel="noopener noreferrer"
           style={{
             display: "block", textAlign: "center", padding: "9px 16px", borderRadius: 12,
@@ -666,7 +774,8 @@ function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuth
         </button>
       )}
     </div>
-  );
+    );
+  };
 
   return (
     <div style={{
@@ -3382,8 +3491,7 @@ const chapterKeyRef = useRef(null);
   }
 
   async function saveBookmark(payload) {
-    if (!isSoulBound()) {
-      openGateOfFate();
+    if (!requireLoginForSavedFeature()) {
       return null;
     }
 
@@ -3425,6 +3533,7 @@ const chapterKeyRef = useRef(null);
 
   async function toggleChapterBookmark(chapter) {
     if (!chapter) return;
+    if (!requireLoginForSavedFeature()) return;
 
     const existing = chapterBookmarkFor(chapter);
 
@@ -3444,6 +3553,7 @@ const chapterKeyRef = useRef(null);
 
   async function bookmarkSentence(text, sentenceIdx) {
     if (!selected) return;
+    if (!requireLoginForSavedFeature()) return;
 
     const existing = sentenceBookmarkFor(selected, sentenceIdx);
 
@@ -3496,8 +3606,7 @@ const chapterKeyRef = useRef(null);
   }
 
   async function saveAnnotation(payload) {
-    if (!isSoulBound()) {
-      openGateOfFate();
+    if (!requireLoginForSavedFeature()) {
       return null;
     }
 
@@ -3546,6 +3655,7 @@ const chapterKeyRef = useRef(null);
 
   async function toggleHighlight(text, sentenceIdx) {
     if (!selected) return;
+    if (!requireLoginForSavedFeature()) return;
     const existing = highlightFor(selected, sentenceIdx);
     if (existing) {
       await deleteAnnotation(existing.id);
@@ -3558,7 +3668,7 @@ const chapterKeyRef = useRef(null);
 
   function addNote(text, sentenceIdx) {
     if (!selected) return;
-    if (!isSoulBound()) { openGateOfFate(); return; }
+    if (!requireLoginForSavedFeature()) return;
 
     const existing = noteFor(selected, sentenceIdx);
     setNoteEditor({
@@ -3862,8 +3972,22 @@ const chapterKeyRef = useRef(null);
     return false;
   }
 
-  function openTreasureYellowHeaven() {
-    if (!isSoulBound()) {
+  function requireLoginForSavedFeature() {
+    if (isSoulBound()) return true;
+
+    setSelectionMenu(null);
+    setTappedSentenceIdx(-1);
+    setShowBookmarks(false);
+    setShowAnnotations(false);
+    setShowSavedHub(false);
+
+    setTimeout(() => openGateOfFate(), 40);
+    return false;
+  }
+
+  async function openTreasureYellowHeaven() {
+    const authHeaders = await getAuthHeaders();
+    if (!authHeaders.Authorization) {
       pendingTreasureAfterLoginRef.current = true;
       openGateOfFate();
       return;
@@ -5223,7 +5347,7 @@ function getOrBuildSentences() {
                   onTreasure={() => openTreasureYellowHeaven()}
                   onCodex={() => setShowCodex(true)}
                   onSaved={() => {
-                    if (!isSoulBound()) { openGateOfFate(); return; }
+                    if (!requireLoginForSavedFeature()) return;
                     setShowSavedHub(true);
                   }}
                   onSettings={() => {
@@ -5794,7 +5918,21 @@ function getOrBuildSentences() {
           transform/animation can ever turn into a containing block for this
           position:fixed element and trap it off-screen. ── */}
       {selectionMenu && (
-        <div id="sel-menu-popup" style={{
+        <div
+          onClick={() => { setSelectionMenu(null); setTappedSentenceIdx(-1); }}
+          onPointerDown={e => { e.stopPropagation(); }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9998,
+            background: "transparent",
+            WebkitTapHighlightColor: "transparent",
+          }}
+        />
+      )}
+
+      {selectionMenu && (
+        <div id="sel-menu-popup" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()} style={{
           position: "fixed",
           top: selectionMenuTop,
           left: selectionMenuLeft,
@@ -5962,6 +6100,7 @@ function getOrBuildSentences() {
           D={D}
           S={S}
           getAuthHeaders={getAuthHeaders}
+          currentTier={tier}
         />
       )}
 
