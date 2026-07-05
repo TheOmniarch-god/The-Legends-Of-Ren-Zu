@@ -1799,7 +1799,7 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onProfile, onCodex, onTreasure, onSaved, onSettings, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onTreasure, onSaved, onSettings, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -1811,6 +1811,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, onHome, onContinue, onP
       { id: "bookmark-chapter", label: isChapterBookmarked ? "Unbookmark" : "Bookmark", onClick: () => { onClose(); onBookmarkChapter(); }, disabled: false },
     ] : []),
     { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
+    { id: "theme", label: `Theme · ${mode === "light" ? "Light" : mode === "dark" ? "Dark" : "Scroll"}`, onClick: () => { onClose(); onThemeCycle(); }, disabled: false },
     { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
     { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
@@ -5205,6 +5206,8 @@ function getOrBuildSentences() {
                   onClose={() => setShowNavMenu(false)}
                   D={D}
                   S={S}
+                  mode={mode}
+                  onThemeCycle={cycleMode}
                   onHome={goHome}
                   onContinue={continueReading}
                   onProfile={() => setShowProfile(true)}
