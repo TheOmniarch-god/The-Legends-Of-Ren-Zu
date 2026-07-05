@@ -1028,7 +1028,7 @@ function AudioSettingsModal({ open, onClose, D, S, voice, speechRate, accentRegi
   const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
   const bodyFont = "'IM Fell English', Georgia, serif";
   const voices = [
-    { key: "en-US-Studio-O", name: "Aldric",  gender: "♂", desc: "Deep · Commanding",  accent: "🇺🇸", region: "american" },
+    { key: "en-US-Studio-O", name: "Aurelia", gender: "♀", desc: "Clear · Poised",      accent: "🇺🇸", region: "american" },
     { key: "en-US-Studio-M", name: "Marcus",  gender: "♂", desc: "Warm · Storyteller", accent: "🇺🇸", region: "american" },
     { key: "en-GB-Studio-B", name: "Edmund",  gender: "♂", desc: "Noble · Measured",   accent: "🇬🇧", region: "british" },
     { key: "en-GB-Studio-C", name: "Rowena",  gender: "♀", desc: "Crisp · Classical",  accent: "🇬🇧", region: "british" },
@@ -3826,6 +3826,16 @@ const chapterKeyRef = useRef(null);
     }
   }
 
+  function getVoiceDisplayName(v = voice) {
+    switch (v) {
+      case "en-US-Studio-O": return "Aurelia";
+      case "en-US-Studio-M": return "Marcus";
+      case "en-GB-Studio-B": return "Edmund";
+      case "en-GB-Studio-C": return "Rowena";
+      default: return "Narrator";
+    }
+  }
+
   function openGateOfFate() {
     try {
       if (window.RenZuAuth?.openGate) {
@@ -5623,7 +5633,7 @@ function getOrBuildSentences() {
                         Narration
                       </div>
                       <div style={{ fontSize: 12, lineHeight: 1.25, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {voice.includes("GB") ? "Edmund" : voice.includes("Studio-C") ? "Rowena" : voice.includes("Studio-M") ? "Marcus" : "Aldric"} · {speechRate}x
+                        {getVoiceDisplayName(voice)} · {speechRate}x
                       </div>
                     </button>
                   </div>
