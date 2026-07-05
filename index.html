@@ -1845,6 +1845,8 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
 }
 
 function CodexModal({ open, onClose, D, S, collectedGu }) {
+  const [filter, setFilter] = useState("all");
+  const [activeId, setActiveId] = useState(null);
   if (!open) return null;
 
   const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
@@ -1855,52 +1857,122 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
   const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
   const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
   const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
-  const discoveredCount = Array.isArray(collectedGu) ? collectedGu.length : 0;
-  const latestGu = discoveredCount > 0 ? collectedGu[discoveredCount - 1] : null;
+  const bodyFont = "'IM Fell English', Georgia, serif";
+  const ownedList = Array.isArray(collectedGu) ? collectedGu : [];
+  const ownedMap = new Map(ownedList.map(g => [g.id, g]));
+  const discoveredCount = ownedList.length;
   const totalGu = GU_POOL_ORDERED.length;
   const codexPct = totalGu > 0 ? Math.round((discoveredCount / totalGu) * 100) : 0;
+  const latestGu = discoveredCount > 0 ? ownedList[discoveredCount - 1] : null;
+
+  const filters = [
+    { id: "all", label: "All" },
+    { id: "owned", label: "Owned" },
+    { id: "gu_master", label: "Gu Master" },
+    { id: "gu_immortal", label: "Immortal" },
+    { id: "venerable", label: "Venerable" },
+  ];
+
+  const visibleGu = GU_POOL_ORDERED.filter(g => {
+    const owned = ownedMap.get(g.id);
+    if (filter === "owned") return !!owned;
+    if (filter === "all") return true;
+    return (owned?.tier || g.tier || "") === filter || GU_POOL[filter]?.some(x => x.id === g.id);
+  });
+
+  const activeBase = activeId ? GU_POOL_ORDERED.find(g => g.id === activeId) : null;
+  const activeOwned = activeId ? ownedMap.get(activeId) : null;
+  const activeGu = activeBase ? { ...activeBase, ...(activeOwned || {}) } : latestGu;
+
+  function tierColor(tier) {
+    if (tier === "venerable") return "#ffd36a";
+    if (tier === "gu_immortal") return "#62e8ff";
+    return "#d8a34d";
+  }
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10002, background: pageBg, color: text, overflowY: "auto" }}>
       <div style={{ position: "sticky", top: 0, zIndex: 2, background: surface, backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)", borderBottom: `1px solid ${border}` }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ maxWidth: 920, margin: "0 auto", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <button onClick={onClose} style={{ background: "transparent", border: "none", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 12, letterSpacing: "0.08em" }}>← Back</button>
           <div style={{ fontFamily: headFont, fontSize: 14, letterSpacing: "0.12em", textTransform: "uppercase" }}>Codex</div>
           <div style={{ width: 48 }} />
         </div>
       </div>
 
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "22px 18px 40px" }}>
-        <div style={{ textAlign: "center", marginBottom: 16 }}>
+      <div style={{ maxWidth: 920, margin: "0 auto", padding: "22px 18px 44px" }}>
+        <div style={{ textAlign: "center", marginBottom: 18 }}>
           <div style={{ fontSize: 34, marginBottom: 8 }}>🕸️</div>
-          <div style={{ fontFamily: headFont, fontSize: 18, marginBottom: 4 }}>Gu Codex</div>
-          <div style={{ fontSize: 11, color: textDim, fontFamily: "'IM Fell English', Georgia, serif" }}>{discoveredCount} of {totalGu} discovered · {codexPct}% mapped</div>
+          <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Gu Codex</div>
+          <div style={{ fontSize: 11, color: textDim, fontFamily: bodyFont }}>{discoveredCount} of {totalGu} discovered · {codexPct}% mapped</div>
         </div>
 
-        <div style={{ padding: "14px 14px 12px", borderRadius: 16, border: `1px solid ${border}`, background: cardBg, marginBottom: 14, fontSize: 12.5, color: text, lineHeight: 1.65, fontFamily: "'IM Fell English', Georgia, serif" }}>
-          {latestGu ? `Latest trace — ${latestGu.name}. Continue the path to refine more hidden Gu.` : "No Gu discovered yet. Continue reading and refining to wake the codex."}
+        <div style={{ height: 8, borderRadius: 999, overflow: "hidden", background: D ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)", marginBottom: 14 }}>
+          <div style={{ width: `${codexPct}%`, height: "100%", background: S ? "linear-gradient(90deg, rgba(139,94,26,0.92), rgba(199,154,59,0.88))" : D ? "linear-gradient(90deg, rgba(255,211,106,0.55), rgba(98,232,255,0.45))" : "linear-gradient(90deg, rgba(80,45,10,0.42), rgba(216,163,77,0.64))" }} />
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))", gap: 10 }}>
-          {GU_POOL_ORDERED.map(g => {
-            const owned = Array.isArray(collectedGu) ? collectedGu.find(c => c.id === g.id) : null;
-            const tierCfg = owned && (
-              owned.tier === "venerable" ? { color: "#ffd36a" } :
-              owned.tier === "gu_immortal" ? { color: "#62e8ff" } :
-              { color: "#d8a34d" }
-            );
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", marginBottom: 14 }}>
+          {filters.map(f => {
+            const active = filter === f.id;
             return (
-              <div key={g.id} title={owned ? `${g.name} — ${g.lore}` : "??? — undiscovered"} style={{ aspectRatio: "1/1", background: owned ? (D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.16)" : "rgba(0,0,0,0.06)") : (D ? "rgba(0,0,0,0.35)" : S ? "rgba(80,42,8,0.10)" : "rgba(0,0,0,0.04)"), border: `1px solid ${owned ? borderStrong : border}`, borderRadius: 12, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 8, position: "relative" }}>
-                <div style={{ fontFamily: headFont, fontSize: 24, color: owned ? (tierCfg ? tierCfg.color : text) : textDim, opacity: owned ? 1 : 0.24, lineHeight: 1, textShadow: owned && tierCfg ? `0 0 8px ${tierCfg.color}66` : "none" }}>{owned ? g.symbol : "?"}</div>
-                <div style={{ fontFamily: headFont, fontSize: 8, color: owned ? text : textDim, opacity: owned ? 0.88 : 0.42, textAlign: "center", lineHeight: 1.2, marginTop: 6 }}>{owned ? g.name : "???"}</div>
-              </div>
+              <button key={f.id} onClick={() => setFilter(f.id)} style={{
+                padding: "7px 11px", borderRadius: 999,
+                border: `1px solid ${active ? borderStrong : border}`,
+                background: active ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
+                color: active ? text : textDim,
+                cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.07em",
+              }}>{f.label}</button>
             );
           })}
         </div>
 
-        {latestGu && (
-          <div style={{ marginTop: 14, fontSize: 10, color: textDim, fontStyle: "italic", fontFamily: "'IM Fell English', Georgia, serif", lineHeight: 1.55, textAlign: "center" }}>
-            “{latestGu.lore}”
+        {activeGu && (
+          <div style={{ padding: "16px 16px 14px", borderRadius: 20, border: `1px solid ${borderStrong}`, background: cardBg, marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: 16,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                border: `1px solid ${tierColor(activeGu.tier)}88`,
+                color: tierColor(activeGu.tier), fontFamily: headFont, fontSize: 28, fontWeight: 800,
+                boxShadow: `0 0 22px ${tierColor(activeGu.tier)}33, inset 0 1px 0 rgba(255,255,255,0.10)`,
+                background: D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)"
+              }}>{activeGu.symbol}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: headFont, fontSize: 15, color: text, marginBottom: 4 }}>{activeGu.name}</div>
+                <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: headFont }}>{activeGu.tier ? activeGu.tier.replace("_", " ") : "Undiscovered"}</div>
+              </div>
+            </div>
+            <div style={{ marginTop: 12, color: textDim, fontFamily: bodyFont, lineHeight: 1.65, fontSize: 12.5, fontStyle: "italic" }}>
+              “{activeGu.lore || "This Gu has not awakened in your codex yet."}”
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))", gap: 10 }}>
+          {visibleGu.map(g => {
+            const owned = ownedMap.get(g.id);
+            const tier = owned?.tier || (GU_POOL.venerable.some(x => x.id === g.id) ? "venerable" : GU_POOL.gu_immortal.some(x => x.id === g.id) ? "gu_immortal" : "gu_master");
+            const color = tierColor(tier);
+            const selected = activeGu?.id === g.id;
+            return (
+              <button key={g.id} onClick={() => setActiveId(g.id)} title={owned ? `${g.name} — ${g.lore}` : "??? — undiscovered"} style={{
+                aspectRatio: "1/1", border: `1px solid ${selected ? color : owned ? borderStrong : border}`,
+                borderRadius: 14,
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 8,
+                cursor: "pointer",
+                background: owned ? (D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.16)" : "rgba(0,0,0,0.06)") : (D ? "rgba(0,0,0,0.35)" : S ? "rgba(80,42,8,0.10)" : "rgba(0,0,0,0.04)"),
+                boxShadow: selected ? `0 0 22px ${color}33` : "none"
+              }}>
+                <div style={{ fontFamily: headFont, fontSize: 25, color: owned ? color : textDim, opacity: owned ? 1 : 0.24, lineHeight: 1, textShadow: owned ? `0 0 8px ${color}66` : "none" }}>{owned ? g.symbol : "?"}</div>
+                <div style={{ fontFamily: headFont, fontSize: 8, color: owned ? text : textDim, opacity: owned ? 0.88 : 0.42, textAlign: "center", lineHeight: 1.2, marginTop: 7 }}>{owned ? g.name : "???"}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {visibleGu.length === 0 && (
+          <div style={{ padding: "32px 16px", textAlign: "center", color: textDim, border: `1px solid ${border}`, borderRadius: 18, marginTop: 10 }}>
+            Nothing discovered in this path yet.
           </div>
         )}
       </div>
@@ -1928,8 +2000,17 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
   ];
   return (
     <>
-      {open && <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 44, background: "transparent" }} />}
-      <div style={{ position: "relative", zIndex: 45, flexShrink: 0, marginRight: 2 }}>
+      {open && (
+        <div
+          onPointerDown={(e) => { e.preventDefault(); onClose(); }}
+          style={{ position: "fixed", inset: 0, zIndex: 44, background: "transparent", WebkitTapHighlightColor: "transparent" }}
+        />
+      )}
+      <div
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        style={{ position: "relative", zIndex: 45, flexShrink: 0, marginRight: 2 }}
+      >
         <button onClick={onToggle} aria-label="Open menu" style={{
           width: 34, height: 34, background: D ? "rgba(255,255,255,0.035)" : S ? "rgba(139,94,26,0.075)" : "rgba(0,0,0,0.035)",
           border: `1px solid ${border}`,
