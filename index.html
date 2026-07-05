@@ -3382,7 +3382,8 @@ const chapterKeyRef = useRef(null);
   }
 
   async function saveBookmark(payload) {
-    if (!requireLoginForSavedFeature()) {
+    if (!isSoulBound()) {
+      openGateOfFate();
       return null;
     }
 
@@ -3424,7 +3425,6 @@ const chapterKeyRef = useRef(null);
 
   async function toggleChapterBookmark(chapter) {
     if (!chapter) return;
-    if (!requireLoginForSavedFeature()) return;
 
     const existing = chapterBookmarkFor(chapter);
 
@@ -3444,7 +3444,6 @@ const chapterKeyRef = useRef(null);
 
   async function bookmarkSentence(text, sentenceIdx) {
     if (!selected) return;
-    if (!requireLoginForSavedFeature()) return;
 
     const existing = sentenceBookmarkFor(selected, sentenceIdx);
 
@@ -3497,7 +3496,8 @@ const chapterKeyRef = useRef(null);
   }
 
   async function saveAnnotation(payload) {
-    if (!requireLoginForSavedFeature()) {
+    if (!isSoulBound()) {
+      openGateOfFate();
       return null;
     }
 
@@ -3546,7 +3546,6 @@ const chapterKeyRef = useRef(null);
 
   async function toggleHighlight(text, sentenceIdx) {
     if (!selected) return;
-    if (!requireLoginForSavedFeature()) return;
     const existing = highlightFor(selected, sentenceIdx);
     if (existing) {
       await deleteAnnotation(existing.id);
@@ -3559,7 +3558,7 @@ const chapterKeyRef = useRef(null);
 
   function addNote(text, sentenceIdx) {
     if (!selected) return;
-    if (!requireLoginForSavedFeature()) return;
+    if (!isSoulBound()) { openGateOfFate(); return; }
 
     const existing = noteFor(selected, sentenceIdx);
     setNoteEditor({
@@ -3860,19 +3859,6 @@ const chapterKeyRef = useRef(null);
     if (isSoulBound()) return true;
 
     openGateOfFate();
-    return false;
-  }
-
-  function requireLoginForSavedFeature() {
-    if (isSoulBound()) return true;
-
-    setSelectionMenu(null);
-    setTappedSentenceIdx(-1);
-    setShowBookmarks(false);
-    setShowAnnotations(false);
-    setShowSavedHub(false);
-
-    setTimeout(() => openGateOfFate(), 40);
     return false;
   }
 
@@ -5237,7 +5223,7 @@ function getOrBuildSentences() {
                   onTreasure={() => openTreasureYellowHeaven()}
                   onCodex={() => setShowCodex(true)}
                   onSaved={() => {
-                    if (!requireLoginForSavedFeature()) return;
+                    if (!isSoulBound()) { openGateOfFate(); return; }
                     setShowSavedHub(true);
                   }}
                   onSettings={() => {
@@ -5808,21 +5794,7 @@ function getOrBuildSentences() {
           transform/animation can ever turn into a containing block for this
           position:fixed element and trap it off-screen. ── */}
       {selectionMenu && (
-        <div
-          onClick={() => { setSelectionMenu(null); setTappedSentenceIdx(-1); }}
-          onPointerDown={e => { e.stopPropagation(); }}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 9998,
-            background: "transparent",
-            WebkitTapHighlightColor: "transparent",
-          }}
-        />
-      )}
-
-      {selectionMenu && (
-        <div id="sel-menu-popup" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()} style={{
+        <div id="sel-menu-popup" style={{
           position: "fixed",
           top: selectionMenuTop,
           left: selectionMenuLeft,
