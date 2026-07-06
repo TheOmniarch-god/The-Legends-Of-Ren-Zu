@@ -1842,7 +1842,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
             </div>
             <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 8 }}>
               {readingProgress?.lastChapterTitle
-                ? `Last path touched: Part ${readingProgress.lastChapterNum} — ${readingProgress.lastChapterTitle}.`
+                ? `Last path touched: Part ${readingProgress.lastChapterNum} — ${readingProgress.lastChapterTitle}${readingProgress?.positions?.[readingProgress.lastChapterNum]?.scrollPercent ? ` · ${readingProgress.positions[readingProgress.lastChapterNum].scrollPercent}%` : ""}.`
                 : "You have not opened any entry yet. Begin anywhere and the path will start remembering you."}
             </div>
             {lastOpenedText && <div style={{ fontSize: 10, color: textDim, marginBottom: 8 }}>Last opened: {lastOpenedText}</div>}
@@ -3307,6 +3307,8 @@ const chapterKeyRef = useRef(null);
   const pendingTreasureAfterLoginRef = useRef(false);
   const readingSettingsScrollYRef = useRef(0);
   const autoContinueAudioRef = useRef(false);
+  const pendingResumeChapterRef = useRef(null);
+  const progressSyncTimerRef = useRef(null);
   const codexProgressRef = useRef({});
   const chapterReadStartRef = useRef(0);
 
@@ -3330,7 +3332,8 @@ const chapterKeyRef = useRef(null);
       lastChapterNum: "",
       lastChapterTitle: "",
       lastOpenedAt: "",
-      chaptersRead: []
+      chaptersRead: [],
+      positions: {}
     };
   }
 
@@ -3663,6 +3666,85 @@ const chapterKeyRef = useRef(null);
     } catch (_) {}
 
     return {};
+  }
+
+  function getChapterReadPercent() {
+    const el = chapterCanvasRef.current;
+    if (!el || typeof window === "undefined") return 0;
+
+    const rect = el.getBoundingClientRect();
+    const total = Math.max(1, rect.height - window.innerHeight * 0.55);
+    const seen = Math.min(total, Math.max(0, window.innerHeight * 0.72 - rect.top));
+    return Math.max(0, Math.min(100, Math.round((seen / total) * 100)));
+  }
+
+  function scrollToChapterPercent(chapterNum, behavior = "smooth") {
+    const percent = readingProgress?.positions?.[chapterNum]?.scrollPercent || 0;
+    const el = chapterCanvasRef.current;
+
+    if (!el || !percent) return false;
+
+    const rect = el.getBoundingClientRect();
+    const pageTop = window.scrollY + rect.top;
+    const total = Math.max(1, rect.height - window.innerHeight * 0.55);
+    const target = pageTop + (total * percent / 100) - window.innerHeight * 0.18;
+
+    window.scrollTo({ top: Math.max(0, target), behavior });
+    return true;
+  }
+
+  async function syncReadingProgressToBackend(chapterNum, chapterTitle, scrollPercent, completed = false) {
+    try {
+      const authHeaders = await getAuthHeaders();
+      if (!authHeaders.Authorization) return;
+
+      await fetch("/api/reading-progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders },
+        body: JSON.stringify({ chapterNum, chapterTitle, scrollPercent, completed })
+      });
+    } catch (_) {}
+  }
+
+  async function loadReadingProgressFromBackend() {
+    try {
+      const authHeaders = await getAuthHeaders();
+      if (!authHeaders.Authorization) return;
+
+      const res = await fetch("/api/reading-progress", { headers: { ...authHeaders } });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !Array.isArray(data.progress)) return;
+
+      setReadingProgress(prev => {
+        const next = { ...createEmptyProgress(), ...(prev || {}) };
+        const positions = { ...(next.positions || {}) };
+        const readSet = new Set(Array.isArray(next.chaptersRead) ? next.chaptersRead : []);
+
+        data.progress.forEach(row => {
+          if (!row.chapterNum) return;
+          positions[row.chapterNum] = {
+            scrollPercent: row.scrollPercent || 0,
+            updatedAt: row.updatedAt,
+            completed: !!row.completed,
+            chapterTitle: row.chapterTitle || ""
+          };
+          readSet.add(row.chapterNum);
+        });
+
+        const latest = data.progress[0];
+        if (latest?.chapterNum) {
+          next.lastChapterNum = latest.chapterNum;
+          next.lastChapterTitle = latest.chapterTitle || next.lastChapterTitle;
+          next.lastOpenedAt = latest.updatedAt || next.lastOpenedAt;
+        }
+
+        return {
+          ...next,
+          positions,
+          chaptersRead: Array.from(readSet)
+        };
+      });
+    } catch (_) {}
   }
 
   async function syncCollectionToBackend(nextCollection) {
@@ -4147,6 +4229,7 @@ const chapterKeyRef = useRef(null);
       if (deviceId) syncWithBackend(deviceId);
       loadBookmarks();
       loadAnnotations();
+      loadReadingProgressFromBackend();
 
       if (e?.detail?.user && pendingTreasureAfterLoginRef.current) {
         pendingTreasureAfterLoginRef.current = false;
@@ -4168,7 +4251,7 @@ const chapterKeyRef = useRef(null);
   }, [deviceId]);
 
   useEffect(() => {
-    const t = setTimeout(() => { loadBookmarks(); loadAnnotations(); }, 900);
+    const t = setTimeout(() => { loadBookmarks(); loadAnnotations(); loadReadingProgressFromBackend(); }, 900);
     return () => clearTimeout(t);
   }, []);
 
@@ -5149,10 +5232,13 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
       readSet.add(chapter.num);
 
       return {
+        ...createEmptyProgress(),
+        ...prev,
         lastChapterNum: chapter.num,
         lastChapterTitle: chapter.title,
         lastOpenedAt: new Date().toISOString(),
-        chaptersRead: Array.from(readSet)
+        chaptersRead: Array.from(readSet),
+        positions: prev?.positions || {}
       };
     });
   }
@@ -5211,10 +5297,59 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
     };
   }, [selected, tier]);
 
+  useEffect(() => {
+    if (!selected) return;
+
+    function updateReadingPosition() {
+      const pct = getChapterReadPercent();
+      if (pct <= 0) return;
+
+      setReadingProgress(prev => {
+        const positions = { ...(prev?.positions || {}) };
+        const old = positions[selected.num]?.scrollPercent || 0;
+        if (Math.abs(old - pct) < 2 && pct < 92) return prev;
+
+        positions[selected.num] = {
+          ...(positions[selected.num] || {}),
+          chapterTitle: selected.title,
+          scrollPercent: pct,
+          completed: pct >= 92,
+          updatedAt: new Date().toISOString()
+        };
+
+        return {
+          ...createEmptyProgress(),
+          ...(prev || {}),
+          lastChapterNum: selected.num,
+          lastChapterTitle: selected.title,
+          lastOpenedAt: new Date().toISOString(),
+          positions
+        };
+      });
+
+      if (progressSyncTimerRef.current) clearTimeout(progressSyncTimerRef.current);
+      progressSyncTimerRef.current = setTimeout(() => {
+        syncReadingProgressToBackend(selected.num, selected.title, pct, pct >= 92);
+      }, 1200);
+    }
+
+    const t = setTimeout(updateReadingPosition, 600);
+    window.addEventListener("scroll", updateReadingPosition, { passive: true });
+    window.addEventListener("pagehide", updateReadingPosition);
+
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("scroll", updateReadingPosition);
+      window.removeEventListener("pagehide", updateReadingPosition);
+      updateReadingPosition();
+    };
+  }, [selected]);
+
   function continueReading() {
     if (!readingProgress?.lastChapterNum) return;
     const chapter = TAGGED.find(c => c.num === readingProgress.lastChapterNum);
     if (chapter) {
+      pendingResumeChapterRef.current = chapter.num;
       select(chapter);
     }
   }
@@ -5245,9 +5380,14 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
       window.history.pushState({ view: "chapter", num: c.num }, "", "#chapter-" + encodeURIComponent(c.num));
     } catch (_) {}
     setTimeout(() => {
+      if (pendingResumeChapterRef.current === c.num && scrollToChapterPercent(c.num, "smooth")) {
+        pendingResumeChapterRef.current = null;
+        return;
+      }
+      pendingResumeChapterRef.current = null;
       topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (_) {}
-    }, 120);
+    }, 140);
   }
 
   // Used by the in-app "← All" button. If we got here via a pushed chapter
@@ -5867,6 +6007,7 @@ function getOrBuildSentences() {
                 </div>
                 <div style={{ fontSize: 11.5, color: textMid, lineHeight: 1.7, marginBottom: 10, fontFamily: bodyFont }}>
                   {chaptersReadCount} of {TAGGED.length} entries opened · {readingCompletion}% journey mapped
+                  {readingProgress?.positions?.[readingProgress.lastChapterNum]?.scrollPercent ? ` · ${readingProgress.positions[readingProgress.lastChapterNum].scrollPercent}% through current entry` : ""}
                   {lastProgressText ? ` · Last opened ${lastProgressText}` : ""}
                 </div>
                 <div style={{ height: 8, borderRadius: 999, overflow: "hidden", background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)" }}>
