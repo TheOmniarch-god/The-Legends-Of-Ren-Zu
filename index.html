@@ -2032,6 +2032,10 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
           <div style={{ width: `${codexPct}%`, height: "100%", background: S ? "linear-gradient(90deg, rgba(139,94,26,0.92), rgba(199,154,59,0.88))" : D ? "linear-gradient(90deg, rgba(255,211,106,0.55), rgba(98,232,255,0.45))" : "linear-gradient(90deg, rgba(80,45,10,0.42), rgba(216,163,77,0.64))" }} />
         </div>
 
+        <div style={{ padding: "12px 14px", borderRadius: 16, border: `1px solid ${border}`, background: cardBg, color: textDim, fontFamily: bodyFont, fontSize: 12.2, lineHeight: 1.6, marginBottom: 14 }}>
+          Gu are refined through use: read deeply into a chapter, listen to a chapter, or save passages with bookmarks, highlights, and notes. Some Gu only reveal after ascending to a higher realm.
+        </div>
+
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", marginBottom: 14 }}>
           {filters.map(f => {
             const active = filter === f.id;
@@ -3304,6 +3308,7 @@ const chapterKeyRef = useRef(null);
   const readingSettingsScrollYRef = useRef(0);
   const autoContinueAudioRef = useRef(false);
   const codexProgressRef = useRef({});
+  const chapterReadStartRef = useRef(0);
 
   // ── Cultivation billing / essence helpers ────────────────────────────
   const DAILY_CHAT_LIMIT = 3;
@@ -4744,6 +4749,7 @@ const chapterKeyRef = useRef(null);
         setActiveSentenceIdx(-1);
         setActiveSentenceEndIdx(-1);
         playbackActiveRef.current = false;
+        discoverGuForChapter(selected);
         discoverGuByIds(["sound"], "Narration");
 
         // Auto-continue into the next chapter when narration naturally reaches
@@ -5186,7 +5192,10 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
         traceGuForChapter(selected);
       }
 
-      if (pct >= 85 && !state.unlocked) {
+      const timeSpentMs = Date.now() - (chapterReadStartRef.current || Date.now());
+      const enoughTime = timeSpentMs >= 20000;
+
+      if (pct >= 85 && !state.unlocked && enoughTime) {
         state.unlocked = true;
         codexProgressRef.current[key] = state;
         saveProgressFlags();
@@ -5230,14 +5239,14 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
 
   function select(c) {
     markChapterOpened(c);
+    chapterReadStartRef.current = Date.now();
     setSelected(c); setAiResponse(""); setAiQuestion("");
     try {
       window.history.pushState({ view: "chapter", num: c.num }, "", "#chapter-" + encodeURIComponent(c.num));
     } catch (_) {}
     setTimeout(() => {
-      const firstMark = document.querySelector("mark");
-      if (firstMark) firstMark.scrollIntoView({ behavior: "smooth", block: "center" });
-      else topRef.current?.scrollIntoView({ behavior: "smooth" });
+      topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (_) {}
     }, 120);
   }
 
@@ -6480,26 +6489,28 @@ function getOrBuildSentences() {
           WebkitBackdropFilter: "blur(18px)",
           animation: "fadeUp 0.25s ease both",
         }}>
-          <div style={{
-            width: 38,
-            height: 38,
-            borderRadius: 12,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            fontFamily: headFont,
-            fontSize: 21,
-            color: guDiscoveryToast.first.tier === "venerable" ? "#ffd36a" : guDiscoveryToast.first.tier === "gu_immortal" ? "#62e8ff" : "#d8a34d",
-            border: "1px solid currentColor",
-            boxShadow: "0 0 18px currentColor",
-            background: D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)",
-          }}>{guDiscoveryToast.first.symbol}</div>
+          {guDiscoveryToast.mode !== "trace" && (
+            <div style={{
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              fontFamily: headFont,
+              fontSize: 21,
+              color: guDiscoveryToast.first.tier === "venerable" ? "#ffd36a" : guDiscoveryToast.first.tier === "gu_immortal" ? "#62e8ff" : "#d8a34d",
+              border: "1px solid currentColor",
+              boxShadow: "0 0 18px currentColor",
+              background: D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)",
+            }}>{guDiscoveryToast.first.symbol}</div>
+          )}
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: headFont, fontSize: 12, color: text, lineHeight: 1.25 }}>
-              {guDiscoveryToast.mode === "trace" ? `${guDiscoveryToast.first.name} trace sensed` : `${guDiscoveryToast.first.name} discovered${guDiscoveryToast.count > 1 ? ` +${guDiscoveryToast.count - 1}` : ""}`}
+            <div style={{ fontFamily: guDiscoveryToast.mode === "trace" ? "'IM Fell English', Georgia, serif" : headFont, fontSize: guDiscoveryToast.mode === "trace" ? 12.5 : 12, color: text, lineHeight: 1.25, fontStyle: guDiscoveryToast.mode === "trace" ? "italic" : "normal" }}>
+              {guDiscoveryToast.mode === "trace" ? `${guDiscoveryToast.first.name} trace…` : `${guDiscoveryToast.first.name} discovered${guDiscoveryToast.count > 1 ? ` +${guDiscoveryToast.count - 1}` : ""}`}
             </div>
-            <div style={{ fontSize: 10.5, color: textDim, marginTop: 3, fontFamily: "'IM Fell English', Georgia, serif" }}>{guDiscoveryToast.mode === "trace" ? "Read deeper to refine" : "Added to Codex"}</div>
+            <div style={{ fontSize: 10.5, color: textDim, marginTop: 3, fontFamily: "'IM Fell English', Georgia, serif", fontStyle: guDiscoveryToast.mode === "trace" ? "italic" : "normal" }}>{guDiscoveryToast.mode === "trace" ? "Read deeper or listen fully to refine it." : "Added to Codex"}</div>
           </div>
         </div>
       )}
