@@ -527,7 +527,15 @@ const GU_POOL = {
     { id: "hope",          name: "Hope Gu",              symbol: "光", lore: "The light that drives back the Predicaments." },
     { id: "strength",      name: "Strength Gu",          symbol: "力", lore: "Trades youth for the body's power." },
     { id: "self",          name: "Self Gu",              symbol: "己", lore: "Found only by staring at the stars in silence." },
+    { id: "attitude",      name: "Attitude Gu",          symbol: "面", lore: "The mask worn by the heart." },
+    { id: "belief",        name: "Belief Gu",            symbol: "念", lore: "A quiet force that lets the heart stand firm." },
+    { id: "suspicion",     name: "Suspicion Gu",         symbol: "疑", lore: "Doubt that divides paths before a step is taken." },
     { id: "reputation",    name: "Reputation Gu",        symbol: "名", lore: "Voice without sound; a bridge without pillars." },
+    { id: "vanity",        name: "Vanity Gu",            symbol: "虚", lore: "A hollow shell that can burn reason into ash." },
+    { id: "fear",          name: "Fear Gu",              symbol: "惧", lore: "More frightening than death when it rules the heart." },
+    { id: "betrayal",      name: "Betrayal Gu",          symbol: "叛", lore: "A blade that first turns against trust." },
+    { id: "loyalty",       name: "Loyalty Gu",           symbol: "忠", lore: "A chain, a vow, and sometimes a cage." },
+    { id: "wealth",        name: "Wealth Gu",            symbol: "财", lore: "A glittering promise that weighs on the miniman's road." },
     { id: "self_cog",      name: "Self-Cognition Gu",    symbol: "觉", lore: "The wings of freedom, born of one's own mind." },
   ],
   gu_immortal: [
@@ -537,21 +545,88 @@ const GU_POOL = {
     { id: "rules",         name: "Rules Gu",             symbol: "规", lore: "Captures any Gu whose name is spoken aloud." },
     { id: "regulations",   name: "Regulations Gu",       symbol: "矩", lore: "Square to Rules' round. Together, one net." },
     { id: "courage",       name: "Courage Gu",           symbol: "勇", lore: "Drives back the Suffering Gu from any road." },
+    { id: "guts",          name: "Guts Gu",              symbol: "胆", lore: "What courage becomes when it must survive suffering." },
+    { id: "success",       name: "Success Gu",           symbol: "成", lore: "The one stone hidden among countless failures." },
+    { id: "failure",       name: "Failure Gu",           symbol: "败", lore: "The mother of success and the threat of losing oneself." },
+    { id: "unexpected",    name: "Unexpected Gu",        symbol: "奇", lore: "The accident that turns death back toward life." },
+    { id: "meaning",       name: "Meaning Gu",           symbol: "义", lore: "Not found in the world until a human creates it." },
+    { id: "life",          name: "Life Gu",              symbol: "生", lore: "A blue gem from the sea where all living beings begin." },
+    { id: "love",          name: "Love Gu",              symbol: "爱", lore: "Unreasonable, cruel, and powerful beyond wisdom." },
+    { id: "cognition",     name: "Cognition Gu",         symbol: "认", lore: "Mother of wisdom and the light of understanding." },
+    { id: "perseverance",  name: "Perseverance Gu",      symbol: "恒", lore: "A ladder grown from effort, step by step." },
+    { id: "freedom",       name: "Freedom Gu",           symbol: "自", lore: "The desired Gu that resists every shackle." },
     { id: "divine_travel", name: "Divine Travel Gu",     symbol: "游", lore: "Takes you anywhere — but only when you are drunk." },
+    { id: "fixed_travel",  name: "Fixed Immortal Travel Gu", symbol: "定", lore: "Divine Travel refined into a chosen destination." },
   ],
   venerable: [
-    { id: "fate",          name: "Fate Gu",              symbol: "命", lore: "The greatest path. Fate bends to those who wield it." },
+    { id: "fate",          name: "Fate Gu",              symbol: "命", lore: "The greatest path. Fate binds all beneath heaven." },
     { id: "sovereign",     name: "Sovereign Immortal Gu", symbol: "尊", lore: "Controls fate itself; the supreme Gu." },
     { id: "star_fragment", name: "Star Fragment Gu",     symbol: "星", lore: "Eight-sided diamonds gathered from Blue Heaven." },
     { id: "river_time",    name: "River of Time Gu",     symbol: "时", lore: "All moments flow through it; all moments can be frozen." },
     { id: "longevity",     name: "Longevity Gu",         symbol: "寿", lore: "The pursuit of every mortal; the bane of every immortal." },
     { id: "dream",         name: "Dream Realm Gu",       symbol: "梦", lore: "Born of Ren Zu's sacrifice; lives in every sleeper." },
+    { id: "destiny",       name: "Destiny Gu",           symbol: "宿", lore: "The road left behind when fate moves through life and death." },
+    { id: "heavenly_secret", name: "Heavenly Secret Gu",  symbol: "天", lore: "A veiled whisper from heaven's hidden arrangements." },
   ],
 };
 const TIER_MAIN_GU = { gu_master: "hope", gu_immortal: "wisdom", venerable: "fate" };
 const GU_POOL_ORDERED = [
-  ...GU_POOL.gu_master, ...GU_POOL.gu_immortal, ...GU_POOL.venerable,
+  ...GU_POOL.gu_master.map(g => ({ ...g, tier: "gu_master" })),
+  ...GU_POOL.gu_immortal.map(g => ({ ...g, tier: "gu_immortal" })),
+  ...GU_POOL.venerable.map(g => ({ ...g, tier: "venerable" })),
 ];
+const GU_BY_ID = Object.fromEntries(GU_POOL_ORDERED.map(g => [g.id, g]));
+const CHAPTER_GU_UNLOCKS = {
+  "1": ["hope", "strength"],
+  "2": ["rules", "regulations"],
+  "3": ["attitude", "belief", "suspicion"],
+  "4 & 5": ["attitude", "self"],
+  "6": ["faith"],
+  "7": ["divine_travel"],
+  "8": ["reputation"],
+  "9": ["vanity", "fire"],
+  "10 & 11": ["divine_travel", "fixed_travel"],
+  "12": ["courage", "guts"],
+  "13": ["love", "success"],
+  "14": ["failure"],
+  "15": ["unexpected", "meaning"],
+  "16": ["life", "wisdom"],
+  "17": ["self", "self_cog"],
+  "18": ["fire"],
+  "19": ["dream"],
+  "20": ["dream"],
+  "21": ["destiny"],
+  "22": ["perseverance"],
+  "23": ["failure"],
+  "24": ["freedom"],
+  "25": ["fear"],
+  "26": ["betrayal", "loyalty"],
+  "27": ["love", "courage"],
+  "28": ["wealth"],
+  "30": ["perseverance"],
+  "31": ["wealth"],
+  "32": ["fate"],
+  "33": ["freedom"],
+  "34": ["fate", "freedom"],
+  "35": ["freedom"],
+  "36": ["strength"],
+  "38": ["strength", "fear"],
+  "39": ["hope"],
+  "40": ["perseverance"],
+};
+function mergeGuCollections(...groups) {
+  const map = new Map();
+  groups.flat().filter(Boolean).forEach(g => {
+    if (!g.id) return;
+    const base = GU_BY_ID[g.id] || {};
+    map.set(g.id, { ...base, ...g, tier: g.tier || base.tier || "gu_master" });
+  });
+  return Array.from(map.values()).sort((a, b) => {
+    const ai = GU_POOL_ORDERED.findIndex(g => g.id === a.id);
+    const bi = GU_POOL_ORDERED.findIndex(g => g.id === b.id);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
+}
 
 // ─── Billing / Paywall Modal — support audio before use ───────────────────────
 function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuthHeaders, currentTier }) {
@@ -3189,6 +3264,7 @@ const chapterKeyRef = useRef(null);
   const [refiningTier, setRefiningTier] = useState(null);
   const [showRenZuLoader, setShowRenZuLoader] = useState(false);
   const [collectedGu, setCollectedGu] = useState([]);
+  const [guDiscoveryToast, setGuDiscoveryToast] = useState(null);
   const [awardedGu, setAwardedGu] = useState(null);
   const [showDevPanel, setShowDevPanel] = useState(false);
   const [devTapCount, setDevTapCount] = useState(0);
@@ -3567,6 +3643,70 @@ const chapterKeyRef = useRef(null);
     return {};
   }
 
+  async function syncCollectionToBackend(nextCollection) {
+    try {
+      const authHeaders = await getAuthHeaders();
+      if (!authHeaders.Authorization) return;
+
+      const res = await fetch("/api/collection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders },
+        body: JSON.stringify({ collectedGu: nextCollection })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && Array.isArray(data.collectedGu)) {
+        setCollectedGu(prev => mergeGuCollections(prev, data.collectedGu));
+      }
+    } catch (err) {
+      console.warn("Codex sync failed", err);
+    }
+  }
+
+  function showGuDiscoveryToast(newGu) {
+    if (!newGu || newGu.length === 0) return;
+    const first = newGu[0];
+    setGuDiscoveryToast({
+      first,
+      count: newGu.length,
+      createdAt: Date.now()
+    });
+    setTimeout(() => setGuDiscoveryToast(null), 2800);
+  }
+
+  function discoverGuByIds(ids, source = "reading") {
+    const uniqueIds = Array.from(new Set((ids || []).filter(Boolean)));
+    if (uniqueIds.length === 0) return;
+
+    setCollectedGu(prev => {
+      const owned = new Set((prev || []).map(g => g.id));
+      const discovered = [];
+
+      uniqueIds.forEach(id => {
+        if (owned.has(id)) return;
+        const base = GU_BY_ID[id];
+        if (!base) return;
+        discovered.push({
+          ...base,
+          discoveredAt: Date.now(),
+          source
+        });
+      });
+
+      if (discovered.length === 0) return prev;
+
+      const next = mergeGuCollections(prev, discovered);
+      showGuDiscoveryToast(discovered);
+      syncCollectionToBackend(next);
+      return next;
+    });
+  }
+
+  function discoverGuForChapter(chapter) {
+    if (!chapter) return;
+    const ids = CHAPTER_GU_UNLOCKS[chapter.num] || [];
+    if (ids.length) discoverGuByIds(ids, `Part ${chapter.num}`);
+  }
+
   async function loadBookmarks() {
     try {
       const authHeaders = await getAuthHeaders();
@@ -3934,7 +4074,13 @@ const chapterKeyRef = useRef(null);
       setAccountMode(data.accountMode || "device");
 
       if (Array.isArray(data.collectedGu)) {
-        setCollectedGu(data.collectedGu);
+        setCollectedGu(prev => {
+          const merged = mergeGuCollections(data.collectedGu, prev);
+          if (merged.length > data.collectedGu.length) {
+            syncCollectionToBackend(merged);
+          }
+          return merged;
+        });
       }
 
       setBackendMode("api");
@@ -4247,7 +4393,14 @@ const chapterKeyRef = useRef(null);
       const bonus = available[Math.floor(Math.random() * available.length)];
       newGu.push({ ...bonus, tier: tierName, awardedAt: Date.now(), isMain: false });
     }
-    if (newGu.length > 0) setCollectedGu(c => [...c, ...newGu]);
+    if (newGu.length > 0) {
+      setCollectedGu(prev => {
+        const next = mergeGuCollections(prev, newGu);
+        showGuDiscoveryToast(newGu);
+        syncCollectionToBackend(next);
+        return next;
+      });
+    }
     return newGu;
   }
 
@@ -4936,6 +5089,7 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
 
   function markChapterOpened(chapter) {
     if (!chapter) return;
+    discoverGuForChapter(chapter);
 
     setReadingProgress(prev => {
       const readSet = new Set(Array.isArray(prev.chaptersRead) ? prev.chaptersRead : []);
@@ -6207,6 +6361,49 @@ function getOrBuildSentences() {
         onVoice={switchVoice}
         onRate={(rate) => { setSpeechRate(rate); speechRateRef.current = rate; }}
       />
+
+      {guDiscoveryToast && (
+        <div style={{
+          position: "fixed",
+          right: "max(16px, env(safe-area-inset-right, 16px))",
+          bottom: "max(86px, calc(env(safe-area-inset-bottom, 0px) + 86px))",
+          zIndex: 10030,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          maxWidth: "min(340px, calc(100vw - 28px))",
+          padding: "12px 14px",
+          borderRadius: 18,
+          border: `1px solid ${D ? "rgba(255,220,150,0.24)" : S ? "rgba(120,80,20,0.42)" : "rgba(80,45,12,0.18)"}`,
+          background: D ? "rgba(10,8,12,0.96)" : S ? "rgba(242,223,182,0.97)" : "rgba(255,250,240,0.98)",
+          boxShadow: D ? "0 14px 44px rgba(0,0,0,0.65)" : "0 14px 44px rgba(50,30,8,0.18)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+          animation: "fadeUp 0.25s ease both",
+        }}>
+          <div style={{
+            width: 38,
+            height: 38,
+            borderRadius: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            fontFamily: headFont,
+            fontSize: 21,
+            color: guDiscoveryToast.first.tier === "venerable" ? "#ffd36a" : guDiscoveryToast.first.tier === "gu_immortal" ? "#62e8ff" : "#d8a34d",
+            border: "1px solid currentColor",
+            boxShadow: "0 0 18px currentColor",
+            background: D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)",
+          }}>{guDiscoveryToast.first.symbol}</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: headFont, fontSize: 12, color: text, lineHeight: 1.25 }}>
+              {guDiscoveryToast.first.name} discovered{guDiscoveryToast.count > 1 ? ` +${guDiscoveryToast.count - 1}` : ""}
+            </div>
+            <div style={{ fontSize: 10.5, color: textDim, marginTop: 3, fontFamily: "'IM Fell English', Georgia, serif" }}>Added to Codex</div>
+          </div>
+        </div>
+      )}
 
       <NoteEditorModal
         open={!!noteEditor}
