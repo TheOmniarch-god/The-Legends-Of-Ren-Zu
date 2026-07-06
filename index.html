@@ -536,6 +536,9 @@ const GU_POOL = {
     { id: "betrayal",      name: "Betrayal Gu",          symbol: "叛", lore: "A blade that first turns against trust." },
     { id: "loyalty",       name: "Loyalty Gu",           symbol: "忠", lore: "A chain, a vow, and sometimes a cage." },
     { id: "wealth",        name: "Wealth Gu",            symbol: "财", lore: "A glittering promise that weighs on the miniman's road." },
+    { id: "memory",        name: "Memory Gu",            symbol: "忆", lore: "Preserves a trace that would otherwise fade from the heart." },
+    { id: "insight",       name: "Insight Gu",           symbol: "悟", lore: "A small flash of understanding born from attention." },
+    { id: "sound",         name: "Sound Gu",             symbol: "音", lore: "Carries words through silence and lets stories travel." },
     { id: "self_cog",      name: "Self-Cognition Gu",    symbol: "觉", lore: "The wings of freedom, born of one's own mind." },
   ],
   gu_immortal: [
@@ -626,6 +629,19 @@ function mergeGuCollections(...groups) {
     const bi = GU_POOL_ORDERED.findIndex(g => g.id === b.id);
     return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
   });
+}
+function realmRank(tier) {
+  if (tier === "venerable") return 4;
+  if (tier === "gu_immortal") return 3;
+  if (tier === "gu_master") return 2;
+  return 1;
+}
+function guRequiredRank(gu) {
+  if (!gu) return 999;
+  if (gu.tier === "venerable") return 4;
+  if (gu.tier === "gu_immortal") return 3;
+  // Common/Gu Master Codex can awaken for all readers through reading.
+  return 1;
 }
 
 // ─── Billing / Paywall Modal — support audio before use ───────────────────────
@@ -3287,6 +3303,7 @@ const chapterKeyRef = useRef(null);
   const pendingTreasureAfterLoginRef = useRef(false);
   const readingSettingsScrollYRef = useRef(0);
   const autoContinueAudioRef = useRef(false);
+  const codexProgressRef = useRef({});
 
   // ── Cultivation billing / essence helpers ────────────────────────────
   const DAILY_CHAT_LIMIT = 3;
@@ -3662,26 +3679,45 @@ const chapterKeyRef = useRef(null);
     }
   }
 
-  function showGuDiscoveryToast(newGu) {
-    if (!newGu || newGu.length === 0) return;
-    const first = newGu[0];
+  function showGuDiscoveryToast(payload, mode = "discover") {
+    const items = Array.isArray(payload) ? payload : [payload].filter(Boolean);
+    if (items.length === 0) return;
+    const first = items[0];
     setGuDiscoveryToast({
       first,
-      count: newGu.length,
+      count: items.length,
+      mode,
       createdAt: Date.now()
     });
-    setTimeout(() => setGuDiscoveryToast(null), 2800);
+    setTimeout(() => setGuDiscoveryToast(null), mode === "trace" ? 2200 : 3000);
   }
 
   function discoverGuByIds(ids, source = "reading") {
     const uniqueIds = Array.from(new Set((ids || []).filter(Boolean)));
     if (uniqueIds.length === 0) return;
 
+    const userRank = realmRank(tier);
+    const unlocked = [];
+    const locked = [];
+
+    uniqueIds.forEach(id => {
+      const base = GU_BY_ID[id];
+      if (!base) return;
+      if (guRequiredRank(base) <= userRank) unlocked.push(id);
+      else locked.push(base);
+    });
+
+    if (locked.length) {
+      showGuDiscoveryToast(locked, "trace");
+    }
+
+    if (!unlocked.length) return;
+
     setCollectedGu(prev => {
       const owned = new Set((prev || []).map(g => g.id));
       const discovered = [];
 
-      uniqueIds.forEach(id => {
+      unlocked.forEach(id => {
         if (owned.has(id)) return;
         const base = GU_BY_ID[id];
         if (!base) return;
@@ -3695,10 +3731,18 @@ const chapterKeyRef = useRef(null);
       if (discovered.length === 0) return prev;
 
       const next = mergeGuCollections(prev, discovered);
-      showGuDiscoveryToast(discovered);
+      showGuDiscoveryToast(discovered, "discover");
       syncCollectionToBackend(next);
       return next;
     });
+  }
+
+  function traceGuForChapter(chapter) {
+    if (!chapter) return;
+    const ids = CHAPTER_GU_UNLOCKS[chapter.num] || [];
+    if (!ids.length) return;
+    const preview = ids.map(id => GU_BY_ID[id]).filter(Boolean).slice(0, 2);
+    if (preview.length) showGuDiscoveryToast(preview, "trace");
   }
 
   function discoverGuForChapter(chapter) {
@@ -3839,6 +3883,7 @@ const chapterKeyRef = useRef(null);
       sentenceIdx,
       text
     });
+    discoverGuByIds(["memory"], "Bookmark");
 
     setSelectionMenu(null);
     setTappedSentenceIdx(-1);
@@ -3930,6 +3975,7 @@ const chapterKeyRef = useRef(null);
       await deleteAnnotation(existing.id);
     } else {
       await saveAnnotation({ type: "highlight", chapterNum: selected.num, chapterTitle: selected.title, sentenceIdx, text, color: "gold" });
+      discoverGuByIds(["insight"], "Highlight");
     }
     setSelectionMenu(null);
     setTappedSentenceIdx(-1);
@@ -3977,6 +4023,7 @@ const chapterKeyRef = useRef(null);
       note: clean,
       color: "gold"
     });
+    discoverGuByIds(["cognition", "meaning"], "Note");
 
     setNoteEditor(null);
     setTappedSentenceIdx(-1);
@@ -4697,6 +4744,7 @@ const chapterKeyRef = useRef(null);
         setActiveSentenceIdx(-1);
         setActiveSentenceEndIdx(-1);
         playbackActiveRef.current = false;
+        discoverGuByIds(["sound"], "Narration");
 
         // Auto-continue into the next chapter when narration naturally reaches
         // the end. If there is no next chapter, simply stop.
@@ -5089,7 +5137,6 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
 
   function markChapterOpened(chapter) {
     if (!chapter) return;
-    discoverGuForChapter(chapter);
 
     setReadingProgress(prev => {
       const readSet = new Set(Array.isArray(prev.chaptersRead) ? prev.chaptersRead : []);
@@ -5103,6 +5150,57 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
       };
     });
   }
+
+  useEffect(() => {
+    if (!selected) return;
+
+    try {
+      const raw = localStorage.getItem("renzu_codex_read_unlocks");
+      codexProgressRef.current = raw ? JSON.parse(raw) : {};
+    } catch (_) {
+      codexProgressRef.current = {};
+    }
+
+    function saveProgressFlags() {
+      try { localStorage.setItem("renzu_codex_read_unlocks", JSON.stringify(codexProgressRef.current || {})); } catch (_) {}
+    }
+
+    function readPercent() {
+      const el = chapterCanvasRef.current;
+      if (!el) return 0;
+      const rect = el.getBoundingClientRect();
+      const total = Math.max(1, rect.height - window.innerHeight * 0.55);
+      const seen = Math.min(total, Math.max(0, window.innerHeight * 0.72 - rect.top));
+      return Math.round((seen / total) * 100);
+    }
+
+    function onScrollCodex() {
+      const pct = readPercent();
+      const key = selected.num;
+      const state = codexProgressRef.current[key] || {};
+
+      if (pct >= 40 && !state.trace) {
+        state.trace = true;
+        codexProgressRef.current[key] = state;
+        saveProgressFlags();
+        traceGuForChapter(selected);
+      }
+
+      if (pct >= 85 && !state.unlocked) {
+        state.unlocked = true;
+        codexProgressRef.current[key] = state;
+        saveProgressFlags();
+        discoverGuForChapter(selected);
+      }
+    }
+
+    const t = setTimeout(onScrollCodex, 500);
+    window.addEventListener("scroll", onScrollCodex, { passive: true });
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("scroll", onScrollCodex);
+    };
+  }, [selected, tier]);
 
   function continueReading() {
     if (!readingProgress?.lastChapterNum) return;
@@ -5246,6 +5344,7 @@ const LONG_PRESS_MOVE_THRESHOLD = 16; // px — ignore sub-pixel tremor, only ca
         throw new Error(data.error || `AI request failed (${res.status})`);
       }
       setAiResponse(data.reply);
+      discoverGuByIds(["wisdom"], "Ask Ren Zu");
     } catch (err) {
       setAiResponse(
         "⚠ Ren Zu is unavailable right now. " +
@@ -6398,9 +6497,9 @@ function getOrBuildSentences() {
           }}>{guDiscoveryToast.first.symbol}</div>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: headFont, fontSize: 12, color: text, lineHeight: 1.25 }}>
-              {guDiscoveryToast.first.name} discovered{guDiscoveryToast.count > 1 ? ` +${guDiscoveryToast.count - 1}` : ""}
+              {guDiscoveryToast.mode === "trace" ? `${guDiscoveryToast.first.name} trace sensed` : `${guDiscoveryToast.first.name} discovered${guDiscoveryToast.count > 1 ? ` +${guDiscoveryToast.count - 1}` : ""}`}
             </div>
-            <div style={{ fontSize: 10.5, color: textDim, marginTop: 3, fontFamily: "'IM Fell English', Georgia, serif" }}>Added to Codex</div>
+            <div style={{ fontSize: 10.5, color: textDim, marginTop: 3, fontFamily: "'IM Fell English', Georgia, serif" }}>{guDiscoveryToast.mode === "trace" ? "Read deeper to refine" : "Added to Codex"}</div>
           </div>
         </div>
       )}
