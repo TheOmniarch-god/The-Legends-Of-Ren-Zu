@@ -1844,7 +1844,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   );
 }
 
-function CodexModal({ open, onClose, D, S, collectedGu }) {
+function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn }) {
   const [filter, setFilter] = useState("all");
   const [activeId, setActiveId] = useState(null);
   if (!open) return null;
@@ -1858,7 +1858,9 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
   const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
   const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
   const bodyFont = "'IM Fell English', Georgia, serif";
-  const ownedList = Array.isArray(collectedGu) ? collectedGu : [];
+  const isEmailBound = accountMode === "email";
+  const localOwnedList = Array.isArray(collectedGu) ? collectedGu : [];
+  const ownedList = isEmailBound ? localOwnedList : [];
   const ownedMap = new Map(ownedList.map(g => [g.id, g]));
   const discoveredCount = ownedList.length;
   const totalGu = GU_POOL_ORDERED.length;
@@ -1883,6 +1885,7 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
   const activeBase = activeId ? GU_POOL_ORDERED.find(g => g.id === activeId) : null;
   const activeOwned = activeId ? ownedMap.get(activeId) : null;
   const activeGu = activeBase ? { ...activeBase, ...(activeOwned || {}) } : latestGu;
+  const activeIsOwned = activeGu ? !!ownedMap.get(activeGu.id) : false;
 
   function tierColor(tier) {
     if (tier === "venerable") return "#ffd36a";
@@ -1903,9 +1906,36 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
       <div style={{ maxWidth: 920, margin: "0 auto", padding: "22px 18px 44px" }}>
         <div style={{ textAlign: "center", marginBottom: 18 }}>
           <div style={{ fontSize: 34, marginBottom: 8 }}>🕸️</div>
-          <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Gu Codex</div>
+          <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, marginBottom: 4 }}>{isEmailBound ? "Your Gu Codex" : "Gu Codex Preview"}</div>
           <div style={{ fontSize: 11, color: textDim, fontFamily: bodyFont }}>{discoveredCount} of {totalGu} discovered · {codexPct}% mapped</div>
         </div>
+
+        {!isEmailBound && (
+          <div style={{
+            padding: "14px 14px 13px",
+            borderRadius: 18,
+            border: `1px solid ${borderStrong}`,
+            background: D ? "rgba(255,255,255,0.055)" : S ? "rgba(139,94,26,0.12)" : "rgba(0,0,0,0.045)",
+            marginBottom: 14,
+            textAlign: "center"
+          }}>
+            <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim, marginBottom: 6 }}>Preview Mode</div>
+            <div style={{ fontFamily: bodyFont, fontSize: 12.5, color: text, lineHeight: 1.6, marginBottom: 10 }}>
+              Sign in to save your Codex, unlock discovered Gu, and keep your collection across devices.
+            </div>
+            <button onClick={onSignIn} style={{
+              padding: "9px 14px",
+              borderRadius: 999,
+              border: `1px solid ${border}`,
+              background: D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)",
+              color: text,
+              cursor: "pointer",
+              fontFamily: headFont,
+              fontSize: 11,
+              letterSpacing: "0.08em"
+            }}>Sign in to start collecting</button>
+          </div>
+        )}
 
         <div style={{ height: 8, borderRadius: 999, overflow: "hidden", background: D ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)", marginBottom: 14 }}>
           <div style={{ width: `${codexPct}%`, height: "100%", background: S ? "linear-gradient(90deg, rgba(139,94,26,0.92), rgba(199,154,59,0.88))" : D ? "linear-gradient(90deg, rgba(255,211,106,0.55), rgba(98,232,255,0.45))" : "linear-gradient(90deg, rgba(80,45,10,0.42), rgba(216,163,77,0.64))" }} />
@@ -1932,18 +1962,19 @@ function CodexModal({ open, onClose, D, S, collectedGu }) {
               <div style={{
                 width: 56, height: 56, borderRadius: 16,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                border: `1px solid ${tierColor(activeGu.tier)}88`,
-                color: tierColor(activeGu.tier), fontFamily: headFont, fontSize: 28, fontWeight: 800,
-                boxShadow: `0 0 22px ${tierColor(activeGu.tier)}33, inset 0 1px 0 rgba(255,255,255,0.10)`,
+                border: `1px solid ${activeIsOwned ? tierColor(activeGu.tier) + "88" : border}`,
+                color: activeIsOwned ? tierColor(activeGu.tier) : textDim, fontFamily: headFont, fontSize: 28, fontWeight: 800,
+                opacity: activeIsOwned ? 1 : 0.35,
+                boxShadow: activeIsOwned ? `0 0 22px ${tierColor(activeGu.tier)}33, inset 0 1px 0 rgba(255,255,255,0.10)` : "none",
                 background: D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)"
-              }}>{activeGu.symbol}</div>
+              }}>{activeIsOwned ? activeGu.symbol : "?"}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: headFont, fontSize: 15, color: text, marginBottom: 4 }}>{activeGu.name}</div>
-                <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: headFont }}>{activeGu.tier ? activeGu.tier.replace("_", " ") : "Undiscovered"}</div>
+                <div style={{ fontFamily: headFont, fontSize: 15, color: text, marginBottom: 4 }}>{activeIsOwned ? activeGu.name : "Undiscovered Gu"}</div>
+                <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: headFont }}>{activeIsOwned && activeGu.tier ? activeGu.tier.replace("_", " ") : "Unknown path"}</div>
               </div>
             </div>
             <div style={{ marginTop: 12, color: textDim, fontFamily: bodyFont, lineHeight: 1.65, fontSize: 12.5, fontStyle: "italic" }}>
-              “{activeGu.lore || "This Gu has not awakened in your codex yet."}”
+              “{activeIsOwned ? (activeGu.lore || "This Gu has awakened in your codex.") : (isEmailBound ? "Continue reading and refining to reveal this Gu." : "Sign in to begin collecting and revealing Gu.")}”
             </div>
           </div>
         )}
@@ -6260,6 +6291,8 @@ function getOrBuildSentences() {
           D={D}
           S={S}
           collectedGu={collectedGu}
+          accountMode={accountMode}
+          onSignIn={() => { setShowCodex(false); openGateOfFate(); }}
         />
       )}
 
