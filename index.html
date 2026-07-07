@@ -582,7 +582,6 @@ const GU_POOL = {
     { id: "heavenly_secret", name: "Heavenly Secret Gu",  symbol: "天", lore: "A veiled whisper from heaven's hidden arrangements." },
   ],
 };
-const TIER_MAIN_GU = { gu_master: "hope", gu_immortal: "wisdom", venerable: "fate" };
 const GU_POOL_ORDERED = [
   ...GU_POOL.gu_master.map(g => ({ ...g, tier: "gu_master" })),
   ...GU_POOL.gu_immortal.map(g => ({ ...g, tier: "gu_immortal" })),
@@ -652,6 +651,22 @@ function guRequiredRank(gu) {
   if (gu.tier === "gu_immortal") return 3;
   // Common/Gu Master Codex can awaken for all readers through reading.
   return 1;
+}
+function realmLabelFromRank(rank) {
+  if (rank >= 4) return "Venerable";
+  if (rank >= 3) return "Gu Immortal";
+  if (rank >= 2) return "Gu Master";
+  return "Mortal";
+}
+function requiredRealmLabel(gu) {
+  return realmLabelFromRank(guRequiredRank(gu));
+}
+function codexStatus(entry) {
+  if (!entry) return "unknown";
+  return entry.status === "trace" ? "trace" : "refined";
+}
+function codexIsRefined(entry) {
+  return codexStatus(entry) === "refined";
 }
 
 // ─── Billing / Paywall Modal — support audio before use ───────────────────────
@@ -1945,7 +1960,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   );
 }
 
-function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn }) {
+function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier, onSignIn }) {
   const [filter, setFilter] = useState("all");
   const [activeId, setActiveId] = useState(null);
   if (!open) return null;
@@ -1963,30 +1978,40 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
   const localOwnedList = Array.isArray(collectedGu) ? collectedGu : [];
   const ownedList = isEmailBound ? localOwnedList : [];
   const ownedMap = new Map(ownedList.map(g => [g.id, g]));
-  const discoveredCount = ownedList.length;
+  const refinedList = ownedList.filter(g => codexIsRefined(g));
+  const traceList = ownedList.filter(g => codexStatus(g) === "trace");
+  const refinedCount = refinedList.length;
+  const traceCount = traceList.length;
   const totalGu = GU_POOL_ORDERED.length;
-  const codexPct = totalGu > 0 ? Math.round((discoveredCount / totalGu) * 100) : 0;
-  const latestGu = discoveredCount > 0 ? ownedList[discoveredCount - 1] : null;
+  const codexPct = totalGu > 0 ? Math.round((refinedCount / totalGu) * 100) : 0;
+  const latestGu = refinedList[refinedList.length - 1] || traceList[traceList.length - 1] || null;
+  const currentRealmLabel = realmLabelFromRank(realmRank(currentTier));
 
   const filters = [
     { id: "all", label: "All" },
-    { id: "owned", label: "Owned" },
-    { id: "gu_master", label: "Gu Master" },
-    { id: "gu_immortal", label: "Immortal" },
-    { id: "venerable", label: "Venerable" },
+    { id: "refined", label: "Refined" },
+    { id: "trace", label: "Traces" },
+    { id: "gu_master", label: "Mortal Path" },
+    { id: "gu_immortal", label: "Immortal Path" },
+    { id: "venerable", label: "Venerable Path" },
   ];
 
   const visibleGu = GU_POOL_ORDERED.filter(g => {
-    const owned = ownedMap.get(g.id);
-    if (filter === "owned") return !!owned;
+    const entry = ownedMap.get(g.id);
+    const status = codexStatus(entry);
+    if (filter === "refined") return status === "refined";
+    if (filter === "trace") return status === "trace";
     if (filter === "all") return true;
-    return (owned?.tier || g.tier || "") === filter || GU_POOL[filter]?.some(x => x.id === g.id);
+    return (entry?.tier || g.tier || "") === filter || GU_POOL[filter]?.some(x => x.id === g.id);
   });
 
   const activeBase = activeId ? GU_POOL_ORDERED.find(g => g.id === activeId) : null;
   const activeOwned = activeId ? ownedMap.get(activeId) : null;
   const activeGu = activeBase ? { ...activeBase, ...(activeOwned || {}) } : latestGu;
-  const activeIsOwned = activeGu ? !!ownedMap.get(activeGu.id) : false;
+  const activeEntry = activeGu ? ownedMap.get(activeGu.id) : null;
+  const activeStatus = codexStatus(activeEntry);
+  const activeIsRefined = activeStatus === "refined";
+  const activeIsTrace = activeStatus === "trace";
 
   function tierColor(tier) {
     if (tier === "venerable") return "#ffd36a";
@@ -2008,7 +2033,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
         <div style={{ textAlign: "center", marginBottom: 18 }}>
           <div style={{ fontSize: 34, marginBottom: 8 }}>🕸️</div>
           <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, marginBottom: 4 }}>{isEmailBound ? "Your Gu Codex" : "Gu Codex Preview"}</div>
-          <div style={{ fontSize: 11, color: textDim, fontFamily: bodyFont }}>{discoveredCount} of {totalGu} discovered · {codexPct}% mapped</div>
+          <div style={{ fontSize: 11, color: textDim, fontFamily: bodyFont }}>{refinedCount} of {totalGu} refined · {traceCount} traces · {codexPct}% complete</div>
         </div>
 
         {!isEmailBound && (
@@ -2022,7 +2047,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
           }}>
             <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim, marginBottom: 6 }}>Preview Mode</div>
             <div style={{ fontFamily: bodyFont, fontSize: 12.5, color: text, lineHeight: 1.6, marginBottom: 10 }}>
-              Login to save your Codex, unlock discovered Gu, and keep your collection across devices.
+              Login to save your Codex traces, refined Gu, and progress across devices.
             </div>
             <button onClick={onSignIn} style={{
               padding: "9px 14px",
@@ -2034,7 +2059,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
               fontFamily: headFont,
               fontSize: 11,
               letterSpacing: "0.08em"
-            }}>Login to start collecting</button>
+            }}>Login to start refining</button>
           </div>
         )}
 
@@ -2043,7 +2068,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
         </div>
 
         <div style={{ padding: "12px 14px", borderRadius: 16, border: `1px solid ${border}`, background: cardBg, color: textDim, fontFamily: bodyFont, fontSize: 12.2, lineHeight: 1.6, marginBottom: 14 }}>
-          Gu are refined through use: read deeply into a chapter, listen to a chapter, or save passages with bookmarks, highlights, and notes. Some Gu only reveal after ascending to a higher realm.
+          Gu are never duplicated. They are perceived as traces, refined through reading/listening/saved actions, then deepened by repeated encounters. Your current realm determines which Gu can fully submit to you.
         </div>
 
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", marginBottom: 14 }}>
@@ -2067,43 +2092,47 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
               <div style={{
                 width: 56, height: 56, borderRadius: 16,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                border: `1px solid ${activeIsOwned ? tierColor(activeGu.tier) + "88" : border}`,
-                color: activeIsOwned ? tierColor(activeGu.tier) : textDim, fontFamily: headFont, fontSize: 28, fontWeight: 800,
-                opacity: activeIsOwned ? 1 : 0.35,
-                boxShadow: activeIsOwned ? `0 0 22px ${tierColor(activeGu.tier)}33, inset 0 1px 0 rgba(255,255,255,0.10)` : "none",
+                border: `1px solid ${activeIsRefined ? tierColor(activeGu.tier) + "88" : activeIsTrace ? tierColor(activeGu.tier) + "55" : border}`,
+                color: activeIsRefined || activeIsTrace ? tierColor(activeGu.tier) : textDim, fontFamily: headFont, fontSize: 28, fontWeight: 800,
+                opacity: activeIsRefined ? 1 : activeIsTrace ? 0.56 : 0.35,
+                boxShadow: activeIsRefined ? `0 0 22px ${tierColor(activeGu.tier)}33, inset 0 1px 0 rgba(255,255,255,0.10)` : activeIsTrace ? `0 0 14px ${tierColor(activeGu.tier)}22` : "none",
                 background: D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)"
-              }}>{activeIsOwned ? activeGu.symbol : "?"}</div>
+              }}>{activeIsRefined || activeIsTrace ? activeGu.symbol : "?"}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: headFont, fontSize: 15, color: text, marginBottom: 4 }}>{activeIsOwned ? activeGu.name : "Undiscovered Gu"}</div>
-                <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: headFont }}>{activeIsOwned && activeGu.tier ? activeGu.tier.replace("_", " ") : "Unknown path"}</div>
+                <div style={{ fontFamily: headFont, fontSize: 15, color: text, marginBottom: 4 }}>{activeIsRefined || activeIsTrace ? activeGu.name : "Undiscovered Gu"}</div>
+                <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: headFont }}>{activeIsRefined ? "Refined" : activeIsTrace ? `Trace perceived · requires ${requiredRealmLabel(activeGu)}` : "Unknown path"}</div>
               </div>
             </div>
             <div style={{ marginTop: 12, color: textDim, fontFamily: bodyFont, lineHeight: 1.65, fontSize: 12.5, fontStyle: "italic" }}>
-              “{activeIsOwned ? (activeGu.lore || "This Gu has awakened in your codex.") : (isEmailBound ? "Continue reading and refining to reveal this Gu." : "Login to begin collecting and revealing Gu.")}”
+              “{activeIsRefined ? (activeGu.lore || "This Gu has submitted to your Codex.") : activeIsTrace ? `${activeGu.name} has sensed your realm and refuses full refinement. Ascend to ${requiredRealmLabel(activeGu)} to seize its true form.` : (isEmailBound ? "Continue reading and refining to reveal this Gu." : "Login to begin perceiving and refining Gu.")}”
             </div>
           </div>
         )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))", gap: 10 }}>
           {visibleGu.map(g => {
-            const owned = ownedMap.get(g.id);
-            const tier = owned?.tier || (GU_POOL.venerable.some(x => x.id === g.id) ? "venerable" : GU_POOL.gu_immortal.some(x => x.id === g.id) ? "gu_immortal" : "gu_master");
+            const entry = ownedMap.get(g.id);
+            const status = codexStatus(entry);
+            const refined = status === "refined";
+            const traced = status === "trace";
+            const tier = entry?.tier || (GU_POOL.venerable.some(x => x.id === g.id) ? "venerable" : GU_POOL.gu_immortal.some(x => x.id === g.id) ? "gu_immortal" : "gu_master");
             const color = tierColor(tier);
             const selected = activeGu?.id === g.id;
             return (
               <button key={g.id} onClick={() => {
-                if (!isEmailBound && !owned) { onSignIn(); return; }
+                if (!isEmailBound && !entry) { onSignIn(); return; }
                 setActiveId(g.id);
-              }} title={owned ? `${g.name} — ${g.lore}` : "??? — undiscovered"} style={{
-                aspectRatio: "1/1", border: `1px solid ${selected ? color : owned ? borderStrong : border}`,
+              }} title={entry ? `${g.name} — ${refined ? "refined" : "trace perceived"}` : "??? — undiscovered"} style={{
+                aspectRatio: "1/1", border: `1px solid ${selected ? color : refined ? borderStrong : traced ? color + "55" : border}`,
                 borderRadius: 14,
                 display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 8,
                 cursor: "pointer",
-                background: owned ? (D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.16)" : "rgba(0,0,0,0.06)") : (D ? "rgba(0,0,0,0.35)" : S ? "rgba(80,42,8,0.10)" : "rgba(0,0,0,0.04)"),
-                boxShadow: selected ? `0 0 22px ${color}33` : "none"
+                background: refined ? (D ? "rgba(255,255,255,0.07)" : S ? "rgba(101,66,20,0.16)" : "rgba(0,0,0,0.06)") : traced ? (D ? "rgba(255,255,255,0.035)" : S ? "rgba(101,66,20,0.10)" : "rgba(0,0,0,0.04)") : (D ? "rgba(0,0,0,0.35)" : S ? "rgba(80,42,8,0.10)" : "rgba(0,0,0,0.04)"),
+                boxShadow: selected ? `0 0 22px ${color}33` : traced ? `inset 0 0 16px ${color}12` : "none"
               }}>
-                <div style={{ fontFamily: headFont, fontSize: 25, color: owned ? color : textDim, opacity: owned ? 1 : 0.24, lineHeight: 1, textShadow: owned ? `0 0 8px ${color}66` : "none" }}>{owned ? g.symbol : "?"}</div>
-                <div style={{ fontFamily: headFont, fontSize: 8, color: owned ? text : textDim, opacity: owned ? 0.88 : 0.42, textAlign: "center", lineHeight: 1.2, marginTop: 7 }}>{owned ? g.name : "???"}</div>
+                <div style={{ fontFamily: headFont, fontSize: 25, color: refined || traced ? color : textDim, opacity: refined ? 1 : traced ? 0.52 : 0.24, lineHeight: 1, textShadow: refined ? `0 0 8px ${color}66` : traced ? `0 0 6px ${color}33` : "none" }}>{refined || traced ? g.symbol : "?"}</div>
+                <div style={{ fontFamily: headFont, fontSize: 8, color: refined || traced ? text : textDim, opacity: refined ? 0.88 : traced ? 0.62 : 0.42, textAlign: "center", lineHeight: 1.2, marginTop: 7 }}>{refined || traced ? g.name : "???"}</div>
+                {traced && <div style={{ marginTop: 5, fontFamily: headFont, fontSize: 7, letterSpacing: "0.10em", color, opacity: 0.78, textTransform: "uppercase" }}>Trace</div>}
               </button>
             );
           })}
@@ -3181,41 +3210,61 @@ const chapterKeyRef = useRef(null);
     if (uniqueIds.length === 0) return;
 
     const userRank = realmRank(tier);
-    const unlocked = [];
-    const locked = [];
+    const refined = [];
+    const traced = [];
 
     uniqueIds.forEach(id => {
       const base = GU_BY_ID[id];
       if (!base) return;
-      if (guRequiredRank(base) <= userRank) unlocked.push(id);
-      else locked.push(base);
+      if (guRequiredRank(base) <= userRank) refined.push(id);
+      else traced.push(base);
     });
 
-    if (locked.length) {
-      showGuDiscoveryToast(locked, "trace");
+    if (traced.length) {
+      showGuDiscoveryToast(traced, "trace");
+      setCollectedGu(prev => {
+        const additions = traced
+          .filter(base => codexStatus((prev || []).find(g => g.id === base.id)) !== "refined")
+          .map(base => ({
+            ...base,
+            status: "trace",
+            tracedAt: Date.now(),
+            source,
+            requiredRealm: requiredRealmLabel(base)
+          }));
+        if (additions.length === 0) return prev;
+        const next = mergeGuCollections(prev, additions);
+        syncCollectionToBackend(next);
+        return next;
+      });
     }
 
-    if (!unlocked.length) return;
+    if (!refined.length) return;
 
     setCollectedGu(prev => {
-      const owned = new Set((prev || []).map(g => g.id));
-      const discovered = [];
+      const owned = new Map((prev || []).map(g => [g.id, g]));
+      const newlyRefined = [];
 
-      unlocked.forEach(id => {
-        if (owned.has(id)) return;
+      refined.forEach(id => {
         const base = GU_BY_ID[id];
         if (!base) return;
-        discovered.push({
+        const existing = owned.get(id);
+        if (codexStatus(existing) === "refined") return;
+        newlyRefined.push({
           ...base,
-          discoveredAt: Date.now(),
+          ...(existing || {}),
+          status: "refined",
+          refinement: 100,
+          discoveredAt: existing?.discoveredAt || existing?.tracedAt || Date.now(),
+          refinedAt: Date.now(),
           source
         });
       });
 
-      if (discovered.length === 0) return prev;
+      if (newlyRefined.length === 0) return prev;
 
-      const next = mergeGuCollections(prev, discovered);
-      showGuDiscoveryToast(discovered, "discover");
+      const next = mergeGuCollections(prev, newlyRefined);
+      showGuDiscoveryToast(newlyRefined, "discover");
       syncCollectionToBackend(next);
       return next;
     });
@@ -3913,36 +3962,6 @@ const chapterKeyRef = useRef(null);
     ascensionTimerRef.current = setTimeout(() => closeAscension(), 4200);
   }
   // Dev preview uses the same lightweight public unlock experience.
-
-  // Award Gu worms from the tier's pool (hybrid: deterministic main + random bonus)
-  function awardGuFromTier(tierName) {
-    const pool = GU_POOL[tierName] || [];
-    if (pool.length === 0) return [];
-    const ownedIds = new Set(collectedGu.map(g => g.id));
-    const newGu = [];
-    // 1. Deterministic main Gu (feature-bound to tier)
-    const mainId = TIER_MAIN_GU[tierName];
-    const mainGu = pool.find(g => g.id === mainId) || pool[0];
-    if (!ownedIds.has(mainGu.id)) {
-      newGu.push({ ...mainGu, tier: tierName, awardedAt: Date.now(), isMain: true });
-      ownedIds.add(mainGu.id);
-    }
-    // 2. Random bonus from same pool, excluding already-owned
-    const available = pool.filter(g => !ownedIds.has(g.id));
-    if (available.length > 0) {
-      const bonus = available[Math.floor(Math.random() * available.length)];
-      newGu.push({ ...bonus, tier: tierName, awardedAt: Date.now(), isMain: false });
-    }
-    if (newGu.length > 0) {
-      setCollectedGu(prev => {
-        const next = mergeGuCollections(prev, newGu);
-        showGuDiscoveryToast(newGu);
-        syncCollectionToBackend(next);
-        return next;
-      });
-    }
-    return newGu;
-  }
 
   // Preview-only sequence — runs the visual flow without touching real tier or Codex state.
   function previewUnlockSequence(tierName) {
@@ -6007,9 +6026,9 @@ function getOrBuildSentences() {
           )}
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: guDiscoveryToast.mode === "trace" ? "'IM Fell English', Georgia, serif" : headFont, fontSize: guDiscoveryToast.mode === "trace" ? 12.5 : 12, color: text, lineHeight: 1.25, fontStyle: guDiscoveryToast.mode === "trace" ? "italic" : "normal" }}>
-              {guDiscoveryToast.mode === "trace" ? `${guDiscoveryToast.first.name} trace…` : `${guDiscoveryToast.first.name} discovered${guDiscoveryToast.count > 1 ? ` +${guDiscoveryToast.count - 1}` : ""}`}
+              {guDiscoveryToast.mode === "trace" ? `${guDiscoveryToast.first.name} trace perceived` : `${guDiscoveryToast.first.name} refined${guDiscoveryToast.count > 1 ? ` +${guDiscoveryToast.count - 1}` : ""}`}
             </div>
-            <div style={{ fontSize: 10.5, color: textDim, marginTop: 3, fontFamily: "'IM Fell English', Georgia, serif", fontStyle: guDiscoveryToast.mode === "trace" ? "italic" : "normal" }}>{guDiscoveryToast.mode === "trace" ? "Read deeper or listen fully to refine it." : "Added to Codex"}</div>
+            <div style={{ fontSize: 10.5, color: textDim, marginTop: 3, fontFamily: "'IM Fell English', Georgia, serif", fontStyle: guDiscoveryToast.mode === "trace" ? "italic" : "normal" }}>{guDiscoveryToast.mode === "trace" ? `Your realm is beneath it. Requires ${requiredRealmLabel(guDiscoveryToast.first)}.` : "Added to Codex"}</div>
           </div>
         </div>
       )}
@@ -6115,6 +6134,7 @@ function getOrBuildSentences() {
           S={S}
           collectedGu={collectedGu}
           accountMode={accountMode}
+          currentTier={tier}
           onSignIn={() => { setShowCodex(false); openGateOfFate(); }}
         />
       )}
