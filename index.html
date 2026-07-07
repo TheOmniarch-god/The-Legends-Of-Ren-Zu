@@ -425,40 +425,34 @@ function Typewriter({ text, color, streaming, font }) {
   const prevText = useRef("");
 
   function renderInlineMarkdown(line, keyPrefix) {
+    // Ask Ren Zu: keep answers readable, but disable bold rendering.
+    // **strength** now becomes plain "strength" instead of a tight bold cluster.
+    // Simple italics are preserved for gentle emphasis.
     const parts = [];
-    const regex = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)/g;
+    const cleanedLine = String(line || "").replace(/\*\*([^*]+)\*\*/g, "$1");
+    const regex = /\*([^*]+)\*/g;
     let last = 0;
     let match;
 
-    while ((match = regex.exec(line)) !== null) {
-      if (match.index > last) parts.push(line.slice(last, match.index));
-
-      if (match[2]) {
-        parts.push(
-          <strong key={`${keyPrefix}-b-${match.index}`} style={{ fontWeight: 700, color: "inherit" }}>
-            {match[2]}
-          </strong>
-        );
-      } else if (match[4]) {
-        parts.push(
-          <em key={`${keyPrefix}-i-${match.index}`} style={{ fontStyle: "italic" }}>
-            {match[4]}
-          </em>
-        );
-      }
-
+    while ((match = regex.exec(cleanedLine)) !== null) {
+      if (match.index > last) parts.push(cleanedLine.slice(last, match.index));
+      parts.push(
+        <em key={`${keyPrefix}-i-${match.index}`} style={{ fontStyle: "italic" }}>
+          {match[1]}
+        </em>
+      );
       last = regex.lastIndex;
     }
 
-    if (last < line.length) parts.push(line.slice(last));
+    if (last < cleanedLine.length) parts.push(cleanedLine.slice(last));
     return parts;
   }
 
   function renderMarkdown(content) {
     const cleaned = String(content || "")
       .replace(/\r\n/g, "\n")
-      .replace(/\*\*\s+/g, "**")
-      .replace(/\s+\*\*/g, "**");
+      // Trim accidental spaces inside bold markers without deleting real word spacing.
+      .replace(/\*\*\s+([^*]*?)\s*\*\*/g, "**$1**");
 
     const blocks = cleaned
       .split(/\n{2,}/)
@@ -2212,948 +2206,289 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
   );
 }
 
-// ─── Ren Zu Mountain Loader — silhouette walking up the peak ────────────────
-function RenZuLoader({ visible }) {
-  const [phase, setPhase] = useState("climbing");
-  const [hidden, setHidden] = useState(!visible);
-  React.useEffect(() => {
-    if (!visible) return;
-    setHidden(false);
-    setPhase("climbing");
-    const t1 = setTimeout(() => setPhase("top"), 1300);
-    const t2 = setTimeout(() => setHidden(true), 1600);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [visible]);
-  if (hidden) return null;
-  return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 10003,
-      background: "linear-gradient(180deg, #06030d 0%, #150825 45%, #2a0a20 80%, #100410 100%)",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end",
-      overflow: "hidden",
-    }}>
-      <style>{`
-        @keyframes rzClimb {
-          0% { transform: translate(-50%, 200px) scale(0.65); opacity: 0.3; }
-          20% { opacity: 1; }
-          100% { transform: translate(-50%, 0px) scale(1); opacity: 1; }
-        }
-        @keyframes rzStep1 { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
-        @keyframes rzStep2 { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } }
-        @keyframes rzStarTwinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
-        @keyframes rzMistFlow { 0%, 100% { opacity: 0.35; transform: translateX(0); } 50% { opacity: 0.65; transform: translateX(18px); } }
-        @keyframes rzMoonGlow { 0%, 100% { opacity: 0.8; filter: blur(0); } 50% { opacity: 1; filter: blur(2px); } }
-        @keyframes rzPeakReveal { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
-        @keyframes rzCaptionFade {
-          0% { opacity: 0; transform: translateX(-50%) translateY(8px); }
-          100% { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        .rz-figure-anim { animation: rzClimb 1.3s cubic-bezier(.4,.1,.25,1) forwards; }
-      `}</style>
+// ─── Realm Ascension Lite — clean, short, mobile-safe tier unlock ──────────────
+function AscensionOverlay({ tier, awardedGu = [], onClose }) {
+  const [ready, setReady] = useState(false);
 
-      {Array.from({ length: 50 }).map((_, i) => (
-        <div key={i} style={{
-          position: "absolute",
-          left: `${(i*7.3) % 100}%`,
-          top: `${(i*4.7) % 55}%`,
-          width: 1 + (i % 3) * 0.6,
-          height: 1 + (i % 3) * 0.6,
-          background: "#fff", borderRadius: "50%",
-          animation: `rzStarTwinkle ${2 + (i % 4)}s ease-in-out infinite`,
-          animationDelay: `${(i*120) % 2200}ms`,
-          boxShadow: "0 0 3px rgba(255,255,255,0.6)",
-        }} />
-      ))}
+  useEffect(() => {
+    if (!tier) return;
+    setReady(false);
+    const t = setTimeout(() => setReady(true), 40);
+    return () => clearTimeout(t);
+  }, [tier]);
 
-      <div style={{
-        position: "absolute", top: "12%", right: "15%",
-        width: 52, height: 52, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(255,240,200,0.95) 0%, rgba(255,220,160,0.6) 50%, transparent 80%)",
-        boxShadow: "0 0 60px rgba(255,220,160,0.4), 0 0 110px rgba(255,200,140,0.2)",
-        animation: "rzMoonGlow 4s ease-in-out infinite",
-      }} />
-
-      <svg viewBox="0 0 400 280" preserveAspectRatio="none" style={{
-        position: "absolute", bottom: 0, left: 0, width: "100%", height: "55vh",
-        opacity: 0.85,
-      }}>
-        <defs>
-          <linearGradient id="rzMtnBack" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#1a0820" />
-            <stop offset="1" stopColor="#0a0410" />
-          </linearGradient>
-          <linearGradient id="rzMtnFront" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#0a0510" />
-            <stop offset="1" stopColor="#040208" />
-          </linearGradient>
-        </defs>
-        <path d="M 0 280 L 70 180 L 130 220 L 200 80 L 260 200 L 320 160 L 400 240 L 400 280 Z"
-              fill="url(#rzMtnBack)" />
-        <path d="M 0 280 L 60 230 L 110 200 L 160 230 L 220 130 L 280 220 L 340 200 L 400 240 L 400 280 Z"
-              fill="url(#rzMtnFront)" />
-        <ellipse cx="200" cy="200" rx="240" ry="14" fill="rgba(180,140,200,0.25)"
-                 style={{ animation: "rzMistFlow 4s ease-in-out infinite" }} />
-      </svg>
-
-      <div className="rz-figure-anim" style={{
-        position: "absolute", bottom: "32%", left: "50%",
-        width: 38, height: 66, zIndex: 5,
-      }}>
-        <svg viewBox="0 0 38 66" style={{ width: "100%", height: "100%", overflow: "visible" }}>
-          <path d="M 11 18 L 27 18 L 30 50 L 8 50 Z" fill="#0a0410" />
-          <circle cx="19" cy="10" r="5.5" fill="#0a0410" />
-          <path d="M 13 50 L 14 62 L 10 66 L 12 66 L 16 60 L 18 50 Z" fill="#0a0410"
-                style={{ animation: "rzStep1 0.7s ease-in-out infinite", transformOrigin: "16px 50px" }} />
-          <path d="M 20 50 L 22 60 L 26 66 L 28 66 L 24 60 L 22 50 Z" fill="#0a0410"
-                style={{ animation: "rzStep2 0.7s ease-in-out infinite", transformOrigin: "22px 50px" }} />
-          <path d="M 11 22 L 6 40 L 8 40 L 13 22 Z" fill="#0a0410"
-                style={{ animation: "rzStep2 0.7s ease-in-out infinite", transformOrigin: "12px 22px" }} />
-          <path d="M 25 22 L 32 40 L 30 40 L 27 22 Z" fill="#0a0410"
-                style={{ animation: "rzStep1 0.7s ease-in-out infinite", transformOrigin: "26px 22px" }} />
-          <line x1="32" y1="22" x2="34" y2="58" stroke="#0a0410" strokeWidth="1.4" strokeLinecap="round" />
-        </svg>
-      </div>
-
-      {phase === "top" && (
-        <>
-          <div style={{
-            position: "absolute", top: "10%", left: "50%",
-            width: 220, height: 220, borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(255,225,160,0.55) 0%, rgba(255,180,80,0.22) 40%, transparent 70%)",
-            animation: "rzPeakReveal 0.6s ease-out forwards",
-            zIndex: 2,
-          }} />
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} style={{
-              position: "absolute", top: "10%", left: "50%",
-              width: 1.5, height: 70,
-              background: "linear-gradient(to bottom, rgba(255,240,180,0.85), transparent)",
-              transform: `translate(-50%, -50%) rotate(${i*60}deg)`,
-              transformOrigin: "center",
-              animation: `rzPeakReveal 0.6s ease-out forwards`,
-              animationDelay: `${i*60}ms`,
-              opacity: 0.7,
-              zIndex: 2,
-            }} />
-          ))}
-        </>
-      )}
-
-      <div key={phase} style={{
-        position: "absolute", bottom: "6%", left: "50%",
-        fontFamily: "Metamorphous, Georgia, serif",
-        fontSize: "clamp(11px, 2.4vw, 14px)",
-        color: "rgba(255,220,180,0.85)",
-        letterSpacing: "0.3em",
-        textTransform: "uppercase",
-        animation: "rzCaptionFade 0.5s ease both",
-        whiteSpace: "nowrap",
-        textShadow: "0 0 12px rgba(0,0,0,0.9)",
-      }}>
-        {phase === "climbing" ? "The path winds upward…" : "✦ The peak is reached ✦"}
-      </div>
-    </div>
-  );
-}
-
-// ─── Refinement Cauldron — fake-out tier animation ────────────────────────────
-function RefinementCauldron({ tier }) {
-  const [phase, setPhase] = useState("brewing");
-  const [hidden, setHidden] = useState(false);
-  const doFakeout = tier === "gu_immortal" || tier === "venerable";
-  const cfg = {
-    gu_master:   { liquid: "#d8a34d", name: "Gu Master"   },
-    gu_immortal: { liquid: "#62e8ff", name: "Gu Immortal" },
-    venerable:   { liquid: "#ffd36a", name: "Venerable"   },
-  }[tier] || { liquid: "#d8a34d", name: "Gu Master" };
-
-  React.useEffect(() => {
-    setHidden(false);
-    setPhase("brewing");
-    if (doFakeout) {
-      const t1 = setTimeout(() => setPhase("failing"),     1150);
-      const t2 = setTimeout(() => setPhase("persevering"), 1850);
-      const t3 = setTimeout(() => setPhase("success"),     2250);
-      const t4 = setTimeout(() => setHidden(true),         3200);
-      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-    } else {
-      const t1 = setTimeout(() => setPhase("success"), 1100);
-      const t2 = setTimeout(() => setHidden(true),     2200);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
-    }
-  }, [tier, doFakeout]);
-
-  if (hidden) return null;
-
-  const liquidColor =
-    phase === "failing"      ? "#ff4438" :
-    phase === "persevering"  ? "#ffffff" :
-    cfg.liquid;
-
-  return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 10005,
-      background: phase === "persevering"
-        ? "radial-gradient(ellipse at center, rgba(255,255,255,0.20), rgba(0,0,0,0.96))"
-        : "radial-gradient(ellipse at center, rgba(0,0,0,0.92), rgba(0,0,0,1))",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      animation: phase === "failing" ? "rcCauldronShake 0.06s infinite" : "none",
-      overflow: "hidden",
-    }}>
-      <style>{`
-        @keyframes rcCauldronShake { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-4px,3px); } 50% { transform: translate(3px,-3px); } 75% { transform: translate(-3px,2px); } }
-        @keyframes rcBubbleRise {
-          0% { transform: translateY(0) scale(1); opacity: 0.8; }
-          90% { opacity: 0.5; }
-          100% { transform: translateY(-130px) scale(0.2); opacity: 0; }
-        }
-        @keyframes rcSteamWisp {
-          0% { transform: translateY(0) scaleX(1); opacity: 0.45; }
-          50% { opacity: 0.85; }
-          100% { transform: translateY(-240px) scaleX(2.2); opacity: 0; }
-        }
-        @keyframes rcLiquidSurge {
-          0%,100% { transform: scaleY(1); filter: brightness(1); }
-          50% { transform: scaleY(1.05); filter: brightness(1.35); }
-        }
-        @keyframes rcBurstRing {
-          0% { transform: translate(-50%,-50%) scale(0.5); opacity: 1; }
-          100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
-        }
-        @keyframes rcTextPulse {
-          0%,100% { opacity: 0.95; }
-          50% { opacity: 1; transform: translate(-50%,-50%) scale(1.04); }
-        }
-        .rc-bubble-anim { animation: rcBubbleRise 1.5s ease-in infinite; }
-        .rc-steam-anim  { animation: rcSteamWisp 2.2s ease-out infinite; }
-        .rc-liquid-anim { animation: rcLiquidSurge 1.0s ease-in-out infinite; }
-        .rc-burst-ring-anim { animation: rcBurstRing 0.9s ease-out forwards; }
-      `}</style>
-
-      {Array.from({ length: 30 }).map((_, i) => (
-        <div key={i} style={{
-          position: "absolute",
-          left: `${(i*9.7) % 100}%`,
-          top: `${(i*11.3) % 70}%`,
-          width: 1.5 + (i % 3),
-          height: 1.5 + (i % 3),
-          borderRadius: "50%",
-          background: phase === "failing" ? "#ff4438" : cfg.liquid,
-          boxShadow: `0 0 6px ${phase === "failing" ? "#ff4438" : cfg.liquid}`,
-          animation: `rcBubbleRise ${3 + (i % 3)}s ease-in infinite`,
-          animationDelay: `${(i*100) % 1500}ms`,
-          opacity: 0.55,
-        }} />
-      ))}
-
-      <div style={{
-        position: "relative", width: "min(260px, 70vw)", height: "min(290px, 70vw)",
-      }}>
-        <div style={{
-          position: "absolute", left: "50%", top: -10, transform: "translateX(-50%)",
-          width: "70%", height: 180, pointerEvents: "none",
-        }}>
-          {[0, 250, 500, 750, 1000, 1250].map((d, i) => (
-            <div key={i} className="rc-steam-anim" style={{
-              position: "absolute",
-              left: `${10 + (i*15)}%`, top: 100,
-              width: 16 + (i*3)%12, height: 16 + (i*3)%12,
-              borderRadius: "50%",
-              background: "rgba(220,220,235,0.4)",
-              filter: "blur(6px)",
-              animationDelay: d + "ms",
-            }} />
-          ))}
-        </div>
-
-        <div style={{
-          position: "absolute", left: "8%", top: "22%", width: "84%", height: "70%",
-          background: "linear-gradient(180deg, #3a2412 0%, #1a0f05 50%, #0a0502 100%)",
-          border: "3px solid #1a0f05",
-          borderRadius: "42% 42% 50% 50% / 28% 28% 70% 70%",
-          boxShadow: "inset 0 -12px 40px rgba(0,0,0,0.85), 0 12px 40px rgba(0,0,0,0.85)",
-          overflow: "hidden",
-        }}>
-          <div className="rc-liquid-anim" style={{
-            position: "absolute", left: "8%", right: "8%", top: "22%", height: "55%",
-            background: `radial-gradient(ellipse at center, ${liquidColor} 0%, ${liquidColor}cc 40%, ${liquidColor}66 70%, transparent 100%)`,
-            borderRadius: "50%",
-            transition: "background 0.45s ease",
-            boxShadow: `inset 0 -10px 30px ${liquidColor}55, 0 0 30px ${liquidColor}66`,
-          }}>
-            <svg viewBox="0 0 200 80" preserveAspectRatio="none" style={{
-              position: "absolute", left: 0, right: 0, top: 0, width: "100%", height: 30,
-            }}>
-              <path d="M 0 30 Q 50 22, 100 30 T 200 30 V 80 H 0 Z"
-                    fill={liquidColor} opacity="0.7" />
-            </svg>
-          </div>
-
-          {[180, 420, 640, 880, 1140, 1400].map((d, i) => (
-            <div key={i} className="rc-bubble-anim" style={{
-              position: "absolute",
-              left: `${10 + (i*13) % 75}%`,
-              bottom: "15%",
-              width: 5 + (i*2) % 9,
-              height: 5 + (i*2) % 9,
-              borderRadius: "50%",
-              background: liquidColor,
-              boxShadow: `0 0 10px ${liquidColor}, inset -1px -1px 2px rgba(255,255,255,0.5)`,
-              animationDelay: d + "ms",
-            }} />
-          ))}
-        </div>
-
-        <div style={{
-          position: "absolute", left: "6%", top: "18%", width: "88%", height: "12%",
-          background: "linear-gradient(180deg, #2a1a0a 0%, #4a2d10 50%, #2a1a0a 100%)",
-          borderRadius: "50%",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.7)",
-        }} />
-
-        <div style={{
-          position: "absolute", bottom: "10%", left: "14%", width: "11%", height: "14%",
-          background: "linear-gradient(180deg, #2a1a0a 0%, #0a0502 100%)",
-          borderRadius: "0 0 50% 50%",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.6)",
-        }} />
-        <div style={{
-          position: "absolute", bottom: "10%", left: "44.5%", width: "11%", height: "16%",
-          background: "linear-gradient(180deg, #2a1a0a 0%, #0a0502 100%)",
-          borderRadius: "0 0 50% 50%",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.6)",
-        }} />
-        <div style={{
-          position: "absolute", bottom: "10%", right: "14%", width: "11%", height: "14%",
-          background: "linear-gradient(180deg, #2a1a0a 0%, #0a0502 100%)",
-          borderRadius: "0 0 50% 50%",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.6)",
-        }} />
-
-        {phase === "success" && [0, 0.15, 0.3].map((delay, i) => (
-          <div key={i} className="rc-burst-ring-anim" style={{
-            position: "absolute", left: "50%", top: "50%", width: "90%", height: "90%",
-            borderRadius: "50%", border: `3px solid ${cfg.liquid}`,
-            boxShadow: `0 0 30px ${cfg.liquid}`,
-            animationDelay: delay + "s",
-          }} />
-        ))}
-      </div>
-
-      <div style={{
-        position: "absolute", left: "50%", top: "78%",
-        transform: "translateX(-50%)", textAlign: "center", zIndex: 5,
-      }}>
-        {phase === "brewing" && (
-          <div style={{
-            fontFamily: "Metamorphous, Georgia, serif",
-            fontSize: "clamp(18px, 4vw, 24px)",
-            color: "#fff", letterSpacing: "0.22em", textTransform: "uppercase",
-            animation: "rcTextPulse 1.3s ease-in-out infinite",
-            textShadow: `0 0 22px ${cfg.liquid}, 0 2px 4px rgba(0,0,0,0.9)`,
-          }}>
-            Refining Gu…
-          </div>
-        )}
-        {phase === "failing" && (
-          <div style={{
-            fontFamily: "Metamorphous, Georgia, serif",
-            fontSize: "clamp(22px, 5vw, 30px)",
-            color: "#ff4438", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase",
-            animation: "rcTextPulse 0.25s ease-in-out infinite",
-            textShadow: "0 0 24px #ff4438, 0 0 48px #cc0000, 0 2px 4px rgba(0,0,0,0.9)",
-          }}>
-            ⚠ Refinement Failed
-          </div>
-        )}
-        {phase === "persevering" && (
-          <div style={{
-            fontFamily: "Metamorphous, Georgia, serif",
-            fontSize: "clamp(26px, 6.5vw, 40px)",
-            color: "#fff", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase",
-            animation: "rcTextPulse 0.4s ease-in-out infinite",
-            textShadow: `0 0 30px ${cfg.liquid}, 0 0 60px #fff, 0 2px 4px rgba(0,0,0,0.9)`,
-          }}>
-            ✦ Persevere ✦
-          </div>
-        )}
-        {phase === "success" && (
-          <div style={{
-            fontFamily: "Metamorphous, Georgia, serif",
-            fontSize: "clamp(20px, 5vw, 28px)",
-            color: "#fff", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase",
-            textShadow: `0 0 26px ${cfg.liquid}, 0 0 56px ${cfg.liquid}, 0 2px 4px rgba(0,0,0,0.9)`,
-          }}>
-            ◆ Refinement Complete ◆
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── Ascension Overlay — clean reveal-pull: void → light pillar → burst → portrait reveal → name card ──
-function AscensionOverlay({ tier }) {
-  const [fading, setFading] = useState(false);
   if (!tier) return null;
 
-  const images = {
-    gu_master:   "/assets/realm-gumaster.jpg",
-    gu_immortal: "/assets/realm-guimmortal.jpg",
-    venerable:   "/assets/realm-venerable.jpg",
-  };
-  const titles = {
-    gu_master:   "Gu Master",
-    gu_immortal: "Gu Immortal",
-    venerable:   "Venerable",
-  };
-  const subtitles = {
-    gu_master:   "You have refined your aperture. Primeval essence flows.",
-    gu_immortal: "The mortal aperture shatters. The immortal aperture opens.",
-    venerable:   "人如棋子，弈者何人。",
-  };
-
-  const CFG = {
+  const cfgMap = {
     gu_master: {
-      accent: "#d8a34d", glow: "rgba(216,163,77,", core: "rgba(255,231,160,",
-      flashColor: "rgba(255,234,178,0.85)", flashColor2: "rgba(216,163,77,0.30)",
-      bg: "#020004",
-      glyphs: ["蛊","木","水","火","土","金","魂"],
-      portraitSize: "min(190px,50vw)", cardWidth: "min(340px,88vw)",
-      chargeTime: 1100,
-      particleCount: 60, particleSpeed: 5.5, ringCount: 40,
-      doLightning: false, doRays: false, doChains: false, doHeavenRain: false,
+      title: "Gu Master",
+      seal: "蛊",
+      accent: "#d8a34d",
+      accentSoft: "rgba(216,163,77,0.20)",
+      glow: "rgba(216,163,77,0.34)",
+      gradient: "linear-gradient(135deg, rgba(216,163,77,0.24), rgba(255,237,183,0.08))",
+      line: "Your realm has opened. Narration and Ask Ren Zu essence have been restored.",
+      benefits: ["Premium narration unlocked", "Ask Ren Zu credits restored", "Codex rewards refined"],
     },
     gu_immortal: {
-      accent: "#62e8ff", glow: "rgba(98,232,255,", core: "rgba(210,251,255,",
-      flashColor: "rgba(210,252,255,0.95)", flashColor2: "rgba(82,207,255,0.36)",
-      bg: "#000a14",
-      glyphs: ["蛊","仙","道","劫","痕","宇","宙","智","力"],
-      portraitSize: "min(230px,56vw)", cardWidth: "min(400px,90vw)",
-      chargeTime: 1500,
-      particleCount: 100, particleSpeed: 8, ringCount: 80,
-      doLightning: true, doRays: false, doChains: false, doHeavenRain: false,
+      title: "Gu Immortal",
+      seal: "仙",
+      accent: "#62e8ff",
+      accentSoft: "rgba(98,232,255,0.18)",
+      glow: "rgba(98,232,255,0.30)",
+      gradient: "linear-gradient(135deg, rgba(98,232,255,0.20), rgba(255,255,255,0.07))",
+      line: "Your immortal aperture opens. Greater narration and unlimited communion await.",
+      benefits: ["Expanded premium narration", "Unlimited Ask Ren Zu", "Immortal Codex pool opened"],
     },
     venerable: {
-      accent: "#ffd36a", glow: "rgba(255,211,106,", core: "rgba(255,255,240,",
-      flashColor: "rgba(255,255,240,1)", flashColor2: "rgba(255,211,106,0.46)",
-      bg: "#070002",
-      glyphs: ["尊","道","天","地","命","炼","运","梦","魂","力","智","血"],
-      portraitSize: "min(280px,68vw)", cardWidth: "min(460px,92vw)",
-      chargeTime: 2200,
-      particleCount: 180, particleSpeed: 13, ringCount: 140,
-      doLightning: true, doRays: true, doChains: true, doHeavenRain: true,
+      title: "Venerable",
+      seal: "尊",
+      accent: "#ffd36a",
+      accentSoft: "rgba(255,211,106,0.20)",
+      glow: "rgba(255,211,106,0.34)",
+      gradient: "linear-gradient(135deg, rgba(255,211,106,0.22), rgba(255,255,255,0.08))",
+      line: "You stand at the peak. All reader powers are open to you.",
+      benefits: ["Unlimited premium narration", "Unlimited Ask Ren Zu", "Full Codex realm access"],
     },
   };
-  const baseCfg = CFG[tier] || CFG.gu_master;
-  const isCompactAscension = typeof window !== "undefined" && (
-    window.innerWidth <= 700 ||
-    (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-  );
-  const cfg = isCompactAscension
-    ? {
-        ...baseCfg,
-        chargeTime: Math.min(baseCfg.chargeTime, tier === "venerable" ? 1500 : tier === "gu_immortal" ? 1150 : 850),
-        particleCount: Math.min(baseCfg.particleCount, tier === "venerable" ? 70 : tier === "gu_immortal" ? 52 : 34),
-        ringCount: Math.min(baseCfg.ringCount, tier === "venerable" ? 58 : tier === "gu_immortal" ? 42 : 26),
-        particleSpeed: Math.min(baseCfg.particleSpeed, tier === "venerable" ? 7 : tier === "gu_immortal" ? 5 : 3.5),
-        doLightning: false,
-        doRays: false,
-        doChains: false,
-        doHeavenRain: false,
-        glyphs: baseCfg.glyphs.slice(0, 6),
-      }
-    : {
-        ...baseCfg,
-        particleCount: Math.min(baseCfg.particleCount, tier === "venerable" ? 125 : tier === "gu_immortal" ? 82 : 52),
-        ringCount: Math.min(baseCfg.ringCount, tier === "venerable" ? 95 : tier === "gu_immortal" ? 62 : 36),
-      };
 
-  const canvasRef = React.useRef(null);
-  const containerRef = React.useRef(null);
-  const animRef = React.useRef(null);
-  const particlesRef = React.useRef([]);
-  const lastAmbientRef = React.useRef(0);
-  const lastFrameRef = React.useRef(0);
-  const TARGET_FRAME_MS = 1000 / (isCompactAscension ? 24 : 30); // smoother with capped effects
-  const lightningsRef = React.useRef([]);
-  const daoLayerRef = React.useRef(null);
-  const flashRef = React.useRef(null);
-  const portraitRef = React.useRef(null);
-  const textCardRef = React.useRef(null);
-  const haloRef = React.useRef(null);
-  const apertureRef = React.useRef(null);
-  const raysRef = React.useRef(null);
-  const chainsRef = React.useRef(null);
-  const audioRef = React.useRef(null);
-
-  function initAudio() {
-    if (!audioRef.current) {
-      try { audioRef.current = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-    }
-    const actx = audioRef.current;
-    if (actx && actx.state === "suspended") actx.resume().catch(() => {});
-  }
-
-  function playChargeSound(duration) {
-    initAudio();
-    const actx = audioRef.current;
-    if (!actx) return;
-    const now = actx.currentTime;
-    const dur = duration / 1000;
-    const osc = actx.createOscillator();
-    const gain = actx.createGain();
-    osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(55, now);
-    osc.frequency.exponentialRampToValueAtTime(tier === "venerable" ? 780 : tier === "gu_immortal" ? 560 : 340, now + dur * 0.88);
-    gain.gain.setValueAtTime(0.0, now);
-    gain.gain.linearRampToValueAtTime(0.09, now + 0.25);
-    gain.gain.setValueAtTime(0.09, now + dur * 0.75);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-    osc.connect(gain); gain.connect(actx.destination);
-    osc.start(now); osc.stop(now + dur + 0.1);
-    const rumble = actx.createOscillator();
-    const rGain = actx.createGain();
-    rumble.type = "sine";
-    rumble.frequency.setValueAtTime(32, now);
-    rGain.gain.setValueAtTime(tier === "venerable" ? 0.38 : 0.22, now);
-    rGain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-    rumble.connect(rGain); rGain.connect(actx.destination);
-    rumble.start(now); rumble.stop(now + dur + 0.1);
-  }
-
-  function playImpactSound() {
-    initAudio();
-    const actx = audioRef.current;
-    if (!actx) return;
-    const now = actx.currentTime;
-    const osc = actx.createOscillator();
-    const gain = actx.createGain();
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(tier === "venerable" ? 110 : tier === "gu_immortal" ? 85 : 65, now);
-    osc.frequency.exponentialRampToValueAtTime(18, now + 1.8);
-    gain.gain.setValueAtTime(tier === "venerable" ? 0.75 : tier === "gu_immortal" ? 0.55 : 0.38, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
-    osc.connect(gain); gain.connect(actx.destination);
-    osc.start(now); osc.stop(now + 1.9);
-    if (tier !== "gu_master") {
-      const shimmer = actx.createOscillator();
-      const sGain = actx.createGain();
-      shimmer.type = "sine";
-      shimmer.frequency.setValueAtTime(tier === "venerable" ? 1800 : 1200, now);
-      shimmer.frequency.exponentialRampToValueAtTime(400, now + 1.2);
-      sGain.gain.setValueAtTime(0.12, now);
-      sGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-      shimmer.connect(sGain); sGain.connect(actx.destination);
-      shimmer.start(now); shimmer.stop(now + 1.3);
-    }
-  }
-
-  function addParticle(o) {
-    const life = o.life || 80;
-    particlesRef.current.push({
-      x: o.x, y: o.y, vx: o.vx || 0, vy: o.vy || 0,
-      gravity: o.gravity || 0, drag: o.drag || 0.98,
-      size: o.size || 3, color: o.color || "#ffffff",
-      glow: o.glow || 12, alpha: o.alpha || 1,
-      life, maxLife: life, kind: o.kind || "orb",
-    });
-  }
-
-  function doBurst(color, amount, power, sizeMax, kind) {
-    sizeMax = sizeMax || 4; kind = kind || "orb";
-    const cvs = canvasRef.current;
-    if (!cvs) return;
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const cx = cvs.width / (2 * DPR), cy = cvs.height / (2 * DPR);
-    for (let i = 0; i < amount; i++) {
-      const a = Math.random() * Math.PI * 2;
-      addParticle({ x: cx + (Math.random()-0.5)*30, y: cy + (Math.random()-0.5)*30,
-        vx: Math.cos(a)*power*(0.35+Math.random()), vy: Math.sin(a)*power*(0.35+Math.random()),
-        size: 1+Math.random()*sizeMax, color, glow: 16+Math.random()*18,
-        life: 55+Math.random()*52, drag: 0.965, kind });
-    }
-  }
-
-  function doRingBurst(color, amount, radius, power) {
-    radius = radius || 120; power = power || 4;
-    const cvs = canvasRef.current;
-    if (!cvs) return;
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const cx = cvs.width / (2 * DPR), cy = cvs.height / (2 * DPR);
-    for (let i = 0; i < amount; i++) {
-      const a = (i/amount)*Math.PI*2 + (Math.random()-0.5)*0.18;
-      addParticle({ x: cx+Math.cos(a)*radius, y: cy+Math.sin(a)*radius,
-        vx: Math.cos(a)*(power+Math.random()*3), vy: Math.sin(a)*(power+Math.random()*3),
-        size: 1.5+Math.random()*3.5, color, glow: 18, life: 70+Math.random()*45, drag: 0.972 });
-    }
-  }
-
-  function doHeavenRain(color, amount) {
-    const cvs = canvasRef.current;
-    if (!cvs) return;
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const W = cvs.width / DPR, H = cvs.height / DPR, cx = W/2;
-    for (let i = 0; i < amount; i++) {
-      addParticle({ x: cx+(Math.random()-0.5)*W*0.95, y: -80-Math.random()*H*0.35,
-        vx: (Math.random()-0.5)*1.2, vy: 7+Math.random()*8,
-        size: 1+Math.random()*2.2, color, glow: 20, life: 95+Math.random()*50, drag: 0.995, kind: "streak" });
-    }
-  }
-
-  function doLightning(color, count) {
-    count = count || 4;
-    const cvs = canvasRef.current;
-    if (!cvs) return;
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const W = cvs.width / DPR, H = cvs.height / DPR;
-    for (let i = 0; i < count; i++) {
-      const sx = Math.random()*W;
-      const tx = W/2 + (Math.random()-0.5)*Math.min(W*0.45, 520);
-      const ty = H/2 + (Math.random()-0.5)*Math.min(H*0.25, 240);
-      const life = 14+Math.random()*10;
-      const pts = [];
-      for (let j = 0; j <= 12; j++) {
-        const tt = j/12, taper = Math.sin(tt*Math.PI);
-        pts.push({ x: sx+(tx-sx)*tt+(Math.random()-0.5)*140*taper+(Math.random()-0.5)*24,
-                   y: -60+(ty+60)*tt+(Math.random()-0.5)*26 });
-      }
-      pts[0] = { x: sx, y: -60 }; pts[12] = { x: tx, y: ty };
-      lightningsRef.current.push({ points: pts, color, width: 2+Math.random()*3.5, life, maxLife: life });
-    }
-  }
-
-  function spawnDaoMark() {
-    const layer = daoLayerRef.current;
-    const cvs = canvasRef.current;
-    if (!layer || !cvs) return;
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const W = cvs.width/DPR, H = cvs.height/DPR;
-    const cx = W/2, cy = H/2;
-    const scale = tier === "venerable" ? 1.3 : tier === "gu_immortal" ? 1.0 : 0.8;
-    const mark = document.createElement("span");
-    const angle = Math.random()*Math.PI*2;
-    const r = 45 + Math.random()*Math.min(W,H)*0.18;
-    const lx = cx + Math.cos(angle)*r;
-    const ly = cy + Math.sin(angle)*r;
-    const dx = Math.cos(angle)*(150+Math.random()*280)*scale;
-    const dy = Math.sin(angle)*(150+Math.random()*280)*scale;
-    const life = 2800+Math.random()*850;
-    const glyph = cfg.glyphs[Math.floor(Math.random()*cfg.glyphs.length)];
-    const fs = 16+Math.random()*22*scale;
-    mark.textContent = glyph;
-    mark.setAttribute("style",
-      "position:absolute;pointer-events:none;user-select:none;" +
-      "left:" + lx + "px;top:" + ly + "px;" +
-      "color:" + cfg.accent + ";" +
-      "font-weight:700;font-size:" + fs + "px;" +
-      "text-shadow:0 0 9px currentColor,0 0 22px currentColor;" +
-      "opacity:0;transform:translate(-50%,-50%);" +
-      "--dx:" + dx + "px;--dy:" + dy + "px;" +
-      "animation:daoMarkAnim " + life + "ms linear forwards;"
-    );
-    layer.appendChild(mark);
-    setTimeout(() => { if (mark.parentNode) mark.parentNode.removeChild(mark); }, life + 300);
-  }
-
-  React.useEffect(() => {
-    const cvs = canvasRef.current;
-    const container = containerRef.current;
-    if (!cvs || !container) return;
-    const ctx2 = cvs.getContext("2d");
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    let frame = 0;
-    let alive = true;
-
-    function resize() {
-      cvs.width = Math.floor(window.innerWidth * DPR);
-      cvs.height = Math.floor(window.innerHeight * DPR);
-      cvs.style.width = window.innerWidth + "px";
-      cvs.style.height = window.innerHeight + "px";
-      ctx2.setTransform(DPR, 0, 0, DPR, 0, 0);
-    }
-    resize();
-    window.addEventListener("resize", resize);
-
-    function ambient() {
-      if (particlesRef.current.length > (isCompactAscension ? 120 : 360)) return;
-      const now = performance.now();
-      if (now - lastAmbientRef.current < (isCompactAscension ? 180 : 120)) return;
-      lastAmbientRef.current = now;
-      const W = window.innerWidth;
-      const cols = ["rgba(180,140,255,0.3)","rgba(255,220,130,0.22)","rgba(105,235,255,0.2)"];
-      addParticle({ x: Math.random()*W, y: window.innerHeight+30,
-        vx: (Math.random()-0.5)*0.3, vy: -0.3-Math.random()*0.7,
-        size: 0.8+Math.random()*1.6, color: cols[Math.floor(Math.random()*cols.length)],
-        glow: 8, alpha: 0.55, life: 180+Math.random()*120, drag: 0.999 });
-    }
-
-    function drawLoop() {
-      if (!alive) return;
-      animRef.current = requestAnimationFrame(drawLoop);
-      const now = performance.now();
-      if (now - lastFrameRef.current < TARGET_FRAME_MS) return;
-      lastFrameRef.current = now;
-      frame++;
-      const W = window.innerWidth, H = window.innerHeight;
-      ctx2.clearRect(0, 0, W, H);
-      ambient();
-
-      ctx2.save();
-      ctx2.fillStyle = "rgba(20,10,35,0.38)";
-      ctx2.beginPath();
-      const mpts = [[0,.78],[.07,.58],[.15,.75],[.24,.45],[.34,.74],[.45,.50],[.55,.78],[.67,.42],[.79,.74],[.90,.55],[1,.80],[1,1],[0,1]];
-      mpts.forEach(([x,y],i) => i===0 ? ctx2.moveTo(x*W,y*H) : ctx2.lineTo(x*W,y*H));
-      ctx2.closePath(); ctx2.fill(); ctx2.restore();
-
-      ctx2.save();
-      ctx2.globalCompositeOperation = "lighter";
-
-      for (let i = particlesRef.current.length-1; i >= 0; i--) {
-        const p = particlesRef.current[i];
-        p.life -= 1;
-        if (p.life <= 0) { particlesRef.current.splice(i,1); continue; }
-        p.vy += p.gravity; p.x += p.vx; p.y += p.vy;
-        p.vx *= p.drag; p.vy *= p.drag;
-        const a = Math.max(p.life/p.maxLife,0)*p.alpha;
-        ctx2.globalAlpha = a; ctx2.shadowBlur = p.glow; ctx2.shadowColor = p.color;
-        if (p.kind === "streak") {
-          ctx2.strokeStyle = p.color; ctx2.lineWidth = p.size;
-          ctx2.beginPath(); ctx2.moveTo(p.x,p.y); ctx2.lineTo(p.x-p.vx*6,p.y-p.vy*6); ctx2.stroke();
-        } else {
-          ctx2.fillStyle = p.color;
-          ctx2.beginPath(); ctx2.arc(p.x,p.y,p.size,0,Math.PI*2); ctx2.fill();
-        }
-      }
-
-      for (let i = lightningsRef.current.length-1; i >= 0; i--) {
-        const l = lightningsRef.current[i];
-        l.life -= 1;
-        if (l.life <= 0) { lightningsRef.current.splice(i,1); continue; }
-        const a = Math.max(l.life/l.maxLife,0);
-        ctx2.globalAlpha = a; ctx2.strokeStyle = l.color; ctx2.lineWidth = l.width;
-        ctx2.shadowBlur = 26; ctx2.shadowColor = l.color;
-        ctx2.beginPath();
-        l.points.forEach((pt,j) => j===0 ? ctx2.moveTo(pt.x,pt.y) : ctx2.lineTo(pt.x,pt.y));
-        ctx2.stroke();
-        ctx2.globalAlpha = a*0.9; ctx2.strokeStyle = "rgba(255,255,255,0.95)";
-        ctx2.lineWidth = Math.max(1,l.width*0.34); ctx2.shadowBlur = 12; ctx2.shadowColor = "#fff";
-        ctx2.beginPath();
-        l.points.forEach((pt,j) => j===0 ? ctx2.moveTo(pt.x,pt.y) : ctx2.lineTo(pt.x,pt.y));
-        ctx2.stroke();
-      }
-      ctx2.restore();
-    }
-    drawLoop();
-
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-
-    // Ascension sounds disabled: visual-only realm transition.
-
-    const gravityInterval = setInterval(() => {
-      if (particlesRef.current.length >= (isCompactAscension ? 70 : 150)) return;
-      const angle = Math.random()*Math.PI*2;
-      const r = 80 + Math.random()*Math.max(W,H)*0.45;
-      const cx = W/2, cy = H/2;
-      const px = cx+Math.cos(angle)*r, py = cy+Math.sin(angle)*r;
-      addParticle({ x: px, y: py,
-        vx: (cx-px)*0.013, vy: (cy-py)*0.013,
-        size: 1.2+Math.random()*2.8, color: cfg.accent,
-        glow: 14, alpha: 0.7, life: 55+Math.random()*35, drag: 0.98 });
-    }, isCompactAscension ? 55 : 36);
-
-    const daoInterval = setInterval(spawnDaoMark, isCompactAscension ? 620 : (tier==="venerable"?240:tier==="gu_immortal"?340:500));
-
-    const halo = haloRef.current, ap = apertureRef.current;
-    if (halo) { halo.style.opacity = "1"; halo.style.transform = "translate(-50%,-50%) scale(1)"; }
-    if (ap) setTimeout(() => { if (ap) ap.style.opacity = "0.75"; }, 200);
-
-    let lightningInterval = null;
-    if (cfg.doLightning) {
-      lightningInterval = setInterval(() => {
-        doLightning(tier==="venerable"?"#fff4bf":"#9bf7ff", tier==="venerable"?2:1);
-      }, tier==="venerable"?260:450);
-    }
-
-    if (cfg.doRays) {
-      setTimeout(() => { const r = raysRef.current; if (r) r.style.opacity="1"; }, cfg.chargeTime*0.5);
-    }
-
-    setTimeout(() => {
-      clearInterval(gravityInterval);
-      clearInterval(daoInterval);
-      if (lightningInterval) clearInterval(lightningInterval);
-
-      const flashEl = flashRef.current;
-      if (flashEl) {
-        flashEl.style.background = "radial-gradient(circle at center," + cfg.flashColor + " 0%," + cfg.flashColor2 + " 36%,transparent 72%)";
-        flashEl.style.opacity = "1";
-        flashEl.style.transition = "none";
-        setTimeout(() => { if (flashEl) { flashEl.style.transition="opacity 0.75s ease-out"; flashEl.style.opacity="0"; }}, 60);
-      }
-
-      // Ascension impact sound disabled.
-
-      if (container) {
-        container.style.animation = isCompactAscension ? "aoShakeLight 0.32s ease" : (tier==="venerable"?"aoShakeHeavy 0.85s ease":"aoShakeLight 0.45s ease");
-        setTimeout(() => { if (container) container.style.animation="none"; }, 900);
-      }
-
-      doBurst(cfg.accent, cfg.particleCount, cfg.particleSpeed, tier==="venerable"?5.5:4);
-      doRingBurst(cfg.accent, cfg.ringCount, tier==="venerable"?160:tier==="gu_immortal"?128:90, tier==="venerable"?7:tier==="gu_immortal"?4.2:2.8);
-
-      if (cfg.doLightning) {
-        doLightning(tier==="venerable"?"#fff4bf":"#dff9ff", tier==="venerable"?7:5);
-        setTimeout(() => doLightning(tier==="venerable"?"#ffd36a":"#9bf7ff", tier==="venerable"?5:3), 420);
-      }
-      if (cfg.doHeavenRain) {
-        doHeavenRain(cfg.accent, 85);
-        setTimeout(() => {
-          doBurst("#ffffff",120,16,3.2,"streak");
-          doBurst("#a855f7",90,10,4.2);
-          doRingBurst(cfg.accent,160,245,4.6);
-        }, 500);
-      }
-      if (cfg.doChains) {
-        const ch = chainsRef.current;
-        if (ch) { ch.style.opacity="1"; setTimeout(() => { if (ch) ch.style.opacity="0"; }, 1200); }
-      }
-    }, cfg.chargeTime);
-
-    setTimeout(() => {
-      if (ap) ap.style.opacity = "0";
-      const portrait = portraitRef.current;
-      if (portrait) {
-        portrait.style.opacity = "1";
-        portrait.style.transform = "scale(1)";
-        portrait.style.filter = "brightness(1) blur(0)";
-      }
-    }, cfg.chargeTime + 250);
-
-    setTimeout(() => {
-      const tc = textCardRef.current;
-      if (tc) { tc.style.opacity="1"; tc.style.transform="translateX(-50%) translateY(0)"; }
-    }, cfg.chargeTime + 600);
-
-    return () => {
-      alive = false;
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animRef.current);
-      clearInterval(gravityInterval);
-      clearInterval(daoInterval);
-      if (lightningInterval) clearInterval(lightningInterval);
-      particlesRef.current = [];
-      lightningsRef.current = [];
-    };
-  }, [tier]);
-
-  React.useEffect(() => {
-    const ASCENSION_DURATIONS = isCompactAscension
-      ? { gu_master: 1800, gu_immortal: 2300, venerable: 3200 }
-      : { gu_master: 2400, gu_immortal: 3200, venerable: 4800 };
-    const dur = ASCENSION_DURATIONS[tier] || (isCompactAscension ? 2400 : 3500);
-    const fadeAt = Math.max(0, dur - 500);
-    const fadeTimer = setTimeout(() => setFading(true), fadeAt);
-    return () => { clearTimeout(fadeTimer); setFading(false); };
-  }, [tier]);
+  const cfg = cfgMap[tier] || cfgMap.gu_master;
+  const rewardList = Array.isArray(awardedGu) ? awardedGu.filter(Boolean).slice(0, 3) : [];
 
   return (
-    <div ref={containerRef} style={{
-      position:"fixed",inset:0,zIndex:10002,overflow:"hidden",
-      background:"radial-gradient(circle at 50% 42%,rgba(88,38,140,0.22),transparent 34%),radial-gradient(circle at 50% 70%,rgba(15,3,40,1),transparent 45%),linear-gradient(180deg," + cfg.bg + " 0%,#090016 42%," + cfg.bg + " 100%)",
-      display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-      opacity: fading ? 0 : 1,
-      transition: "opacity 0.5s ease-out",
-    }}>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${cfg.title} ascension`}
+      onClick={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 10040,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "max(18px, env(safe-area-inset-top, 18px)) 16px max(18px, env(safe-area-inset-bottom, 18px))",
+        background: "radial-gradient(circle at 50% 32%, rgba(255,232,174,0.13), transparent 34%), rgba(5,4,8,0.84)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        overflow: "hidden",
+      }}
+    >
       <style>{`
-        @keyframes daoMarkAnim {
-          0%{opacity:0;transform:translate(-50%,-50%) scale(0.2) rotate(-30deg);filter:blur(5px)}
-          14%{opacity:0.95;filter:blur(0)}
-          100%{opacity:0;transform:translate(calc(-50% + var(--dx,80px)),calc(-50% + var(--dy,-80px))) scale(1.35) rotate(200deg);filter:blur(2px)}
+        @keyframes realmLiteSealIn {
+          from { transform: translateY(14px) scale(.88); opacity: 0; }
+          to { transform: translateY(0) scale(1); opacity: 1; }
         }
-        @keyframes aoHSpin1{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @keyframes aoHSpin2{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
-        @keyframes aoHSpin3{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @keyframes aoAPulse{0%,100%{filter:brightness(1) blur(0.3px)}50%{filter:brightness(1.35) blur(0.1px)}}
-        @keyframes aoRimPulse{0%,100%{box-shadow:0 0 0 8px rgba(255,255,255,0.08),0 0 50px rgba(200,160,60,0.4)}50%{box-shadow:0 0 0 8px rgba(255,255,255,0.14),0 0 80px rgba(200,160,60,0.75)}}
-        @keyframes aoRaySpin{from{transform:translate(-50%,-50%) rotate(var(--ra,0deg))}to{transform:translate(-50%,-50%) rotate(calc(var(--ra,0deg) + 360deg))}}
-        @keyframes aoShakeLight{0%,100%{transform:translate(0,0)}20%{transform:translate(-5px,3px)}40%{transform:translate(4px,-3px)}60%{transform:translate(-3px,2px)}80%{transform:translate(2px,-2px)}}
-        @keyframes aoShakeHeavy{0%,100%{transform:translate(0,0)}10%{transform:translate(-12px,7px)}20%{transform:translate(10px,-8px)}32%{transform:translate(-8px,5px)}45%{transform:translate(7px,-4px)}58%{transform:translate(-5px,4px)}72%{transform:translate(3px,-2px)}}
-        @keyframes aoChainBreak{0%{opacity:0;transform:rotate(var(--cr,-18deg)) scaleX(0.15)}28%{opacity:0.78;transform:rotate(var(--cr,-18deg)) scaleX(1)}55%{opacity:1;filter:brightness(2.4) drop-shadow(0 0 18px rgba(255,255,255,0.9))}100%{opacity:0;transform:rotate(var(--cr,-18deg)) translateX(var(--cs,-42vw)) scaleX(0.38)}}
-        .ao-halo{position:absolute;left:50%;top:50%;width:min(78vmin,740px);aspect-ratio:1/1;transform:translate(-50%,-50%) scale(0.5);opacity:0;pointer-events:none;transition:opacity 0.6s ease,transform 0.9s cubic-bezier(.2,.9,.2,1)}
-        .ao-ring{position:absolute;border-radius:50%;border:1px solid;opacity:0.42}
-        .ao-r1{inset:0;animation:aoHSpin1 18s linear infinite}
-        .ao-r2{inset:9%;border-style:dashed;animation:aoHSpin2 12s linear infinite}
-        .ao-r3{inset:22%;border-top-color:transparent;border-bottom-color:transparent;animation:aoHSpin3 8s linear infinite}
-        .ao-aperture{position:absolute;left:50%;top:50%;border-radius:50%;pointer-events:none;opacity:0;transition:opacity 0.5s ease;animation:aoAPulse 3s ease-in-out infinite}
-        .ao-ap-gu_master{width:min(36vmin,360px);aspect-ratio:1/1;transform:translate(-50%,-50%);background:radial-gradient(circle at center,rgba(255,231,160,0.36),transparent 23%),radial-gradient(circle at center,rgba(216,163,77,0.24),transparent 60%);box-shadow:0 0 90px rgba(216,163,77,0.52)}
-        .ao-ap-gu_immortal{width:min(50vmin,520px);aspect-ratio:1/1;transform:translate(-50%,-50%);background:radial-gradient(circle at center,rgba(210,251,255,0.42),transparent 19%),radial-gradient(circle at center,rgba(81,214,255,0.22),transparent 60%);box-shadow:0 0 120px rgba(81,214,255,0.65)}
-        .ao-ap-venerable{width:min(65vmin,700px);aspect-ratio:1/1;transform:translate(-50%,-50%);background:radial-gradient(circle at center,rgba(255,255,255,0.55),transparent 13%),radial-gradient(circle at center,rgba(255,211,106,0.34),transparent 39%),radial-gradient(circle at center,rgba(170,83,255,0.25),transparent 68%);box-shadow:0 0 160px rgba(255,211,106,0.85),0 0 240px rgba(170,83,255,0.48)}
-        .ao-rays{position:absolute;inset:0;opacity:0;pointer-events:none;overflow:hidden;transition:opacity 0.8s ease}
-        .ao-ray{position:absolute;left:50%;top:50%;width:7px;height:160vh;background:linear-gradient(to bottom,transparent,rgba(255,238,170,0.95),transparent);filter:blur(1px);opacity:0.48;box-shadow:0 0 38px rgba(255,211,106,0.8);animation:aoRaySpin 7s linear infinite}
-        .ao-chains{position:absolute;inset:0;pointer-events:none}
-        .ao-chain{position:absolute;left:-12%;top:50%;width:124%;height:13px;border-radius:999px;background:repeating-linear-gradient(90deg,rgba(255,242,190,0.95) 0 16px,transparent 16px 25px);filter:drop-shadow(0 0 9px rgba(255,230,160,0.9)) drop-shadow(0 0 22px rgba(168,85,247,0.55));opacity:0;animation:aoChainBreak 1.15s cubic-bezier(.2,.8,.3,1) forwards}
-        .ao-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,transparent 42%,rgba(0,0,0,0.22) 64%,rgba(0,0,0,0.80) 100%)}
+        @keyframes realmLiteRing {
+          from { transform: scale(.72); opacity: 0; }
+          45% { opacity: .9; }
+          to { transform: scale(1.14); opacity: 0; }
+        }
+        @keyframes realmLiteCardIn {
+          from { transform: translateY(18px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes realmLiteShimmer {
+          from { transform: translateX(-120%); opacity: 0; }
+          40% { opacity: .9; }
+          to { transform: translateX(120%); opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .realm-lite-card, .realm-lite-seal, .realm-lite-ring, .realm-lite-shimmer { animation: none !important; }
+        }
       `}</style>
 
-      <canvas ref={canvasRef} style={{position:"absolute",inset:0,zIndex:5,pointerEvents:"none"}} />
-      <div ref={daoLayerRef} style={{position:"absolute",inset:0,zIndex:16,pointerEvents:"none"}} />
-      <div ref={apertureRef} className={"ao-aperture ao-ap-" + tier} style={{zIndex:3}} />
+      <div
+        className="realm-lite-card"
+        style={{
+          width: "min(420px, 94vw)",
+          borderRadius: 28,
+          border: `1px solid ${cfg.accentSoft}`,
+          background: `linear-gradient(180deg, rgba(18,14,24,0.96), rgba(8,7,12,0.98)), ${cfg.gradient}`,
+          boxShadow: `0 28px 80px rgba(0,0,0,0.55), 0 0 44px ${cfg.glow}`,
+          padding: "26px 22px 20px",
+          color: "#fff",
+          textAlign: "center",
+          position: "relative",
+          overflow: "hidden",
+          transform: ready ? "translateY(0)" : "translateY(18px)",
+          opacity: ready ? 1 : 0,
+          transition: "opacity 420ms ease, transform 420ms cubic-bezier(.2,.9,.2,1)",
+        }}
+      >
+        <div
+          className="realm-lite-shimmer"
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            width: "58%",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)",
+            animation: "realmLiteShimmer 1500ms ease-out 240ms 1 both",
+            pointerEvents: "none",
+          }}
+        />
 
-      <div ref={haloRef} className="ao-halo" style={{zIndex:7}}>
-        <div className="ao-ring ao-r1" style={{borderColor:cfg.accent,boxShadow:"0 0 32px " + cfg.accent}} />
-        <div className="ao-ring ao-r2" style={{borderColor:cfg.accent}} />
-        <div className="ao-ring ao-r3" style={{borderColor:cfg.accent}} />
-      </div>
-
-      {cfg.doRays && (
-        <div ref={raysRef} className="ao-rays" style={{zIndex:2}}>
-          {[0,45,90,135].map(a => <div key={a} className="ao-ray" style={{"--ra":a+"deg"}} />)}
+        <div style={{ position: "relative", width: 118, height: 118, margin: "0 auto 16px" }}>
+          <div
+            className="realm-lite-ring"
+            style={{
+              position: "absolute",
+              inset: 2,
+              borderRadius: "50%",
+              border: `1px solid ${cfg.accent}`,
+              boxShadow: `0 0 26px ${cfg.glow}`,
+              animation: "realmLiteRing 1500ms ease-out 120ms 1 both",
+            }}
+          />
+          <div
+            className="realm-lite-seal"
+            style={{
+              position: "absolute",
+              inset: 14,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: `radial-gradient(circle, ${cfg.accentSoft}, rgba(255,255,255,0.04) 58%, rgba(0,0,0,0.28))`,
+              border: `1px solid ${cfg.accentSoft}`,
+              boxShadow: `inset 0 0 24px rgba(255,255,255,0.05), 0 0 32px ${cfg.glow}`,
+              color: cfg.accent,
+              fontFamily: "Metamorphous, Georgia, serif",
+              fontSize: 42,
+              textShadow: `0 0 24px ${cfg.glow}`,
+              animation: "realmLiteSealIn 520ms cubic-bezier(.2,.9,.2,1) 80ms both",
+            }}
+          >
+            {cfg.seal}
+          </div>
         </div>
-      )}
 
-      {cfg.doChains && (
-        <div ref={chainsRef} className="ao-chains" style={{zIndex:18,opacity:0}}>
-          {[{r:"-18deg",s:"-42vw"},{r:"16deg",s:"38vw"},{r:"0deg",s:"-42vw"}].map((c,i) => (
-            <div key={i} className="ao-chain" style={{"--cr":c.r,"--cs":c.s,animationDelay:i*0.08+"s"}} />
+        <div style={{
+          fontFamily: "Metamorphous, Georgia, serif",
+          fontSize: 11,
+          letterSpacing: "0.22em",
+          textTransform: "uppercase",
+          color: cfg.accent,
+          marginBottom: 8,
+        }}>
+          Realm Ascended
+        </div>
+
+        <h2 style={{
+          margin: 0,
+          fontFamily: "Metamorphous, Georgia, serif",
+          fontSize: "clamp(27px, 7vw, 38px)",
+          lineHeight: 1.08,
+          letterSpacing: "0.02em",
+          color: "#fff",
+        }}>
+          {cfg.title}
+        </h2>
+
+        <p style={{
+          margin: "14px auto 18px",
+          maxWidth: 335,
+          fontFamily: "Poppins, sans-serif",
+          fontSize: 13.5,
+          lineHeight: 1.7,
+          color: "rgba(255,255,255,0.72)",
+        }}>
+          {cfg.line}
+        </p>
+
+        <div style={{ display: "grid", gap: 8, margin: "0 auto 16px", maxWidth: 340 }}>
+          {cfg.benefits.map((item) => (
+            <div key={item} style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 9,
+              padding: "9px 11px",
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(255,255,255,0.045)",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 12.5,
+              color: "rgba(255,255,255,0.82)",
+              textAlign: "left",
+            }}>
+              <span style={{
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                flex: "0 0 18px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: cfg.accentSoft,
+                color: cfg.accent,
+                fontSize: 12,
+                lineHeight: 1,
+              }}>✓</span>
+              <span>{item}</span>
+            </div>
           ))}
         </div>
-      )}
 
-      <div ref={flashRef} style={{position:"absolute",inset:0,zIndex:55,opacity:0,pointerEvents:"none",mixBlendMode:"screen"}} />
+        {rewardList.length > 0 && (
+          <div style={{
+            margin: "0 auto 17px",
+            maxWidth: 340,
+            borderRadius: 16,
+            border: `1px solid ${cfg.accentSoft}`,
+            background: "rgba(0,0,0,0.18)",
+            padding: "11px 12px",
+            textAlign: "left",
+          }}>
+            <div style={{
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 10,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.45)",
+              marginBottom: 7,
+            }}>
+              Codex refined
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+              {rewardList.map((g, idx) => (
+                <span key={`${g.id || g.name || idx}`} style={{
+                  borderRadius: 999,
+                  border: `1px solid ${cfg.accentSoft}`,
+                  background: cfg.gradient,
+                  color: "rgba(255,255,255,0.9)",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 12,
+                  padding: "6px 9px",
+                }}>
+                  {g.name || g.id || "Gu"}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
-      <div ref={portraitRef} style={{
-        position:"relative",zIndex:20,
-        width:cfg.portraitSize,height:cfg.portraitSize,borderRadius:"50%",overflow:"hidden",
-        border:"3px solid " + cfg.accent,
-        boxShadow:"0 0 0 8px rgba(255,255,255,0.08),0 0 50px " + cfg.glow + "0.4)",
-        opacity:0,transform:"scale(1.18)",filter:"brightness(3) blur(7px)",
-        transition:"opacity 0.65s cubic-bezier(.2,.8,.3,1),transform 0.65s cubic-bezier(.2,.8,.3,1),filter 0.65s ease",
-        animation:"aoRimPulse 2.2s 1s ease-in-out infinite",
-      }}>
-        <img src={images[tier]} alt={titles[tier]} style={{width:"100%",height:"100%",objectFit:"cover"}} />
+        <button
+          onClick={onClose}
+          style={{
+            width: "100%",
+            border: "none",
+            borderRadius: 16,
+            padding: "13px 16px",
+            background: cfg.accent,
+            color: tier === "gu_immortal" ? "#061015" : "#1a1004",
+            fontFamily: "Poppins, sans-serif",
+            fontWeight: 800,
+            letterSpacing: "0.04em",
+            cursor: "pointer",
+            boxShadow: `0 10px 26px ${cfg.glow}`,
+          }}
+        >
+          Done
+        </button>
       </div>
-
-      <div ref={textCardRef} style={{
-        position:"absolute",bottom:"8vh",left:"50%",
-        transform:"translateX(-50%) translateY(22px)",
-        width:cfg.cardWidth,textAlign:"center",zIndex:30,pointerEvents:"none",
-        opacity:0,transition:"opacity 0.5s ease,transform 0.5s ease",
-      }}>
-        <div style={{
-          fontFamily:"Metamorphous,Georgia,serif",
-          fontSize:tier==="venerable"?"clamp(26px,6.5vw,40px)":tier==="gu_immortal"?"clamp(22px,5.5vw,32px)":"clamp(18px,4.5vw,26px)",
-          fontWeight:700,color:"#fff",letterSpacing:"0.08em",
-          textShadow:"0 0 20px " + cfg.glow + "0.9),0 0 50px " + cfg.accent + "80",
-        }}>{titles[tier]}</div>
-        <div style={{
-          marginTop:10,fontSize:13,color:"rgba(255,245,225,0.82)",
-          fontFamily:"'IM Fell English',Georgia,serif",lineHeight:1.55,padding:"0 16px",
-        }}>{subtitles[tier]}</div>
-      </div>
-
-      <div className="ao-vignette" style={{zIndex:45}} />
     </div>
   );
 }
@@ -3298,14 +2633,10 @@ const chapterKeyRef = useRef(null);
   });
   const [essenceLoading, setEssenceLoading] = useState(false);
   const [ascensionTier, setAscensionTier] = useState(null);
-  const [refiningTier, setRefiningTier] = useState(null);
-  const [showRenZuLoader, setShowRenZuLoader] = useState(false);
   const [collectedGu, setCollectedGu] = useState([]);
   const [guDiscoveryToast, setGuDiscoveryToast] = useState(null);
   const [awardedGu, setAwardedGu] = useState(null);
-  const [showDevPanel, setShowDevPanel] = useState(false);
-  const [devTapCount, setDevTapCount] = useState(0);
-  const devTapTimerRef = React.useRef(null);
+  const ascensionTimerRef = React.useRef(null);
   const [backendMode, setBackendMode] = useState('local'); // 'api' | 'local'
   const utteranceRef = useRef(null);
   const sentenceIndexRef = useRef(0);
@@ -4558,12 +3889,20 @@ const chapterKeyRef = useRef(null);
     return false;
   }
 
-  function showAscension(tierName) {
-    const ASCENSION_DURATIONS = { gu_master: 2400, gu_immortal: 3200, venerable: 4800 };
-    setAscensionTier(tierName);
-    setTimeout(() => setAscensionTier(null), ASCENSION_DURATIONS[tierName] || 3500);
+  function closeAscension() {
+    if (ascensionTimerRef.current) clearTimeout(ascensionTimerRef.current);
+    ascensionTimerRef.current = null;
+    setAscensionTier(null);
+    setAwardedGu(null);
   }
-  // (Dev panel uses previewUnlockSequence for the full visual flow.)
+
+  function showAscension(tierName) {
+    if (ascensionTimerRef.current) clearTimeout(ascensionTimerRef.current);
+    setAscensionTier(tierName);
+    // Short and calm: users can also dismiss immediately with Done.
+    ascensionTimerRef.current = setTimeout(() => closeAscension(), 4200);
+  }
+  // Dev preview uses the same lightweight public unlock experience.
 
   // Award Gu worms from the tier's pool (hybrid: deterministic main + random bonus)
   function awardGuFromTier(tierName) {
@@ -4597,27 +3936,10 @@ const chapterKeyRef = useRef(null);
 
   // Preview-only sequence (dev panel) — runs the visual flow without touching real tier state
   function previewUnlockSequence(tierName) {
-    const isHighTier = tierName === "gu_immortal" || tierName === "venerable";
-    const compactVisual = typeof window !== "undefined" && window.innerWidth <= 700;
-    const loaderDur = compactVisual ? 850 : 1400;
-    const cauldronDur = isHighTier ? (compactVisual ? 2100 : 3200) : (compactVisual ? 1500 : 2200);
-    if (isHighTier) {
-      setShowRenZuLoader(true);
-      setTimeout(() => {
-        setShowRenZuLoader(false);
-        setRefiningTier(tierName);
-        setTimeout(() => {
-          setRefiningTier(null);
-          showAscension(tierName);
-        }, cauldronDur);
-      }, loaderDur);
-    } else {
-      setRefiningTier(tierName);
-      setTimeout(() => {
-        setRefiningTier(null);
-        showAscension(tierName);
-      }, cauldronDur);
-    }
+    setAwardedGu([
+      { id: `preview-${tierName}-main`, name: (GU_POOL[tierName] && GU_POOL[tierName][0] && GU_POOL[tierName][0].name) || "Realm Gu" }
+    ]);
+    showAscension(tierName);
   }
 
   function unlockAudio(tierName, options = {}) {
@@ -4637,8 +3959,6 @@ const chapterKeyRef = useRef(null);
 
     if (options.skipAnimation) {
       setAwardedGu(null);
-      setShowRenZuLoader(false);
-      setRefiningTier(null);
       setAscensionTier(null);
       return;
     }
@@ -4647,32 +3967,8 @@ const chapterKeyRef = useRef(null);
     const newGu = awardGuFromTier(tierName);
     if (newGu.length > 0) setAwardedGu(newGu);
 
-    // Sequence: Ren Zu loader (high tiers only) → Refinement Cauldron → AscensionOverlay
-    const isHighTier = tierName === "gu_immortal" || tierName === "venerable";
-    const compactVisual = typeof window !== "undefined" && window.innerWidth <= 700;
-    const loaderDur = compactVisual ? 850 : 1400;
-    const cauldronDur = isHighTier ? (compactVisual ? 2100 : 3200) : (compactVisual ? 1500 : 2200);
-    const ascendedDur = isHighTier ? (compactVisual ? 3600 : 5800) : (compactVisual ? 3000 : 4500);
-
-    if (isHighTier) {
-      setShowRenZuLoader(true);
-      setTimeout(() => {
-        setShowRenZuLoader(false);
-        setRefiningTier(tierName);
-        setTimeout(() => {
-          setRefiningTier(null);
-          showAscension(tierName);
-          setTimeout(() => setAwardedGu(null), ascendedDur);
-        }, cauldronDur);
-      }, loaderDur);
-    } else {
-      setRefiningTier(tierName);
-      setTimeout(() => {
-        setRefiningTier(null);
-        showAscension(tierName);
-        setTimeout(() => setAwardedGu(null), ascendedDur);
-      }, cauldronDur);
-    }
+    // Clean Realm Ascension: no mountain loader, no cauldron, no canvas storm.
+    showAscension(tierName);
   }
 
   async function saveProfile({ username, email }) {
@@ -6819,39 +6115,13 @@ function getOrBuildSentences() {
       )}
 
 
-      {/* ── Invisible 5-tap zone — tap top-right corner 5× within 1.8s to open preview panel ── */}
-      <div
-        onPointerDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setDevTapCount((n) => {
-            const next = n + 1;
-            if (devTapTimerRef.current) clearTimeout(devTapTimerRef.current);
-            if (next >= 5) {
-              setShowDevPanel((p) => !p);
-              return 0;
-            }
-            devTapTimerRef.current = setTimeout(() => setDevTapCount(0), 1800);
-            return next;
-          });
-        }}
-        style={{
-          position: "fixed",
-          top: 0,
-          right: 0,
-          width: 64,
-          height: 64,
-          zIndex: 100000,
-          WebkitTapHighlightColor: "transparent",
-          cursor: "default",
-          background: "transparent",
-          touchAction: "manipulation",
-        }}
-        aria-label="Preview panel toggle"
-      />
-
-      {/* ── DEV-ONLY: ascension animation preview — auto-shown on localhost, or via 5-tap top-right anywhere ── */}
-      {(((typeof window !== "undefined") && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) || showDevPanel) && (
+      {/* ── Ascension preview: localhost, or live URL with ?realmPreview=1 / #realm-preview. No hidden tap zone. ── */}
+      {((typeof window !== "undefined") && (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.search.includes("realmPreview=1") ||
+        window.location.hash.includes("realm-preview")
+      )) && (
         <div style={{
           position: "fixed", bottom: 16, left: 16, zIndex: 99999,
           display: "flex", gap: 8, background: "rgba(0,0,0,0.85)",
@@ -6887,31 +6157,14 @@ function getOrBuildSentences() {
               pay {m}
             </button>
           ))}
-          <button
-            onClick={() => setShowDevPanel(false)}
-            style={{
-              fontSize: 10, padding: "4px 8px", borderRadius: 4, marginLeft: 4,
-              border: "1px solid rgba(255,255,255,0.15)", background: "transparent",
-              color: "rgba(255,255,255,0.4)", cursor: "pointer",
-            }}
-            title="Hide dev panel"
-          >
-            ✕
-          </button>
         </div>
       )}
 
-      {/* ── Ren Zu mountain loader (pre-cauldron for high tiers) ── */}
-      {showRenZuLoader && <RenZuLoader visible={showRenZuLoader} />}
-
-      {/* ── Refinement Cauldron (tier-aware, with fake-out for high tiers) ── */}
-      {refiningTier && <RefinementCauldron tier={refiningTier} />}
-
-      {/* ── Realm ascension animation overlay ── */}
-      {ascensionTier && <AscensionOverlay tier={ascensionTier} />}
+      {/* ── Realm Ascension Lite overlay ── */}
+      {ascensionTier && <AscensionOverlay tier={ascensionTier} awardedGu={awardedGu} onClose={closeAscension} />}
 
       {/* ── Gu Award Toast — shows what was just refined ── */}
-      {awardedGu && awardedGu.length > 0 && (
+      {!ascensionTier && awardedGu && awardedGu.length > 0 && (
         <div style={{
           position: "fixed", top: 96, left: 0, right: 0,
           margin: "0 auto", width: "fit-content", maxWidth: "min(380px, 92vw)",
