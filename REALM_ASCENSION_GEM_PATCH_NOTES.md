@@ -23,3 +23,8 @@ Changed file:
 Upload only:
 
 - `index.html`
+
+## Micro-adjustment
+
+- Realm images inside the gem are now about 20% more visible.
+- Central glow was softened slightly so the hidden realm image reads clearer.
