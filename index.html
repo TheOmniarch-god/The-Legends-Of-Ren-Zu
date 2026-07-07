@@ -6,12 +6,28 @@
   <title>The Legends of Ren Zu</title>
   <meta name="description" content="The Legends of Ren Zu — Reverend Insanity by Gu Zhen Ren" />
 
-  <!-- PWA: icons only (manifest removed — app has its own custom intro screen) -->
+  <!-- PWA / install metadata -->
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icons/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="theme-color" content="#000000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Ren Zu">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Social preview -->
+  <meta property="og:title" content="The Legends of Ren Zu">
+  <meta property="og:description" content="Read, listen, annotate, and discuss The Legends of Ren Zu with The Omniarch reader.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng">
+  <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Legends of Ren Zu">
+  <meta name="twitter:description" content="A premium web reader for The Legends of Ren Zu.">
+  <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png">
 
   <style>* { margin: 0; padding: 0; box-sizing: border-box; } html { background: #ece8de; } body { background: transparent; overscroll-behavior: none; -webkit-overflow-scrolling: touch; }</style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -2109,7 +2125,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, onSignIn })
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onTreasure, onSaved, onSettings, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onTreasure, onSaved, onSettings, onInstall, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -2122,6 +2138,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
     ] : []),
     { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
     { id: "theme", label: `Theme · ${mode === "light" ? "Light" : mode === "dark" ? "Dark" : "Scroll"}`, onClick: () => { onClose(); onThemeCycle(); }, disabled: false },
+    { id: "install", label: "Install App", onClick: () => { onClose(); onInstall(); }, disabled: false },
     { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
     { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
@@ -3655,6 +3672,45 @@ const chapterKeyRef = useRef(null);
     window.addEventListener("scroll", closeMenuOnScroll, true);
     return () => window.removeEventListener("scroll", closeMenuOnScroll, true);
   }, []);
+
+  useEffect(() => {
+    function onBeforeInstallPrompt(e) {
+      e.preventDefault();
+      window.__renzuInstallPrompt = e;
+    }
+
+    function onInstalled() {
+      window.__renzuInstallPrompt = null;
+    }
+
+    window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+    window.addEventListener("appinstalled", onInstalled);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
+  }, []);
+
+  async function installApp() {
+    const prompt = window.__renzuInstallPrompt;
+
+    if (prompt && typeof prompt.prompt === "function") {
+      try {
+        prompt.prompt();
+        await prompt.userChoice;
+        window.__renzuInstallPrompt = null;
+        return;
+      } catch (_) {}
+    }
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent || "");
+    const message = isIOS
+      ? "To install: open this site in Safari, tap Share, then Add to Home Screen."
+      : "To install: open your browser menu and choose Add to Home screen / Install app.";
+
+    alert(message);
+  }
 
   async function getAuthHeaders() {
     try {
@@ -5796,7 +5852,7 @@ function getOrBuildSentences() {
       <ParchmentOverlay scroll={S} />
 
       {/* ── HEADER ── */}
-      <div ref={topRef} style={{ position: "sticky", top: 8, zIndex: 30, padding: "0 12px" }}>
+      <div ref={topRef} style={{ position: "sticky", top: "max(8px, env(safe-area-inset-top, 8px))", zIndex: 80, padding: "0 12px" }}>
         <div style={{
           maxWidth: 820, margin: "0 auto",
           borderRadius: 22,
@@ -5881,6 +5937,7 @@ function getOrBuildSentences() {
                     if (!requireLoginForSavedFeature()) return;
                     setShowSavedHub(true);
                   }}
+                  onInstall={installApp}
                   onSettings={() => {
                     if (!selected) return;
                     setShowSettingsHub(true);
