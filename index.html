@@ -2206,7 +2206,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
   );
 }
 
-// ─── Realm Ascension — image-backed, clean, mobile-safe tier unlock ───────────
+// ─── Realm Ascension Gem — image hidden inside crystal, no card crop ─────────
 function AscensionOverlay({ tier, onClose }) {
   const [ready, setReady] = useState(false);
 
@@ -2225,34 +2225,42 @@ function AscensionOverlay({ tier, onClose }) {
       seal: "蛊",
       image: "/assets/realm-gumaster.jpg",
       accent: "#d8a34d",
-      accentSoft: "rgba(216,163,77,0.22)",
-      glow: "rgba(216,163,77,0.36)",
+      accent2: "#8b3f16",
+      core: "rgba(255,174,66,0.78)",
+      glow: "rgba(216,120,45,0.42)",
+      shadow: "rgba(80,28,6,0.64)",
       line: "Your aperture opens. Premium reading powers are now active.",
-      benefits: ["Premium narration unlocked", "Ask Ren Zu credits restored", "Mortal-path Codex access expanded"],
+      benefits: ["Premium narration", "Ask Ren Zu restored", "Mortal-path Codex expanded"],
     },
     gu_immortal: {
       title: "Gu Immortal",
       seal: "仙",
       image: "/assets/realm-guimmortal.jpg",
       accent: "#62e8ff",
-      accentSoft: "rgba(98,232,255,0.20)",
-      glow: "rgba(98,232,255,0.34)",
+      accent2: "#1f7dff",
+      core: "rgba(109,226,255,0.72)",
+      glow: "rgba(82,207,255,0.40)",
+      shadow: "rgba(4,36,78,0.62)",
       line: "Your immortal aperture opens. Higher paths now answer your call.",
-      benefits: ["Expanded premium narration", "Unlimited Ask Ren Zu", "Immortal-path Codex access opened"],
+      benefits: ["Expanded narration", "Unlimited Ask Ren Zu", "Immortal-path Codex opened"],
     },
     venerable: {
       title: "Venerable",
       seal: "尊",
       image: "/assets/realm-venerable.jpg",
       accent: "#ffd36a",
-      accentSoft: "rgba(255,211,106,0.22)",
-      glow: "rgba(255,211,106,0.38)",
+      accent2: "#fff5bd",
+      core: "rgba(255,222,117,0.82)",
+      glow: "rgba(255,211,106,0.48)",
+      shadow: "rgba(92,58,4,0.66)",
       line: "You stand at the peak. Every path of refinement is open.",
-      benefits: ["Unlimited premium narration", "Unlimited Ask Ren Zu", "All Codex paths opened"],
+      benefits: ["Unlimited narration", "Unlimited Ask Ren Zu", "All Codex paths opened"],
     },
   };
 
   const cfg = cfgMap[tier] || cfgMap.gu_master;
+  const gemClip = "polygon(50% 0%, 73% 9%, 91% 30%, 82% 72%, 50% 100%, 18% 72%, 9% 30%, 27% 9%)";
+  const innerClip = "polygon(50% 4%, 68% 14%, 82% 34%, 74% 68%, 50% 93%, 26% 68%, 18% 34%, 32% 14%)";
 
   return (
     <div
@@ -2268,113 +2276,158 @@ function AscensionOverlay({ tier, onClose }) {
         alignItems: "center",
         justifyContent: "center",
         padding: "max(18px, env(safe-area-inset-top, 18px)) 16px max(18px, env(safe-area-inset-bottom, 18px))",
-        background: "rgba(5,4,8,0.88)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
+        background: `radial-gradient(circle at 50% 42%, ${cfg.glow}, transparent 36%), linear-gradient(180deg, rgba(5,4,8,0.94), rgba(2,2,5,0.96))`,
+        backdropFilter: "blur(9px)",
+        WebkitBackdropFilter: "blur(9px)",
         overflow: "hidden",
       }}
     >
       <style>{`
-        @keyframes realmImageIn {
-          from { transform: scale(1.035); opacity: 0; filter: blur(5px); }
-          to { transform: scale(1); opacity: 1; filter: blur(0); }
+        @keyframes realmGemIn {
+          from { transform: translateY(18px) scale(.92); opacity: 0; filter: blur(5px); }
+          to { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
         }
-        @keyframes realmCardIn {
-          from { transform: translateY(18px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
+        @keyframes realmGemFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-7px); }
         }
-        @keyframes realmSealPulse {
-          0%, 100% { transform: scale(1); opacity: .92; }
-          50% { transform: scale(1.035); opacity: 1; }
+        @keyframes realmGemCore {
+          0%, 100% { opacity: .58; transform: scale(.98); }
+          50% { opacity: .95; transform: scale(1.025); }
         }
-        @keyframes realmLineSweep {
-          from { transform: translateX(-120%); opacity: 0; }
-          45% { opacity: .85; }
-          to { transform: translateX(120%); opacity: 0; }
+        @keyframes realmGemSweep {
+          from { transform: translateX(-130%) rotate(-18deg); opacity: 0; }
+          35% { opacity: .82; }
+          to { transform: translateX(130%) rotate(-18deg); opacity: 0; }
+        }
+        @keyframes realmTextIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .realm-card, .realm-image, .realm-seal, .realm-sweep { animation: none !important; transition: none !important; }
+          .realm-gem-wrap, .realm-gem, .realm-gem-core, .realm-gem-sweep, .realm-gem-text { animation: none !important; transition: none !important; }
         }
       `}</style>
 
-      <div
-        className="realm-card"
-        style={{
-          width: "min(430px, 94vw)",
-          borderRadius: 30,
-          border: `1px solid ${cfg.accentSoft}`,
-          background: "linear-gradient(180deg, rgba(18,14,22,0.98), rgba(8,7,12,0.99))",
-          boxShadow: `0 30px 90px rgba(0,0,0,0.58), 0 0 42px ${cfg.glow}`,
-          color: "#fff",
-          textAlign: "center",
-          position: "relative",
-          overflow: "hidden",
-          transform: ready ? "translateY(0)" : "translateY(18px)",
-          opacity: ready ? 1 : 0,
-          transition: "opacity 420ms ease, transform 420ms cubic-bezier(.2,.9,.2,1)",
-        }}
-      >
-        <div style={{ position: "relative", height: "min(255px, 54vw)", overflow: "hidden" }}>
-          <img
-            className="realm-image"
-            src={cfg.image}
-            alt={cfg.title}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-              opacity: ready ? 1 : 0,
-              animation: "realmImageIn 700ms ease-out 70ms both",
-            }}
-          />
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.10) 42%, rgba(8,7,12,0.94) 100%)",
-            pointerEvents: "none",
-          }} />
+      <div style={{
+        width: "min(430px, 94vw)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        color: "#fff",
+        opacity: ready ? 1 : 0,
+        transform: ready ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 420ms ease, transform 420ms ease",
+      }}>
+        <div
+          className="realm-gem-wrap"
+          style={{
+            position: "relative",
+            width: "min(245px, 58vw)",
+            height: "min(380px, 76vw)",
+            marginBottom: 22,
+            animation: "realmGemIn 560ms cubic-bezier(.2,.9,.2,1) both, realmGemFloat 4200ms ease-in-out 900ms infinite",
+            filter: `drop-shadow(0 34px 34px rgba(0,0,0,0.54)) drop-shadow(0 0 30px ${cfg.glow})`,
+          }}
+        >
           <div
-            className="realm-sweep"
+            className="realm-gem"
             style={{
               position: "absolute",
-              left: 0,
-              right: 0,
-              top: "50%",
-              height: 1,
-              background: `linear-gradient(90deg, transparent, ${cfg.accent}, transparent)`,
-              boxShadow: `0 0 24px ${cfg.glow}`,
-              animation: "realmLineSweep 1350ms ease-out 180ms 1 both",
-            }}
-          />
-          <div
-            className="realm-seal"
-            style={{
-              position: "absolute",
-              left: "50%",
-              bottom: -35,
-              transform: "translateX(-50%)",
-              width: 92,
-              height: 92,
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "radial-gradient(circle, rgba(12,10,16,0.98), rgba(0,0,0,0.72))",
-              border: `1px solid ${cfg.accentSoft}`,
-              boxShadow: `0 0 34px ${cfg.glow}, inset 0 0 22px rgba(255,255,255,0.05)`,
-              color: cfg.accent,
-              fontFamily: "Metamorphous, Georgia, serif",
-              fontSize: 36,
-              textShadow: `0 0 22px ${cfg.glow}`,
-              animation: "realmSealPulse 2200ms ease-in-out infinite",
+              inset: 0,
+              clipPath: gemClip,
+              WebkitClipPath: gemClip,
+              background: `linear-gradient(145deg, rgba(255,255,255,0.22), transparent 18%), linear-gradient(35deg, ${cfg.shadow}, ${cfg.core} 46%, rgba(255,255,255,0.18) 58%, ${cfg.shadow} 100%)`,
+              border: `1px solid ${cfg.accent}`,
+              boxShadow: `inset 0 0 42px rgba(0,0,0,0.60), inset 0 0 22px ${cfg.glow}, 0 0 42px ${cfg.glow}`,
+              overflow: "hidden",
             }}
           >
+            <img
+              src={cfg.image}
+              alt=""
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                inset: "9% 7% 8%",
+                width: "86%",
+                height: "83%",
+                objectFit: "contain",
+                objectPosition: "center",
+                opacity: 0.46,
+                mixBlendMode: "screen",
+                filter: "saturate(1.1) contrast(1.05)",
+                pointerEvents: "none",
+              }}
+            />
+            <div
+              className="realm-gem-core"
+              style={{
+                position: "absolute",
+                inset: "18% 26%",
+                borderRadius: "45%",
+                background: `radial-gradient(circle, rgba(255,255,255,0.95), ${cfg.core} 38%, transparent 70%)`,
+                filter: "blur(10px)",
+                animation: "realmGemCore 2300ms ease-in-out infinite",
+              }}
+            />
+            <div style={{
+              position: "absolute",
+              inset: "8% 10%",
+              clipPath: innerClip,
+              WebkitClipPath: innerClip,
+              border: `1px solid rgba(255,255,255,0.18)`,
+              background: "linear-gradient(115deg, rgba(255,255,255,0.14), transparent 28%, rgba(0,0,0,0.10) 56%, rgba(255,255,255,0.08))",
+              boxShadow: "inset 0 0 28px rgba(255,255,255,0.08)",
+            }} />
+            <div style={{
+              position: "absolute",
+              left: "49%",
+              top: "8%",
+              width: 1,
+              height: "84%",
+              background: `linear-gradient(180deg, transparent, ${cfg.accent}, transparent)`,
+              opacity: 0.55,
+              boxShadow: `0 0 18px ${cfg.accent}`,
+            }} />
+            <div
+              className="realm-gem-sweep"
+              style={{
+                position: "absolute",
+                top: "15%",
+                bottom: "8%",
+                left: "-20%",
+                width: "35%",
+                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.34), transparent)",
+                animation: "realmGemSweep 1600ms ease-out 320ms 1 both",
+              }}
+            />
+          </div>
+
+          <div style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 76,
+            height: 76,
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "radial-gradient(circle, rgba(0,0,0,0.46), rgba(0,0,0,0.12), transparent 72%)",
+            color: cfg.accent2,
+            fontFamily: "Metamorphous, Georgia, serif",
+            fontSize: 34,
+            textShadow: `0 0 18px ${cfg.accent}, 0 0 34px ${cfg.glow}`,
+            pointerEvents: "none",
+          }}>
             {cfg.seal}
           </div>
         </div>
 
-        <div style={{ padding: "48px 22px 21px" }}>
+        <div className="realm-gem-text" style={{ animation: "realmTextIn 520ms ease-out 180ms both" }}>
           <div style={{
             fontFamily: "Metamorphous, Georgia, serif",
             fontSize: 10.5,
@@ -2382,6 +2435,7 @@ function AscensionOverlay({ tier, onClose }) {
             textTransform: "uppercase",
             color: cfg.accent,
             marginBottom: 8,
+            textShadow: `0 0 18px ${cfg.glow}`,
           }}>
             Realm Ascended
           </div>
@@ -2389,7 +2443,7 @@ function AscensionOverlay({ tier, onClose }) {
           <h2 style={{
             margin: 0,
             fontFamily: "Metamorphous, Georgia, serif",
-            fontSize: "clamp(28px, 7vw, 39px)",
+            fontSize: "clamp(29px, 8vw, 42px)",
             lineHeight: 1.05,
             letterSpacing: "0.02em",
             color: "#fff",
@@ -2398,63 +2452,46 @@ function AscensionOverlay({ tier, onClose }) {
           </h2>
 
           <p style={{
-            margin: "13px auto 17px",
-            maxWidth: 340,
+            margin: "13px auto 15px",
+            maxWidth: 350,
             fontFamily: "Poppins, sans-serif",
             fontSize: 13.5,
             lineHeight: 1.65,
-            color: "rgba(255,255,255,0.72)",
+            color: "rgba(255,255,255,0.74)",
           }}>
             {cfg.line}
           </p>
 
-          <div style={{ display: "grid", gap: 8, margin: "0 auto 17px", maxWidth: 350 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8, marginBottom: 17 }}>
             {cfg.benefits.map((item) => (
-              <div key={item} style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 9,
-                padding: "9px 11px",
-                borderRadius: 14,
-                border: "1px solid rgba(255,255,255,0.08)",
-                background: "rgba(255,255,255,0.045)",
+              <span key={item} style={{
+                border: `1px solid rgba(255,255,255,0.10)`,
+                background: "rgba(255,255,255,0.055)",
+                color: "rgba(255,255,255,0.82)",
+                borderRadius: 999,
+                padding: "7px 10px",
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 12.5,
-                color: "rgba(255,255,255,0.84)",
-                textAlign: "left",
+                fontSize: 11.5,
               }}>
-                <span style={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: "50%",
-                  flex: "0 0 18px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: cfg.accentSoft,
-                  color: cfg.accent,
-                  fontSize: 12,
-                  lineHeight: 1,
-                }}>✓</span>
-                <span>{item}</span>
-              </div>
+                {item}
+              </span>
             ))}
           </div>
 
           <button
             onClick={onClose}
             style={{
-              width: "100%",
+              minWidth: 156,
               border: "none",
-              borderRadius: 16,
-              padding: "13px 16px",
-              background: cfg.accent,
+              borderRadius: 999,
+              padding: "12px 18px",
+              background: `linear-gradient(135deg, ${cfg.accent}, ${cfg.accent2})`,
               color: tier === "gu_immortal" ? "#061015" : "#1a1004",
               fontFamily: "Poppins, sans-serif",
               fontWeight: 800,
               letterSpacing: "0.04em",
               cursor: "pointer",
-              boxShadow: `0 10px 26px ${cfg.glow}`,
+              boxShadow: `0 10px 28px ${cfg.glow}`,
             }}
           >
             Done
