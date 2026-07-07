@@ -1921,6 +1921,13 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10001, background: pageBg, color: text, overflowY: "auto" }}>
+      <style>{`
+        @keyframes rzAvatarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rzAvatarCounter { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        @keyframes rzAvatarPulse { 0%,100% { opacity: .62; filter: blur(0); } 50% { opacity: 1; filter: blur(.4px); } }
+        @keyframes rzAvatarRainbow { from { transform: rotate(0deg); filter: hue-rotate(0deg); } to { transform: rotate(360deg); filter: hue-rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) { .rz-avatar-spin, .rz-avatar-counter, .rz-avatar-pulse, .rz-avatar-rainbow { animation: none !important; } }
+      `}</style>
       <div style={{
         position: "sticky", top: 0, zIndex: 2,
         background: surface, backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)",
@@ -1938,57 +1945,94 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
           <div
             title={codexComplete ? `${avatarCfg.label} · Myriad Gu refined` : avatarCfg.label}
             style={{
-              width: 108, height: 108, margin: "0 auto 12px", borderRadius: "50%",
+              width: 136, height: 136, margin: "0 auto 14px", borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              background: avatarCfg.frame,
-              boxShadow: avatarCfg.glow,
               position: "relative",
-              padding: 4,
+              isolation: "isolate",
+              filter: `drop-shadow(0 18px 22px rgba(0,0,0,0.24))`,
             }}>
-            {codexComplete && (
-              <div style={{
-                position: "absolute", inset: -8, borderRadius: "50%",
-                border: `1px solid ${avatarCfg.accent}`,
-                boxShadow: `0 0 28px ${avatarCfg.accent}66`,
-                opacity: 0.82,
-                pointerEvents: "none"
-              }} />
-            )}
-            <div style={{
-              position: "absolute", inset: 7, borderRadius: "50%",
-              border: `1px solid ${D ? "rgba(0,0,0,0.38)" : "rgba(255,255,255,0.50)"}`,
+            <div
+              className={codexComplete ? "rz-avatar-rainbow" : "rz-avatar-spin"}
+              style={{
+                position: "absolute", inset: codexComplete ? -10 : -4, borderRadius: "50%",
+                background: codexComplete
+                  ? "conic-gradient(from 0deg, #ff3b8d, #7b61ff, #42e8ff, #52ff8a, #fff06a, #ff8a2b, #ff3b8d)"
+                  : `conic-gradient(from 0deg, transparent 0 13%, ${avatarCfg.accent} 15% 24%, transparent 27% 39%, ${avatarCfg.accent2} 43% 54%, transparent 58% 71%, ${avatarCfg.accent} 76% 86%, transparent 90% 100%)`,
+                WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px))",
+                mask: "radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px))",
+                boxShadow: codexComplete ? "0 0 30px rgba(120,230,255,0.36), 0 0 46px rgba(255,80,190,0.24)" : `0 0 28px ${avatarCfg.accent}33`,
+                opacity: codexComplete ? 0.92 : 0.78,
+                animation: codexComplete ? "rzAvatarRainbow 7s linear infinite" : "rzAvatarRotate 14s linear infinite",
+                pointerEvents: "none",
+              }}
+            />
+
+            <div className="rz-avatar-counter" style={{
+              position: "absolute", inset: 5, borderRadius: "50%",
+              animation: "rzAvatarCounter 22s linear infinite",
+              pointerEvents: "none",
+            }}>
+              {[0, 90, 180, 270].map((deg, idx) => (
+                <div key={idx} style={{
+                  position: "absolute", left: "50%", top: "50%",
+                  width: tier === "venerable" ? 44 : 38,
+                  height: tier === "venerable" ? 15 : 13,
+                  borderRadius: "100% 18% 100% 18%",
+                  background: avatarCfg.frame,
+                  boxShadow: `0 0 12px ${avatarCfg.accent}66, inset 0 1px 3px rgba(255,255,255,0.45)`,
+                  transform: `rotate(${deg}deg) translate(0, -58px) rotate(28deg)`,
+                  transformOrigin: "0 58px",
+                  opacity: tier === "mortal" ? 0.34 : 0.92,
+                }} />
+              ))}
+            </div>
+
+            <div className="rz-avatar-pulse" style={{
+              position: "absolute", inset: 18, borderRadius: "50%",
               background: avatarCfg.core,
+              border: `1px solid ${avatarCfg.accent}66`,
+              boxShadow: `inset 0 0 24px rgba(255,255,255,0.08), 0 0 18px ${avatarCfg.accent}33`,
               overflow: "hidden",
+              animation: "rzAvatarPulse 3.8s ease-in-out infinite",
             }}>
+              <div style={{
+                position: "absolute", inset: 0,
+                background: codexComplete
+                  ? "radial-gradient(circle at 32% 20%, rgba(255,255,255,0.30), transparent 23%), conic-gradient(from 180deg, rgba(255,70,180,0.16), rgba(70,230,255,0.13), rgba(255,238,100,0.15), rgba(255,70,180,0.16))"
+                  : `radial-gradient(circle at 32% 20%, rgba(255,255,255,0.26), transparent 24%), radial-gradient(circle, ${avatarCfg.accent}20, transparent 62%)`,
+                opacity: codexComplete ? 0.88 : 0.72,
+              }} />
               <div style={{
                 position: "absolute", inset: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontFamily: headFont, fontSize: 8,
                 letterSpacing: "0.42em", lineHeight: 2.2,
                 color: avatarCfg.accent,
-                opacity: tier === "mortal" ? 0.12 : 0.20,
+                opacity: tier === "mortal" ? 0.10 : 0.22,
                 transform: "rotate(-18deg)",
                 whiteSpace: "pre-wrap",
                 textAlign: "center",
               }}>{avatarCfg.pattern}</div>
             </div>
+
             <div style={{
               position: "relative", zIndex: 1,
-              width: 74, height: 74, borderRadius: "50%",
+              width: 76, height: 76, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              border: `1px solid ${avatarCfg.accent}88`,
-              background: D ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.20)",
-              boxShadow: `inset 0 0 18px rgba(255,255,255,0.06), 0 0 16px ${avatarCfg.accent}33`,
+              border: `1px solid ${avatarCfg.accent}99`,
+              background: D ? "rgba(0,0,0,0.30)" : "rgba(255,255,255,0.20)",
+              boxShadow: `inset 0 0 20px rgba(255,255,255,0.07), 0 0 18px ${avatarCfg.accent}40`,
+              backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)",
             }}>
-              <div style={{ fontFamily: headFont, fontSize: 25, color: text, letterSpacing: "0.08em", textShadow: `0 0 10px ${avatarCfg.accent}55` }}>{initials}</div>
+              <div style={{ fontFamily: headFont, fontSize: 25, color: text, letterSpacing: "0.08em", textShadow: `0 0 12px ${avatarCfg.accent}66` }}>{initials}</div>
             </div>
             <div style={{
-              position: "absolute", right: 4, bottom: 4,
-              width: 32, height: 32, borderRadius: "50%",
+              position: "absolute", right: 7, bottom: 7,
+              width: 34, height: 34, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
               background: avatarCfg.frame,
               border: `1px solid ${avatarCfg.accent2}`,
-              boxShadow: `0 0 14px ${avatarCfg.accent}55`,
+              boxShadow: `0 0 16px ${avatarCfg.accent}66`,
               color: avatarCfg.ink,
               fontFamily: headFont,
               fontSize: 17,
