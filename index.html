@@ -556,7 +556,7 @@ const GU_POOL = {
     { id: "faith",         name: "Faith Gu",             symbol: "信", lore: "The eternal light that pierces Luo Po Valley." },
     { id: "fire",          name: "Fire Gu",              symbol: "火", lore: "Burns anything; lights the darkest heaven." },
     { id: "rules",         name: "Rules Gu",             symbol: "规", lore: "Captures any Gu whose name is spoken aloud." },
-    { id: "regulations",   name: "Regulations Gu",       symbol: "矩", lore: "Square to Rules' round. Together, one net." },
+    { id: "regulations",   name: "Regulation Gu",        symbol: "矩", lore: "Square to Rules' round. Together, one net." },
     { id: "courage",       name: "Courage Gu",           symbol: "勇", lore: "Drives back the Suffering Gu from any road." },
     { id: "guts",          name: "Guts Gu",              symbol: "胆", lore: "What courage becomes when it must survive suffering." },
     { id: "success",       name: "Success Gu",           symbol: "成", lore: "The one stone hidden among countless failures." },
@@ -582,12 +582,69 @@ const GU_POOL = {
     { id: "heavenly_secret", name: "Heavenly Secret Gu",  symbol: "天", lore: "A veiled whisper from heaven's hidden arrangements." },
   ],
 };
+const CODEX_GU_META = {
+  hope:              { appGate: "gu_master", publicRank: "Rank 1; unknown immortal rank", publicPath: "Human Path / Legendary Gu", sourceStatus: "confirmed_public" },
+  strength:          { appGate: "venerable", publicRank: "Rank 6-9; public page also marks Rank 9", publicPath: "Strength Path / Legendary Gu", sourceStatus: "confirmed_public" },
+  self:              { appGate: "gu_master", publicRank: "Unknown", publicPath: "Human Path", sourceStatus: "confirmed_public" },
+  attitude:          { appGate: "gu_immortal", publicRank: "Current Rank 8", publicPath: "Wisdom Path", sourceStatus: "confirmed_public" },
+  belief:            { appGate: "gu_master", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "public_rank_unlisted" },
+  suspicion:         { appGate: "gu_master", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "public_rank_unlisted" },
+  reputation:        { appGate: "gu_master", publicRank: "Unknown", publicPath: "Qi Path / Movement notes", sourceStatus: "confirmed_public" },
+  vanity:            { appGate: "gu_master", publicRank: "Unknown", publicPath: "Human Path / Offensive", sourceStatus: "confirmed_public" },
+  fear:              { appGate: "gu_master", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "public_rank_unlisted" },
+  betrayal:          { appGate: "gu_master", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "public_rank_unlisted" },
+  loyalty:           { appGate: "gu_master", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "public_rank_unlisted" },
+  wealth:            { appGate: "gu_master", publicRank: "Rank 5-6", publicPath: "Human Path", sourceStatus: "confirmed_public" },
+  memory:            { appGate: "hold", publicRank: "No exact public page found", publicPath: "Unconfirmed", sourceStatus: "hold_unconfirmed" },
+  insight:           { appGate: "hold", publicRank: "No exact public page found", publicPath: "Unconfirmed", sourceStatus: "hold_unconfirmed" },
+  sound:             { appGate: "hold", publicRank: "No exact public page found", publicPath: "Unconfirmed", sourceStatus: "hold_unconfirmed" },
+  self_cog:          { appGate: "hold", publicRank: "No exact public page found", publicPath: "Unconfirmed", sourceStatus: "hold_unconfirmed" },
+  wisdom:            { appGate: "gu_immortal", publicRank: "Rank 6-9; current Rank 8", publicPath: "Wisdom Path / Support / Legendary Gu", sourceStatus: "confirmed_public" },
+  faith:             { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "confirmed_public_rank_unlisted" },
+  fire:              { appGate: "venerable", publicRank: "Rank 9", publicPath: "Fire Path / Legendary Immortal Gu", sourceStatus: "confirmed_public" },
+  rules:             { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Rule Path / Legendary Gu", sourceStatus: "confirmed_public_rank_unlisted" },
+  regulations:       { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Rule Path / Legendary Gu", sourceStatus: "confirmed_public_rank_unlisted", publicName: "Regulation Gu" },
+  courage:           { appGate: "gu_master", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "confirmed_public_rank_unlisted" },
+  guts:              { appGate: "gu_master", publicRank: "Mortal", publicPath: "Human Path", sourceStatus: "confirmed_public" },
+  success:           { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "confirmed_public_rank_unlisted" },
+  failure:           { appGate: "gu_master", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "confirmed_public_rank_unlisted" },
+  unexpected:        { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Wisdom Path", sourceStatus: "confirmed_public_rank_unlisted" },
+  meaning:           { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "confirmed_public_rank_unlisted" },
+  life:              { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Support", sourceStatus: "confirmed_public_rank_unlisted" },
+  love:              { appGate: "venerable", publicRank: "Current Rank 9", publicPath: "Wisdom Path / Emotion Path / Legendary Gu", sourceStatus: "confirmed_public" },
+  cognition:         { appGate: "gu_immortal", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "confirmed_public_rank_unlisted" },
+  perseverance:      { appGate: "gu_immortal", publicRank: "Rank 7", publicPath: "Human Path", sourceStatus: "confirmed_public" },
+  freedom:           { appGate: "venerable", publicRank: "Unknown", publicPath: "Unknown", sourceStatus: "confirmed_public_rank_unlisted" },
+  divine_travel:     { appGate: "gu_immortal", publicRank: "Rank 6", publicPath: "Space Path / Movement", sourceStatus: "confirmed_public" },
+  fixed_travel:      { appGate: "gu_immortal", publicRank: "Rank 6-8; current Rank 7", publicPath: "Space Path / Movement", sourceStatus: "confirmed_public" },
+  fate:              { appGate: "venerable", publicRank: "Rank 6-9", publicPath: "Heaven Path", sourceStatus: "confirmed_public" },
+  sovereign:         { appGate: "hold", publicRank: "No exact public page found", publicPath: "Unconfirmed", sourceStatus: "hold_unconfirmed" },
+  star_fragment:     { appGate: "hold", publicRank: "No exact public page found", publicPath: "Unconfirmed", sourceStatus: "hold_unconfirmed" },
+  river_time:        { appGate: "hold", publicRank: "No exact public page found", publicPath: "Concept found; exact Gu unconfirmed", sourceStatus: "hold_unconfirmed" },
+  longevity:         { appGate: "gu_master", publicRank: "Lifespan Gu: Rank 1-5", publicPath: "Heaven Path", sourceStatus: "confirmed_public_name_variant", publicName: "Longevity Gu / Lifespan Gu" },
+  dream:             { appGate: "hold", publicRank: "No exact public page found", publicPath: "Dream Realm concept; exact Gu unconfirmed", sourceStatus: "hold_unconfirmed" },
+  destiny:           { appGate: "venerable", publicRank: "Rank 9-10", publicPath: "Fate evolution / supreme concept", sourceStatus: "confirmed_public" },
+  heavenly_secret:   { appGate: "venerable", publicRank: "Rank 7-9; current Rank 9", publicPath: "Wisdom Path / Heaven Path / Investigative", sourceStatus: "confirmed_public" },
+};
 const GU_POOL_ORDERED = [
-  ...GU_POOL.gu_master.map(g => ({ ...g, tier: "gu_master" })),
-  ...GU_POOL.gu_immortal.map(g => ({ ...g, tier: "gu_immortal" })),
-  ...GU_POOL.venerable.map(g => ({ ...g, tier: "venerable" })),
-];
-const GU_BY_ID = Object.fromEntries(GU_POOL_ORDERED.map(g => [g.id, g]));
+  ...GU_POOL.gu_master,
+  ...GU_POOL.gu_immortal,
+  ...GU_POOL.venerable,
+]
+  .map(g => {
+    const meta = CODEX_GU_META[g.id] || {};
+    return { ...g, ...meta, tier: meta.appGate || "gu_master", name: meta.publicName || g.name };
+  })
+  .filter(g => g.tier !== "hold");
+const GU_BY_ID = Object.fromEntries([
+  ...GU_POOL.gu_master,
+  ...GU_POOL.gu_immortal,
+  ...GU_POOL.venerable,
+].map(g => {
+  const meta = CODEX_GU_META[g.id] || {};
+  const enriched = { ...g, ...meta, tier: meta.appGate || "gu_master", name: meta.publicName || g.name };
+  return [g.id, enriched];
+}));
 const CHAPTER_GU_UNLOCKS = {
   "1": ["hope", "strength"],
   "2": ["rules", "regulations"],
@@ -647,6 +704,7 @@ function realmRank(tier) {
 }
 function guRequiredRank(gu) {
   if (!gu) return 999;
+  if (gu.tier === "hold") return 999;
   if (gu.tier === "venerable") return 4;
   if (gu.tier === "gu_immortal") return 3;
   // Common/Gu Master Codex can awaken for all readers through reading.
@@ -2002,7 +2060,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
     if (filter === "refined") return status === "refined";
     if (filter === "trace") return status === "trace";
     if (filter === "all") return true;
-    return (entry?.tier || g.tier || "") === filter || GU_POOL[filter]?.some(x => x.id === g.id);
+    return (entry?.tier || g.tier || "") === filter;
   });
 
   const activeBase = activeId ? GU_POOL_ORDERED.find(g => g.id === activeId) : null;
@@ -2016,6 +2074,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
   function tierColor(tier) {
     if (tier === "venerable") return "#ffd36a";
     if (tier === "gu_immortal") return "#62e8ff";
+    if (tier === "hold") return "#8a8580";
     return "#d8a34d";
   }
 
@@ -2068,7 +2127,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
         </div>
 
         <div style={{ padding: "12px 14px", borderRadius: 16, border: `1px solid ${border}`, background: cardBg, color: textDim, fontFamily: bodyFont, fontSize: 12.2, lineHeight: 1.6, marginBottom: 14 }}>
-          Gu are never duplicated. They are perceived as traces, refined through reading/listening/saved actions, then deepened by repeated encounters. Your current realm determines which Gu can fully submit to you.
+          Gu are never duplicated. They are perceived as traces, refined through reading/listening/saved actions, then deepened by repeated encounters. Public Gu ranks inform each Codex gate; your current realm determines which Gu can fully submit to you.
         </div>
 
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", marginBottom: 14 }}>
@@ -2115,7 +2174,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
             const status = codexStatus(entry);
             const refined = status === "refined";
             const traced = status === "trace";
-            const tier = entry?.tier || (GU_POOL.venerable.some(x => x.id === g.id) ? "venerable" : GU_POOL.gu_immortal.some(x => x.id === g.id) ? "gu_immortal" : "gu_master");
+            const tier = entry?.tier || g.tier || "gu_master";
             const color = tierColor(tier);
             const selected = activeGu?.id === g.id;
             return (
@@ -3215,7 +3274,7 @@ const chapterKeyRef = useRef(null);
 
     uniqueIds.forEach(id => {
       const base = GU_BY_ID[id];
-      if (!base) return;
+      if (!base || base.tier === "hold") return;
       if (guRequiredRank(base) <= userRank) refined.push(id);
       else traced.push(base);
     });
