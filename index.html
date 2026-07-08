@@ -2003,23 +2003,37 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   function renderAvatarImage(preset, size = 68) {
     if (!preset) return null;
     return (
-      <img
-        src={preset.src}
-        alt=""
+      <span
         aria-hidden="true"
-        loading="lazy"
         style={{
           width: size,
           height: size,
-          objectFit: "contain",
-          objectPosition: "center",
-          display: "block",
-          filter: `drop-shadow(0 0 10px ${avatarCfg.accent}55)`,
-          transform: size > 50 ? "translateY(2px) scale(1.08)" : "scale(1.08)",
-          pointerEvents: "none",
-          userSelect: "none",
+          borderRadius: "50%",
+          overflow: "hidden",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: `radial-gradient(circle at 35% 24%, rgba(255,255,255,0.30), transparent 24%), radial-gradient(circle, ${avatarCfg.accent}18, rgba(0,0,0,0.10) 72%)`,
+          boxShadow: `inset 0 0 12px rgba(255,255,255,0.05), 0 0 10px ${avatarCfg.accent}38`,
+          filter: `drop-shadow(0 0 9px ${avatarCfg.accent}45)`,
         }}
-      />
+      >
+        <img
+          src={preset.src}
+          alt=""
+          loading="lazy"
+          style={{
+            width: "112%",
+            height: "112%",
+            objectFit: "cover",
+            objectPosition: "center",
+            display: "block",
+            transform: size > 50 ? "translateY(2px) scale(1.06)" : "scale(1.04)",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        />
+      </span>
     );
   }
 
@@ -2242,12 +2256,12 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
                 <input value={editName} onChange={e => { setEditName(e.target.value); setSaveErr(""); setSaveMsg(""); }} placeholder="Your display name" style={{ width: "100%", padding: "10px 14px", borderRadius: 12, fontSize: 13, background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)", border: `1px solid ${border}`, color: text, fontFamily: "inherit", outline: "none", marginBottom: 12 }} />
 
                 <label style={{ display: "block", fontSize: 10, color: textDim, marginBottom: 8, fontFamily: headFont, textTransform: "uppercase", letterSpacing: "0.08em" }}>Default Avatar</label>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(72px, 1fr))", gap: 8, marginBottom: 12 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(78px, 1fr))", gap: 9, marginBottom: 12 }}>
                   {defaultAvatars.map(a => {
                     const chosen = activeAvatarId === a.id;
                     return (
                       <button key={a.id} onClick={() => chooseAvatar(a.id)} title={a.label} style={{
-                        minHeight: 86,
+                        minHeight: 94,
                         borderRadius: 14,
                         border: `1px solid ${chosen ? avatarCfg.accent + "aa" : border}`,
                         background: chosen ? `${avatarCfg.accent}16` : (D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)"),
@@ -2582,24 +2596,26 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
   const textDim = D ? "#9d998f" : S ? "#7a4e18" : "#706b64";
 
   const menuItems = [
+    { id: "home", label: "Home", onClick: () => { onClose(); onHome(); }, disabled: false },
+    { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
+    { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
+    { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
+    { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     ...(isReading ? [
       { id: "settings", label: "Settings", onClick: () => { onClose(); onSettings(); }, disabled: false },
       { id: "bookmark-chapter", label: isChapterBookmarked ? "Unbookmark" : "Bookmark", onClick: () => { onClose(); onBookmarkChapter(); }, disabled: false },
     ] : []),
-    { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
     { id: "theme", label: `Theme · ${mode === "light" ? "Light" : mode === "dark" ? "Dark" : "Scroll"}`, onClick: () => { onClose(); onThemeCycle(); }, disabled: false },
     { id: "install", label: "Install App", onClick: () => { onClose(); onInstall(); }, disabled: false },
-    { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
-    { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
-    { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
-    { id: "home", label: "Home", onClick: () => { onClose(); onHome(); }, disabled: false },
   ];
   return (
     <>
       {open && (
         <div
-          onPointerDown={(e) => { e.preventDefault(); onClose(); }}
-          style={{ position: "fixed", inset: 0, zIndex: 44, background: "transparent", WebkitTapHighlightColor: "transparent" }}
+          onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+          onTouchStart={(e) => { e.stopPropagation(); onClose(); }}
+          style={{ position: "fixed", inset: 0, zIndex: 44, background: "transparent", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}
         />
       )}
       <div
