@@ -1945,6 +1945,29 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
     );
   }
 
+  function hashAvatarSeed(value) {
+    let h = 2166136261;
+    const str = String(value || "");
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  const avatarSeed = hashAvatarSeed(`${displayName}|${email || ""}|${deviceId || ""}|${tier}`);
+  const avatarTurn = avatarSeed % 360;
+  const avatarTilt = ((avatarSeed >> 5) % 24) - 12;
+  const avatarNodeCount = tier === "venerable" ? 10 : tier === "gu_immortal" ? 8 : tier === "gu_master" ? 6 : 4;
+  const avatarSealMarks = tier === "venerable"
+    ? ["天", "命", "道", "尊"]
+    : tier === "gu_immortal"
+      ? ["道", "痕", "仙", "宙"]
+      : tier === "gu_master"
+        ? ["蛊", "炼", "窍", "元"]
+        : ["心", "路", "尘", "凡"];
+  const avatarSealMark = avatarSealMarks[avatarSeed % avatarSealMarks.length];
+
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10001, background: pageBg, color: text, overflowY: "auto" }}>
       <style>{`
@@ -2037,14 +2060,56 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
 
             <div style={{
               position: "relative", zIndex: 3,
-              width: 72, height: 72, borderRadius: "50%",
+              width: 76, height: 76, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              border: `1px solid ${avatarCfg.accent}80`,
-              background: D ? "rgba(0,0,0,0.38)" : "rgba(255,255,255,0.22)",
-              boxShadow: `inset 0 0 20px rgba(255,255,255,0.07), 0 0 18px ${avatarCfg.accent}3d`,
+              border: `1px solid ${avatarCfg.accent}90`,
+              background: codexComplete
+                ? "conic-gradient(from 160deg, rgba(255,65,160,0.22), rgba(92,226,255,0.18), rgba(255,231,92,0.22), rgba(98,255,150,0.18), rgba(255,65,160,0.22))"
+                : D ? "rgba(0,0,0,0.42)" : "rgba(255,255,255,0.24)",
+              boxShadow: `inset 0 0 22px rgba(255,255,255,0.08), inset 0 0 28px ${avatarCfg.accent}1f, 0 0 18px ${avatarCfg.accent}42`,
               backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)",
+              overflow: "hidden",
             }}>
-              <div style={{ fontFamily: headFont, fontSize: 24, color: text, letterSpacing: "0.08em", textShadow: `0 0 12px ${avatarCfg.accent}66` }}>{initials}</div>
+              <svg viewBox="0 0 100 100" aria-hidden="true" style={{ position: "absolute", inset: 5, width: "calc(100% - 10px)", height: "calc(100% - 10px)", transform: `rotate(${avatarTurn}deg)`, opacity: tier === "mortal" ? 0.45 : 0.72 }}>
+                <circle cx="50" cy="50" r="42" fill="none" stroke={avatarCfg.accent} strokeWidth="1.2" opacity="0.48" />
+                <circle cx="50" cy="50" r="31" fill="none" stroke={avatarCfg.accent2} strokeWidth="0.7" opacity="0.34" strokeDasharray={tier === "mortal" ? "4 7" : tier === "gu_master" ? "8 4" : "3 4"} />
+                {tier === "gu_master" && <polygon points="50,12 83,31 83,69 50,88 17,69 17,31" fill="none" stroke={avatarCfg.accent} strokeWidth="1.1" opacity="0.34" />}
+                {tier === "gu_immortal" && <path d="M50 10 C74 24 76 76 50 90 C24 76 26 24 50 10Z" fill="none" stroke={avatarCfg.accent2} strokeWidth="1" opacity="0.36" />}
+                {tier === "venerable" && <polygon points="50,8 61,37 92,50 61,63 50,92 39,63 8,50 39,37" fill="none" stroke={avatarCfg.accent2} strokeWidth="1.15" opacity="0.42" />}
+                {Array.from({ length: avatarNodeCount }).map((_, i) => {
+                  const angle = (Math.PI * 2 * i) / avatarNodeCount;
+                  const x = 50 + Math.cos(angle) * 39;
+                  const y = 50 + Math.sin(angle) * 39;
+                  const x2 = 50 + Math.cos(angle) * 31;
+                  const y2 = 50 + Math.sin(angle) * 31;
+                  return <g key={i} opacity={i % 2 === 0 ? 0.72 : 0.44}>
+                    <line x1={x2} y1={y2} x2={x} y2={y} stroke={avatarCfg.accent} strokeWidth={tier === "venerable" ? "1.4" : "1"} />
+                    <circle cx={x} cy={y} r={tier === "venerable" && i % 2 === 0 ? "2.1" : "1.5"} fill={avatarCfg.accent2} />
+                  </g>;
+                })}
+              </svg>
+              <div style={{
+                position: "absolute", inset: 0,
+                background: `radial-gradient(circle at 36% 25%, rgba(255,255,255,0.24), transparent 25%), radial-gradient(circle, transparent 46%, ${avatarCfg.accent}18 72%, transparent 74%)`,
+                pointerEvents: "none"
+              }} />
+              <div style={{
+                position: "absolute", right: 9, top: 9,
+                fontFamily: headFont,
+                fontSize: 10,
+                color: avatarCfg.accent,
+                opacity: 0.62,
+                transform: `rotate(${avatarTilt}deg)`,
+                textShadow: `0 0 8px ${avatarCfg.accent}66`
+              }}>{avatarSealMark}</div>
+              <div style={{
+                position: "relative", zIndex: 1,
+                fontFamily: headFont,
+                fontSize: initials.length > 1 ? 21 : 25,
+                color: text,
+                letterSpacing: "0.08em",
+                textShadow: `0 0 12px ${avatarCfg.accent}88, 0 1px 2px rgba(0,0,0,0.45)`
+              }}>{initials}</div>
             </div>
 
             <div style={{
