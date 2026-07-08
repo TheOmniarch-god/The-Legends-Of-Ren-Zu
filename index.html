@@ -1978,7 +1978,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
     { id: "avatar_05", label: "Twin Jade", src: "/assets/avatars/avatar-05.webp" },
     { id: "avatar_06", label: "Fox Joy", src: "/assets/avatars/avatar-06.webp" },
     { id: "avatar_07", label: "Lantern", src: "/assets/avatars/avatar-07.webp" },
-    { id: "avatar_08", label: "Sun Palm", src: "/assets/avatars/avatar-08.webp" },
+    { id: "avatar_08", label: "The Legend", src: "/assets/avatars/avatar-08.webp" },
     { id: "avatar_09", label: "Rain Spear", src: "/assets/avatars/avatar-09.webp" },
     { id: "avatar_10", label: "Festival", src: "/assets/avatars/avatar-10.webp" },
     { id: "avatar_11", label: "Dragon Smile", src: "/assets/avatars/avatar-11.webp" },
@@ -2549,7 +2549,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
           Showing {visibleGu.length} Gu
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))", gap: 10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(92px, 116px))", justifyContent: "center", gap: 10 }}>
           {visibleGu.map(g => {
             const entry = ownedMap.get(g.id);
             const status = codexEffectiveStatus(entry, currentTier);
