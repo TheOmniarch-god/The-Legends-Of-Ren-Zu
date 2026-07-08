@@ -3898,6 +3898,15 @@ const chapterKeyRef = useRef(null);
 
   useEffect(() => {
     try {
+      const params = new URLSearchParams(window.location.search || "");
+      if (params.has("profilePreview") || (window.location.hash || "").includes("profile-preview")) {
+        setShowProfile(true);
+      }
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    try {
       localStorage.setItem("renzu_essence", JSON.stringify({
         tier,
         dailyChatUsed,
@@ -3965,8 +3974,8 @@ const chapterKeyRef = useRef(null);
     }
   }
 
-  function getTierName() {
-    switch (tier) {
+  function getTierName(displayTier = tier) {
+    switch (displayTier) {
       case "venerable":
         return "Supreme Venerable";
       case "gu_immortal":
@@ -3978,12 +3987,34 @@ const chapterKeyRef = useRef(null);
     }
   }
 
-  function getTierIcon() {
-    switch (tier) {
+  function getTierIcon(displayTier = tier) {
+    switch (displayTier) {
       case "venerable": return "尊";
       case "gu_immortal": return "仙";
       case "gu_master": return "蛊";
       default: return "凡";
+    }
+  }
+
+  function getProfilePreviewTier() {
+    try {
+      const params = new URLSearchParams(window.location.search || "");
+      const raw = (params.get("profilePreview") || params.get("profileTier") || "").toLowerCase().trim();
+      if (["mortal", "gu_master", "gu_immortal", "venerable"].includes(raw)) return raw;
+      if ((window.location.hash || "").includes("profile-preview-venerable")) return "venerable";
+      if ((window.location.hash || "").includes("profile-preview-immortal")) return "gu_immortal";
+      if ((window.location.hash || "").includes("profile-preview-master")) return "gu_master";
+      if ((window.location.hash || "").includes("profile-preview")) return "venerable";
+    } catch (_) {}
+    return "";
+  }
+
+  function isProfilePreviewComplete() {
+    try {
+      const params = new URLSearchParams(window.location.search || "");
+      return params.get("profileComplete") === "1" || params.get("codexComplete") === "1" || (window.location.hash || "").includes("myriad");
+    } catch (_) {
+      return false;
     }
   }
 
@@ -6263,14 +6294,14 @@ function getOrBuildSentences() {
           deviceId={deviceId}
           username={userName}
           email={userEmail}
-          tier={tier}
-          tierName={getTierName()}
-          tierIcon={getTierIcon()}
+          tier={getProfilePreviewTier() || tier}
+          tierName={getTierName(getProfilePreviewTier() || tier)}
+          tierIcon={getTierIcon(getProfilePreviewTier() || tier)}
           essenceStatus={essenceStatus}
           accountMode={accountMode}
           readingProgress={readingProgress}
           totalEntries={TAGGED.length}
-          codexCount={Array.isArray(collectedGu) ? collectedGu.filter(g => codexIsRefined(g) && GU_BY_ID[g.id]?.tier !== "hold").length : 0}
+          codexCount={isProfilePreviewComplete() ? GU_POOL_ORDERED.length : (Array.isArray(collectedGu) ? collectedGu.filter(g => codexIsRefined(g) && GU_BY_ID[g.id]?.tier !== "hold").length : 0)}
           totalGu={GU_POOL_ORDERED.length}
           onSave={saveProfile}
           onBindAccount={bindProfileToEmail}
