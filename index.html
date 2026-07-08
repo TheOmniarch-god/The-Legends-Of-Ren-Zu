@@ -1971,16 +1971,23 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
         : ["心", "路", "尘", "凡"];
   const avatarSealMark = avatarSealMarks[avatarSeed % avatarSealMarks.length];
   const defaultAvatars = [
-    { id: "f_lotus", label: "Lotus", gender: "Female", skin: "#f3c9a6", hair: "#2d1812", outfit: "#d85f88", accent: "#ffd1e0", style: "bun" },
-    { id: "f_moon", label: "Moon", gender: "Female", skin: "#f0c2a0", hair: "#e7edf8", outfit: "#6e7cff", accent: "#cfe8ff", style: "long" },
-    { id: "f_jade", label: "Jade", gender: "Female", skin: "#d9a77e", hair: "#16251d", outfit: "#28b987", accent: "#bdf8dd", style: "bob" },
-    { id: "f_crimson", label: "Crimson", gender: "Female", skin: "#c77b61", hair: "#4a1118", outfit: "#c22f3f", accent: "#ffcf78", style: "twin" },
-    { id: "f_azure", label: "Azure", gender: "Female", skin: "#f2b993", hair: "#132742", outfit: "#24c4e8", accent: "#e2fbff", style: "wave" },
-    { id: "m_ink", label: "Ink", gender: "Male", skin: "#d7a27c", hair: "#111111", outfit: "#2f3640", accent: "#cfd6dd", style: "short" },
-    { id: "m_flame", label: "Flame", gender: "Male", skin: "#bd7352", hair: "#36120a", outfit: "#d86b25", accent: "#ffd36a", style: "spiky" },
-    { id: "m_jade", label: "Jade", gender: "Male", skin: "#e3b289", hair: "#173026", outfit: "#2a8f72", accent: "#bdf8dd", style: "topknot" },
-    { id: "m_shadow", label: "Shadow", gender: "Male", skin: "#a96f58", hair: "#08080a", outfit: "#4b3d8f", accent: "#a9a4ff", style: "hood" },
-    { id: "m_gold", label: "Gold", gender: "Male", skin: "#d99b68", hair: "#2b1608", outfit: "#b27a1d", accent: "#fff0a6", style: "side" },
+    { id: "avatar_01", label: "Lotus", src: "/assets/avatars/avatar-01.webp" },
+    { id: "avatar_02", label: "Schemer", src: "/assets/avatars/avatar-02.webp" },
+    { id: "avatar_03", label: "Ink Robe", src: "/assets/avatars/avatar-03.webp" },
+    { id: "avatar_04", label: "Scroll", src: "/assets/avatars/avatar-04.webp" },
+    { id: "avatar_05", label: "Twin Jade", src: "/assets/avatars/avatar-05.webp" },
+    { id: "avatar_06", label: "Fox Joy", src: "/assets/avatars/avatar-06.webp" },
+    { id: "avatar_07", label: "Lantern", src: "/assets/avatars/avatar-07.webp" },
+    { id: "avatar_08", label: "Sun Palm", src: "/assets/avatars/avatar-08.webp" },
+    { id: "avatar_09", label: "Rain Spear", src: "/assets/avatars/avatar-09.webp" },
+    { id: "avatar_10", label: "Festival", src: "/assets/avatars/avatar-10.webp" },
+    { id: "avatar_11", label: "Dragon Smile", src: "/assets/avatars/avatar-11.webp" },
+    { id: "avatar_12", label: "Flower Jade", src: "/assets/avatars/avatar-12.webp" },
+    { id: "avatar_13", label: "Sleeper", src: "/assets/avatars/avatar-13.webp" },
+    { id: "avatar_14", label: "Turquoise", src: "/assets/avatars/avatar-14.webp" },
+    { id: "avatar_15", label: "Wolf Crown", src: "/assets/avatars/avatar-15.webp" },
+    { id: "avatar_16", label: "Wanderer", src: "/assets/avatars/avatar-16.webp" },
+    { id: "avatar_17", label: "Moon Veil", src: "/assets/avatars/avatar-17.webp" },
   ];
   const activeAvatarId = avatarChoice || defaultAvatars[avatarSeed % defaultAvatars.length].id;
   const activeAvatar = defaultAvatars.find(a => a.id === activeAvatarId) || defaultAvatars[avatarSeed % defaultAvatars.length];
@@ -1993,52 +2000,26 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
     setTimeout(() => setSaveMsg(""), 1400);
   }
 
-  function renderChibiAvatar(preset, size = 68) {
+  function renderAvatarImage(preset, size = 68) {
     if (!preset) return null;
-    const hair = preset.hair;
-    const skin = preset.skin;
-    const outfit = preset.outfit;
-    const accent = preset.accent;
-    const isHood = preset.style === "hood";
     return (
-      <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ display: "block", filter: `drop-shadow(0 0 10px ${avatarCfg.accent}55)` }}>
-        <defs>
-          <radialGradient id={`skin-${preset.id}`} cx="35%" cy="25%" r="70%">
-            <stop offset="0%" stopColor="#fff5e9" stopOpacity="0.65" />
-            <stop offset="52%" stopColor={skin} />
-            <stop offset="100%" stopColor="#8b4f3d" stopOpacity="0.45" />
-          </radialGradient>
-          <linearGradient id={`robe-${preset.id}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} stopOpacity="0.95" />
-            <stop offset="58%" stopColor={outfit} />
-            <stop offset="100%" stopColor="#111" stopOpacity="0.35" />
-          </linearGradient>
-        </defs>
-        <ellipse cx="50" cy="90" rx="29" ry="7" fill="#000" opacity="0.22" />
-        <path d="M25 93 C29 72 38 64 50 64 C62 64 71 72 75 93 Z" fill={`url(#robe-${preset.id})`} />
-        <path d="M41 66 C43 75 57 75 59 66 L58 59 L42 59 Z" fill={skin} opacity="0.92" />
-        {isHood && <path d="M21 54 C20 25 36 10 52 10 C72 13 84 31 78 58 C72 47 64 30 51 26 C37 29 28 43 21 54 Z" fill={outfit} />}
-        {preset.style === "bun" && <><circle cx="31" cy="34" r="10" fill={hair}/><circle cx="69" cy="34" r="10" fill={hair}/></>}
-        {preset.style === "twin" && <><path d="M26 39 C12 52 16 75 30 80 C25 64 36 55 34 42 Z" fill={hair}/><path d="M74 39 C88 52 84 75 70 80 C75 64 64 55 66 42 Z" fill={hair}/></>}
-        {preset.style === "topknot" && <><circle cx="50" cy="16" r="8" fill={hair}/><path d="M42 18 C42 9 58 9 58 18 Z" fill={hair}/></>}
-        {preset.style === "spiky" && <path d="M24 39 L31 18 L38 29 L47 12 L55 29 L66 16 L75 40 Z" fill={hair} />}
-        {preset.style === "long" && <path d="M25 35 C20 55 23 78 38 88 C34 66 39 52 50 30 C61 52 66 66 62 88 C77 78 80 55 75 35 C70 18 31 18 25 35 Z" fill={hair} />}
-        {preset.style === "wave" && <path d="M24 39 C22 23 36 15 51 15 C70 17 81 34 75 54 C69 44 62 38 51 34 C39 37 31 45 24 58 Z" fill={hair} />}
-        {preset.style === "bob" && <path d="M23 40 C24 20 38 13 52 14 C70 16 78 30 76 52 C70 44 63 39 50 39 C37 39 30 45 23 54 Z" fill={hair} />}
-        {preset.style === "short" && <path d="M25 39 C25 23 38 16 51 16 C66 17 76 29 75 43 C64 35 40 35 25 43 Z" fill={hair} />}
-        {preset.style === "side" && <path d="M24 39 C26 21 42 14 56 17 C71 21 78 34 75 48 C64 35 44 39 31 48 Z" fill={hair} />}
-        <circle cx="50" cy="45" r="26" fill={`url(#skin-${preset.id})`} />
-        <path d="M27 39 C32 25 45 21 59 24 C70 27 76 37 77 47 C67 37 51 35 35 40 C31 42 28 43 27 39 Z" fill={hair} opacity="0.96" />
-        <circle cx="40" cy="47" r="4.2" fill="#16100e" />
-        <circle cx="60" cy="47" r="4.2" fill="#16100e" />
-        <circle cx="38.5" cy="45.5" r="1.2" fill="#fff" opacity="0.8" />
-        <circle cx="58.5" cy="45.5" r="1.2" fill="#fff" opacity="0.8" />
-        <path d="M44 58 C48 62 53 62 57 58" fill="none" stroke="#6b3229" strokeWidth="2.2" strokeLinecap="round" />
-        <circle cx="33" cy="55" r="3" fill="#ff9fb0" opacity="0.34" />
-        <circle cx="67" cy="55" r="3" fill="#ff9fb0" opacity="0.34" />
-        <path d="M34 77 L50 68 L66 77" fill="none" stroke={accent} strokeWidth="3" strokeLinecap="round" opacity="0.82" />
-        <circle cx="50" cy="73" r="3" fill={accent} opacity="0.92" />
-      </svg>
+      <img
+        src={preset.src}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        style={{
+          width: size,
+          height: size,
+          objectFit: "contain",
+          objectPosition: "center",
+          display: "block",
+          filter: `drop-shadow(0 0 10px ${avatarCfg.accent}55)`,
+          transform: size > 50 ? "translateY(2px) scale(1.08)" : "scale(1.08)",
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      />
     );
   }
 
@@ -2151,7 +2132,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
                 </svg>
               </div>
               <div style={{ position: "relative", zIndex: 1, transform: "translateY(2px)" }}>
-                {renderChibiAvatar(activeAvatar, 66)}
+                {renderAvatarImage(activeAvatar, 70)}
               </div>
             </div>
 
@@ -2265,7 +2246,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
                   {defaultAvatars.map(a => {
                     const chosen = activeAvatarId === a.id;
                     return (
-                      <button key={a.id} onClick={() => chooseAvatar(a.id)} title={`${a.label} · ${a.gender}`} style={{
+                      <button key={a.id} onClick={() => chooseAvatar(a.id)} title={a.label} style={{
                         minHeight: 86,
                         borderRadius: 14,
                         border: `1px solid ${chosen ? avatarCfg.accent + "aa" : border}`,
@@ -2279,7 +2260,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
                         gap: 3,
                         boxShadow: chosen ? `0 0 16px ${avatarCfg.accent}22` : "none",
                       }}>
-                        {renderChibiAvatar(a, 44)}
+                        {renderAvatarImage(a, 48)}
                         <span style={{ fontFamily: headFont, fontSize: 8.5, letterSpacing: "0.07em", textTransform: "uppercase", color: chosen ? avatarCfg.accent : textDim }}>{a.label}</span>
                       </button>
                     );
