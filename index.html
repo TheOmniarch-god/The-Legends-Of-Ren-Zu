@@ -2196,7 +2196,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
     { id: "all", label: "All", count: totalGu },
     { id: "refined", label: "Refined", count: refinedCount },
     { id: "trace", label: "Traces", count: traceCount },
-    ...pathStats.map(p => ({ id: p.id, label: p.label, count: `${p.refined}/${p.total}` })),
+    ...pathStats.map(p => ({ id: p.id, label: p.label, count: p.total })),
   ];
 
   const visibleGu = GU_POOL_ORDERED.filter(g => {
@@ -2272,7 +2272,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
         </div>
 
         <div style={{ padding: "12px 14px", borderRadius: 16, border: `1px solid ${border}`, background: cardBg, color: textDim, fontFamily: bodyFont, fontSize: 12.2, lineHeight: 1.6, marginBottom: 14 }}>
-          Gu are never duplicated. They are perceived as traces, refined through reading/listening/saved actions, then deepened by repeated encounters. Public Gu ranks inform each Codex gate; your current realm determines which Gu can fully submit to you.
+          Gu are never duplicated. They are perceived as traces, refined through reading/listening/saved actions, then deepened by repeated encounters. Each Gu has a refinement gate; your current realm determines which Gu can fully submit to you.
           <div style={{ marginTop: 7, fontFamily: headFont, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: text }}>
             Current Realm · {currentRealmLabel}
           </div>
@@ -2292,13 +2292,15 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
                 <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: path.color }}>{path.short}</div>
-                <div style={{ fontFamily: headFont, fontSize: 10, color: textDim }}>{path.refined}/{path.total}</div>
+                <div style={{ fontFamily: headFont, fontSize: 10, color: textDim }}>{path.total} Gu</div>
               </div>
               <div style={{ height: 6, borderRadius: 999, background: D ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)", overflow: "hidden", marginBottom: 7 }}>
                 <div style={{ width: `${path.pct}%`, height: "100%", background: path.color, boxShadow: `0 0 14px ${path.color}66` }} />
               </div>
               <div style={{ fontFamily: bodyFont, fontSize: 11.5, color: textDim }}>
-                {path.traces ? `${path.traces} trace${path.traces === 1 ? "" : "s"} waiting` : path.refined === path.total && path.total ? "Path complete" : "Awaiting refinement"}
+                {path.refined === path.total && path.total
+                  ? "Path complete"
+                  : `${path.refined} refined${path.traces ? ` · ${path.traces} trace${path.traces === 1 ? "" : "s"}` : ""}`}
               </div>
             </button>
           ))}
@@ -2356,7 +2358,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
             {activeGu && (activeIsRefined || activeIsTrace) && (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 8, marginTop: 12 }}>
                 <div style={{ padding: "8px 10px", borderRadius: 12, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)" }}>
-                  <div style={{ fontFamily: headFont, fontSize: 8, letterSpacing: "0.14em", textTransform: "uppercase", color: textDim, marginBottom: 3 }}>Public Rank</div>
+                  <div style={{ fontFamily: headFont, fontSize: 8, letterSpacing: "0.14em", textTransform: "uppercase", color: textDim, marginBottom: 3 }}>Rank</div>
                   <div style={{ fontFamily: bodyFont, fontSize: 11.5, color: text }}>{activeGu.publicRank || "Legendary / Unranked"}</div>
                 </div>
                 <div style={{ padding: "8px 10px", borderRadius: 12, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)" }}>
@@ -2371,6 +2373,10 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
             )}
           </div>
         )}
+
+        <div style={{ fontFamily: headFont, fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: textDim, textAlign: "center", margin: "2px 0 10px" }}>
+          Showing {visibleGu.length} Gu
+        </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))", gap: 10 }}>
           {visibleGu.map(g => {
