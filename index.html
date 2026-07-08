@@ -688,7 +688,21 @@ function mergeGuCollections(...groups) {
   groups.flat().filter(Boolean).forEach(g => {
     if (!g.id) return;
     const base = GU_BY_ID[g.id] || {};
-    map.set(g.id, { ...base, ...g, tier: g.tier || base.tier || "gu_master" });
+    // Canonical Codex metadata must override older saved entries.
+    // This prevents old saved tiers (e.g. Regulation Gu saved as Gu Immortal)
+    // from hiding cards in their corrected path.
+    map.set(g.id, {
+      ...g,
+      ...base,
+      status: g.status,
+      refinement: g.refinement,
+      discoveredAt: g.discoveredAt,
+      tracedAt: g.tracedAt,
+      refinedAt: g.refinedAt,
+      source: g.source,
+      requiredRealm: g.requiredRealm,
+      tier: base.tier || g.tier || "gu_master"
+    });
   });
   return Array.from(map.values()).sort((a, b) => {
     const ai = GU_POOL_ORDERED.findIndex(g => g.id === a.id);
@@ -2178,7 +2192,15 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
   const traceCount = traceList.length;
   const totalGu = GU_POOL_ORDERED.length;
   const codexPct = totalGu > 0 ? Math.round((refinedCount / totalGu) * 100) : 0;
-  const latestGu = refinedList[refinedList.length - 1] || traceList[traceList.length - 1] || null;
+  const latestEntry = refinedList[refinedList.length - 1] || traceList[traceList.length - 1] || null;
+  const latestGu = latestEntry ? {
+    ...latestEntry,
+    ...(GU_BY_ID[latestEntry.id] || {}),
+    status: latestEntry.status,
+    source: latestEntry.source,
+    tracedAt: latestEntry.tracedAt,
+    refinedAt: latestEntry.refinedAt
+  } : null;
   const currentRealmLabel = realmLabelFromRank(realmRank(currentTier));
   const codexComplete = totalGu > 0 && refinedCount >= totalGu;
   const pathStats = [
@@ -2205,12 +2227,19 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
     if (filter === "refined") return status === "refined";
     if (filter === "trace") return status === "trace";
     if (filter === "all") return true;
-    return (entry?.tier || g.tier || "") === filter;
+    return (g.tier || "") === filter;
   });
 
   const activeBase = activeId ? GU_POOL_ORDERED.find(g => g.id === activeId) : null;
   const activeOwned = activeId ? ownedMap.get(activeId) : null;
-  const activeGu = activeBase ? { ...activeBase, ...(activeOwned || {}) } : latestGu;
+  const activeGu = activeBase ? {
+    ...(activeOwned || {}),
+    ...activeBase,
+    status: activeOwned?.status,
+    source: activeOwned?.source,
+    tracedAt: activeOwned?.tracedAt,
+    refinedAt: activeOwned?.refinedAt
+  } : latestGu;
   const activeEntry = activeGu ? ownedMap.get(activeGu.id) : null;
   const activeStatus = codexStatus(activeEntry);
   const activeIsRefined = activeStatus === "refined";
@@ -2384,7 +2413,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
             const status = codexStatus(entry);
             const refined = status === "refined";
             const traced = status === "trace";
-            const tier = entry?.tier || g.tier || "gu_master";
+            const tier = g.tier || "gu_master";
             const color = tierColor(tier);
             const selected = activeGu?.id === g.id;
             return (
