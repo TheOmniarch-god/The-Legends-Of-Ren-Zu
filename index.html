@@ -1972,24 +1972,18 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
             </div>
 
             <img
-              src={tier === "gu_immortal" ? "/assets/avatar-frame-blue.png" : "/assets/avatar-frame-gold.png"}
+              src={tier === "venerable" ? "/assets/avatar-frame-venerable.webp" : tier === "gu_immortal" ? "/assets/avatar-frame-guimmortal.webp" : tier === "gu_master" ? "/assets/avatar-frame-gumaster.webp" : "/assets/avatar-frame-mortal.webp"}
               alt=""
               aria-hidden="true"
               style={{
                 position: "absolute",
-                inset: tier === "gu_immortal" ? -12 : tier === "venerable" ? -2 : 4,
-                width: tier === "gu_immortal" ? "calc(100% + 24px)" : tier === "venerable" ? "calc(100% + 4px)" : "calc(100% - 8px)",
-                height: tier === "gu_immortal" ? "calc(100% + 24px)" : tier === "venerable" ? "calc(100% + 4px)" : "calc(100% - 8px)",
+                inset: tier === "gu_immortal" ? -10 : tier === "venerable" ? -4 : 2,
+                width: tier === "gu_immortal" ? "calc(100% + 20px)" : tier === "venerable" ? "calc(100% + 8px)" : "calc(100% - 4px)",
+                height: tier === "gu_immortal" ? "calc(100% + 20px)" : tier === "venerable" ? "calc(100% + 8px)" : "calc(100% - 4px)",
                 objectFit: "contain",
                 objectPosition: "center",
-                opacity: tier === "mortal" ? 0.46 : tier === "gu_master" ? 0.78 : 0.94,
-                filter: tier === "mortal"
-                  ? "grayscale(1) sepia(.30) brightness(.72) contrast(1.05)"
-                  : tier === "gu_master"
-                    ? "sepia(.24) saturate(1.25) brightness(.95) hue-rotate(-10deg)"
-                    : tier === "venerable"
-                      ? "saturate(1.15) brightness(1.08) contrast(1.08)"
-                      : "saturate(1.20) brightness(1.04) contrast(1.08)",
+                opacity: tier === "mortal" ? 0.68 : tier === "gu_master" ? 0.86 : 0.96,
+                filter: "none",
                 pointerEvents: "none",
                 zIndex: 1,
               }}
@@ -1997,7 +1991,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
 
             {codexComplete && (
               <img
-                src="/assets/avatar-frame-myriad.png"
+                src="/assets/avatar-frame-myriad.webp"
                 alt=""
                 aria-hidden="true"
                 style={{
