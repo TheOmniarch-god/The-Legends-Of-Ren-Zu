@@ -740,6 +740,18 @@ function codexStatus(entry) {
 function codexIsRefined(entry) {
   return codexStatus(entry) === "refined";
 }
+function codexEffectiveStatus(entry, currentTier = "mortal") {
+  if (!entry) return "unknown";
+  const base = GU_BY_ID[entry.id] || entry;
+  const savedStatus = codexStatus(entry);
+  // Old saved data may say a high-realm Gu was refined before the gates existed.
+  // Display it as a trace until the reader's current realm can actually refine it.
+  if (savedStatus === "refined" && guRequiredRank(base) > realmRank(currentTier)) return "trace";
+  return savedStatus;
+}
+function codexIsEffectivelyRefined(entry, currentTier = "mortal") {
+  return codexEffectiveStatus(entry, currentTier) === "refined";
+}
 
 // ─── Billing / Paywall Modal — support audio before use ───────────────────────
 function TreasureYellowHeaven({ open, onClose, onUnlock, deviceId, D, S, getAuthHeaders, currentTier }) {
@@ -2186,8 +2198,8 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
   const localOwnedList = Array.isArray(collectedGu) ? collectedGu : [];
   const ownedList = isEmailBound ? localOwnedList : [];
   const ownedMap = new Map(ownedList.map(g => [g.id, g]));
-  const refinedList = ownedList.filter(g => codexIsRefined(g));
-  const traceList = ownedList.filter(g => codexStatus(g) === "trace");
+  const refinedList = ownedList.filter(g => codexIsEffectivelyRefined(g, currentTier));
+  const traceList = ownedList.filter(g => codexEffectiveStatus(g, currentTier) === "trace");
   const refinedCount = refinedList.length;
   const traceCount = traceList.length;
   const totalGu = GU_POOL_ORDERED.length;
@@ -2209,8 +2221,8 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
     { id: "venerable", label: "Venerable Path", short: "Venerable", color: "#ffd36a" },
   ].map(path => {
     const total = GU_POOL_ORDERED.filter(g => g.tier === path.id).length;
-    const refined = ownedList.filter(g => (GU_BY_ID[g.id]?.tier || g.tier) === path.id && codexIsRefined(g)).length;
-    const traces = ownedList.filter(g => (GU_BY_ID[g.id]?.tier || g.tier) === path.id && codexStatus(g) === "trace").length;
+    const refined = ownedList.filter(g => (GU_BY_ID[g.id]?.tier || g.tier) === path.id && codexIsEffectivelyRefined(g, currentTier)).length;
+    const traces = ownedList.filter(g => (GU_BY_ID[g.id]?.tier || g.tier) === path.id && codexEffectiveStatus(g, currentTier) === "trace").length;
     return { ...path, total, refined, traces, pct: total ? Math.round((refined / total) * 100) : 0 };
   });
 
@@ -2223,7 +2235,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
 
   const visibleGu = GU_POOL_ORDERED.filter(g => {
     const entry = ownedMap.get(g.id);
-    const status = codexStatus(entry);
+    const status = codexEffectiveStatus(entry, currentTier);
     if (filter === "refined") return status === "refined";
     if (filter === "trace") return status === "trace";
     if (filter === "all") return true;
@@ -2241,7 +2253,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
     refinedAt: activeOwned?.refinedAt
   } : latestGu;
   const activeEntry = activeGu ? ownedMap.get(activeGu.id) : null;
-  const activeStatus = codexStatus(activeEntry);
+  const activeStatus = codexEffectiveStatus(activeEntry, currentTier);
   const activeIsRefined = activeStatus === "refined";
   const activeIsTrace = activeStatus === "trace";
 
@@ -2410,7 +2422,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))", gap: 10 }}>
           {visibleGu.map(g => {
             const entry = ownedMap.get(g.id);
-            const status = codexStatus(entry);
+            const status = codexEffectiveStatus(entry, currentTier);
             const refined = status === "refined";
             const traced = status === "trace";
             const tier = g.tier || "gu_master";
@@ -6405,7 +6417,7 @@ function getOrBuildSentences() {
           accountMode={accountMode}
           readingProgress={readingProgress}
           totalEntries={TAGGED.length}
-          codexCount={isProfilePreviewComplete() ? GU_POOL_ORDERED.length : (Array.isArray(collectedGu) ? collectedGu.filter(g => codexIsRefined(g) && GU_BY_ID[g.id]?.tier !== "hold").length : 0)}
+          codexCount={isProfilePreviewComplete() ? GU_POOL_ORDERED.length : (Array.isArray(collectedGu) ? collectedGu.filter(g => codexIsEffectivelyRefined(g, getProfilePreviewTier() || tier) && GU_BY_ID[g.id]?.tier !== "hold").length : 0)}
           totalGu={GU_POOL_ORDERED.length}
           onSave={saveProfile}
           onBindAccount={bindProfileToEmail}
