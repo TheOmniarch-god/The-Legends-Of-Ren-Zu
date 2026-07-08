@@ -1977,9 +1977,9 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
               aria-hidden="true"
               style={{
                 position: "absolute",
-                inset: tier === "gu_immortal" ? -10 : tier === "venerable" ? -4 : 2,
-                width: tier === "gu_immortal" ? "calc(100% + 20px)" : tier === "venerable" ? "calc(100% + 8px)" : "calc(100% - 4px)",
-                height: tier === "gu_immortal" ? "calc(100% + 20px)" : tier === "venerable" ? "calc(100% + 8px)" : "calc(100% - 4px)",
+                inset: tier === "gu_immortal" ? -10 : tier === "venerable" ? -8 : 2,
+                width: tier === "gu_immortal" ? "calc(100% + 20px)" : tier === "venerable" ? "calc(100% + 16px)" : "calc(100% - 4px)",
+                height: tier === "gu_immortal" ? "calc(100% + 20px)" : tier === "venerable" ? "calc(100% + 16px)" : "calc(100% - 4px)",
                 objectFit: "contain",
                 objectPosition: "center",
                 opacity: tier === "mortal" ? 0.68 : tier === "gu_master" ? 0.86 : 0.96,
@@ -1996,13 +1996,13 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
                 aria-hidden="true"
                 style={{
                   position: "absolute",
-                  inset: -18,
-                  width: "calc(100% + 36px)",
-                  height: "calc(100% + 36px)",
+                  inset: -24,
+                  width: "calc(100% + 48px)",
+                  height: "calc(100% + 48px)",
                   objectFit: "contain",
                   objectPosition: "center",
-                  opacity: 0.82,
-                  filter: "saturate(1.18) brightness(1.08)",
+                  opacity: 0.98,
+                  filter: "saturate(1.24) brightness(1.12)",
                   pointerEvents: "none",
                   zIndex: 2,
                 }}
