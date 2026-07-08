@@ -2180,14 +2180,23 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
   const codexPct = totalGu > 0 ? Math.round((refinedCount / totalGu) * 100) : 0;
   const latestGu = refinedList[refinedList.length - 1] || traceList[traceList.length - 1] || null;
   const currentRealmLabel = realmLabelFromRank(realmRank(currentTier));
+  const codexComplete = totalGu > 0 && refinedCount >= totalGu;
+  const pathStats = [
+    { id: "gu_master", label: "Mortal Path", short: "Mortal", color: "#d8a34d" },
+    { id: "gu_immortal", label: "Immortal Path", short: "Immortal", color: "#62e8ff" },
+    { id: "venerable", label: "Venerable Path", short: "Venerable", color: "#ffd36a" },
+  ].map(path => {
+    const total = GU_POOL_ORDERED.filter(g => g.tier === path.id).length;
+    const refined = ownedList.filter(g => (GU_BY_ID[g.id]?.tier || g.tier) === path.id && codexIsRefined(g)).length;
+    const traces = ownedList.filter(g => (GU_BY_ID[g.id]?.tier || g.tier) === path.id && codexStatus(g) === "trace").length;
+    return { ...path, total, refined, traces, pct: total ? Math.round((refined / total) * 100) : 0 };
+  });
 
   const filters = [
-    { id: "all", label: "All" },
-    { id: "refined", label: "Refined" },
-    { id: "trace", label: "Traces" },
-    { id: "gu_master", label: "Mortal Path" },
-    { id: "gu_immortal", label: "Immortal Path" },
-    { id: "venerable", label: "Venerable Path" },
+    { id: "all", label: "All", count: totalGu },
+    { id: "refined", label: "Refined", count: refinedCount },
+    { id: "trace", label: "Traces", count: traceCount },
+    ...pathStats.map(p => ({ id: p.id, label: p.label, count: `${p.refined}/${p.total}` })),
   ];
 
   const visibleGu = GU_POOL_ORDERED.filter(g => {
@@ -2264,6 +2273,46 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
 
         <div style={{ padding: "12px 14px", borderRadius: 16, border: `1px solid ${border}`, background: cardBg, color: textDim, fontFamily: bodyFont, fontSize: 12.2, lineHeight: 1.6, marginBottom: 14 }}>
           Gu are never duplicated. They are perceived as traces, refined through reading/listening/saved actions, then deepened by repeated encounters. Public Gu ranks inform each Codex gate; your current realm determines which Gu can fully submit to you.
+          <div style={{ marginTop: 7, fontFamily: headFont, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: text }}>
+            Current Realm · {currentRealmLabel}
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10, marginBottom: 14 }}>
+          {pathStats.map(path => (
+            <button key={path.id} onClick={() => setFilter(path.id)} style={{
+              textAlign: "left",
+              padding: "12px 12px 11px",
+              borderRadius: 16,
+              border: `1px solid ${filter === path.id ? path.color + "88" : border}`,
+              background: filter === path.id ? `${path.color}18` : cardBg,
+              cursor: "pointer",
+              color: text,
+              boxShadow: filter === path.id ? `0 0 18px ${path.color}22` : "none",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+                <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: path.color }}>{path.short}</div>
+                <div style={{ fontFamily: headFont, fontSize: 10, color: textDim }}>{path.refined}/{path.total}</div>
+              </div>
+              <div style={{ height: 6, borderRadius: 999, background: D ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)", overflow: "hidden", marginBottom: 7 }}>
+                <div style={{ width: `${path.pct}%`, height: "100%", background: path.color, boxShadow: `0 0 14px ${path.color}66` }} />
+              </div>
+              <div style={{ fontFamily: bodyFont, fontSize: 11.5, color: textDim }}>
+                {path.traces ? `${path.traces} trace${path.traces === 1 ? "" : "s"} waiting` : path.refined === path.total && path.total ? "Path complete" : "Awaiting refinement"}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ padding: "13px 14px", borderRadius: 18, border: `1px solid ${codexComplete ? "rgba(255,211,106,0.65)" : border}`, background: codexComplete ? (D ? "rgba(255,211,106,0.10)" : "rgba(255,211,106,0.16)") : cardBg, marginBottom: 14 }}>
+          <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: codexComplete ? "#ffd36a" : textDim, marginBottom: 6 }}>
+            Codex Goal
+          </div>
+          <div style={{ fontFamily: bodyFont, fontSize: 12.4, lineHeight: 1.6, color: text }}>
+            {codexComplete
+              ? "Myriad Gu refined. Your profile may bear the completed Codex aura."
+              : "Refine every visible Legends Gu. Traces mark Gu that have noticed you, but will not submit until your realm is sufficient."}
+          </div>
         </div>
 
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", marginBottom: 14 }}>
@@ -2276,7 +2325,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
                 background: active ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent",
                 color: active ? text : textDim,
                 cursor: "pointer", fontFamily: headFont, fontSize: 10, letterSpacing: "0.07em",
-              }}>{f.label}</button>
+              }}>{f.label}{typeof f.count !== "undefined" && <span style={{ opacity: 0.62, marginLeft: 6 }}>{f.count}</span>}</button>
             );
           })}
         </div>
@@ -2294,13 +2343,32 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
                 background: D ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.035)"
               }}>{activeIsRefined || activeIsTrace ? activeGu.symbol : "?"}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: headFont, fontSize: 15, color: text, marginBottom: 4 }}>{activeIsRefined || activeIsTrace ? activeGu.name : "Undiscovered Gu"}</div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 4 }}>
+                  <div style={{ fontFamily: headFont, fontSize: 15, color: text }}>{activeIsRefined || activeIsTrace ? activeGu.name : "Undiscovered Gu"}</div>
+                  {activeGu?.tier && <span style={{ flexShrink: 0, border: `1px solid ${tierColor(activeGu.tier)}66`, color: tierColor(activeGu.tier), borderRadius: 999, padding: "3px 7px", fontFamily: headFont, fontSize: 8, letterSpacing: "0.10em", textTransform: "uppercase" }}>{requiredRealmLabel(activeGu)}</span>}
+                </div>
                 <div style={{ fontSize: 10, color: textDim, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: headFont }}>{activeIsRefined ? "Refined" : activeIsTrace ? `Trace perceived · requires ${requiredRealmLabel(activeGu)}` : "Unknown path"}</div>
               </div>
             </div>
             <div style={{ marginTop: 12, color: textDim, fontFamily: bodyFont, lineHeight: 1.65, fontSize: 12.5, fontStyle: "italic" }}>
               “{activeIsRefined ? (activeGu.lore || "This Gu has submitted to your Codex.") : activeIsTrace ? `${activeGu.name} has sensed your realm and refuses full refinement. Ascend to ${requiredRealmLabel(activeGu)} to seize its true form.` : (isEmailBound ? "Continue reading and refining to reveal this Gu." : "Login to begin perceiving and refining Gu.")}”
             </div>
+            {activeGu && (activeIsRefined || activeIsTrace) && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 8, marginTop: 12 }}>
+                <div style={{ padding: "8px 10px", borderRadius: 12, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)" }}>
+                  <div style={{ fontFamily: headFont, fontSize: 8, letterSpacing: "0.14em", textTransform: "uppercase", color: textDim, marginBottom: 3 }}>Public Rank</div>
+                  <div style={{ fontFamily: bodyFont, fontSize: 11.5, color: text }}>{activeGu.publicRank || "Legendary / Unranked"}</div>
+                </div>
+                <div style={{ padding: "8px 10px", borderRadius: 12, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)" }}>
+                  <div style={{ fontFamily: headFont, fontSize: 8, letterSpacing: "0.14em", textTransform: "uppercase", color: textDim, marginBottom: 3 }}>Path</div>
+                  <div style={{ fontFamily: bodyFont, fontSize: 11.5, color: text }}>{activeGu.publicPath || "Legends Mythos"}</div>
+                </div>
+                <div style={{ padding: "8px 10px", borderRadius: 12, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)" }}>
+                  <div style={{ fontFamily: headFont, fontSize: 8, letterSpacing: "0.14em", textTransform: "uppercase", color: textDim, marginBottom: 3 }}>Source</div>
+                  <div style={{ fontFamily: bodyFont, fontSize: 11.5, color: text }}>{activeEntry?.source || "Legends Codex"}</div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -2328,6 +2396,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
                 <div style={{ fontFamily: headFont, fontSize: 25, color: refined || traced ? color : textDim, opacity: refined ? 1 : traced ? 0.52 : 0.24, lineHeight: 1, textShadow: refined ? `0 0 8px ${color}66` : traced ? `0 0 6px ${color}33` : "none" }}>{refined || traced ? g.symbol : "?"}</div>
                 <div style={{ fontFamily: headFont, fontSize: 8, color: refined || traced ? text : textDim, opacity: refined ? 0.88 : traced ? 0.62 : 0.42, textAlign: "center", lineHeight: 1.2, marginTop: 7 }}>{refined || traced ? g.name : "???"}</div>
                 {traced && <div style={{ marginTop: 5, fontFamily: headFont, fontSize: 7, letterSpacing: "0.10em", color, opacity: 0.78, textTransform: "uppercase" }}>Trace</div>}
+                {!refined && !traced && filter !== "all" && <div style={{ marginTop: 5, fontFamily: headFont, fontSize: 7, letterSpacing: "0.10em", color: textDim, opacity: 0.46, textTransform: "uppercase" }}>{requiredRealmLabel(g)}</div>}
               </button>
             );
           })}
@@ -2335,7 +2404,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
 
         {visibleGu.length === 0 && (
           <div style={{ padding: "32px 16px", textAlign: "center", color: textDim, border: `1px solid ${border}`, borderRadius: 18, marginTop: 10 }}>
-            Nothing discovered in this path yet.
+            Nothing in this view yet. Refine passages, finish narration, or ascend your realm to open more paths.
           </div>
         )}
       </div>
