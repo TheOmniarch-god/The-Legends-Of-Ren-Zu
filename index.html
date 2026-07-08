@@ -1823,6 +1823,9 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   const [saveMsg, setSaveMsg] = useState("");
   const [saveErr, setSaveErr] = useState("");
   const [manageOpen, setManageOpen] = useState(false);
+  const [avatarChoice, setAvatarChoice] = useState(() => {
+    try { return localStorage.getItem("renzu_avatar_choice") || ""; } catch (_) { return ""; }
+  });
 
   useEffect(() => {
     setEditName(username || "");
@@ -1967,6 +1970,77 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
         ? ["蛊", "炼", "窍", "元"]
         : ["心", "路", "尘", "凡"];
   const avatarSealMark = avatarSealMarks[avatarSeed % avatarSealMarks.length];
+  const defaultAvatars = [
+    { id: "f_lotus", label: "Lotus", gender: "Female", skin: "#f3c9a6", hair: "#2d1812", outfit: "#d85f88", accent: "#ffd1e0", style: "bun" },
+    { id: "f_moon", label: "Moon", gender: "Female", skin: "#f0c2a0", hair: "#e7edf8", outfit: "#6e7cff", accent: "#cfe8ff", style: "long" },
+    { id: "f_jade", label: "Jade", gender: "Female", skin: "#d9a77e", hair: "#16251d", outfit: "#28b987", accent: "#bdf8dd", style: "bob" },
+    { id: "f_crimson", label: "Crimson", gender: "Female", skin: "#c77b61", hair: "#4a1118", outfit: "#c22f3f", accent: "#ffcf78", style: "twin" },
+    { id: "f_azure", label: "Azure", gender: "Female", skin: "#f2b993", hair: "#132742", outfit: "#24c4e8", accent: "#e2fbff", style: "wave" },
+    { id: "m_ink", label: "Ink", gender: "Male", skin: "#d7a27c", hair: "#111111", outfit: "#2f3640", accent: "#cfd6dd", style: "short" },
+    { id: "m_flame", label: "Flame", gender: "Male", skin: "#bd7352", hair: "#36120a", outfit: "#d86b25", accent: "#ffd36a", style: "spiky" },
+    { id: "m_jade", label: "Jade", gender: "Male", skin: "#e3b289", hair: "#173026", outfit: "#2a8f72", accent: "#bdf8dd", style: "topknot" },
+    { id: "m_shadow", label: "Shadow", gender: "Male", skin: "#a96f58", hair: "#08080a", outfit: "#4b3d8f", accent: "#a9a4ff", style: "hood" },
+    { id: "m_gold", label: "Gold", gender: "Male", skin: "#d99b68", hair: "#2b1608", outfit: "#b27a1d", accent: "#fff0a6", style: "side" },
+  ];
+  const activeAvatarId = avatarChoice || defaultAvatars[avatarSeed % defaultAvatars.length].id;
+  const activeAvatar = defaultAvatars.find(a => a.id === activeAvatarId) || defaultAvatars[avatarSeed % defaultAvatars.length];
+
+  function chooseAvatar(id) {
+    setAvatarChoice(id);
+    try { localStorage.setItem("renzu_avatar_choice", id); } catch (_) {}
+    setSaveMsg("Avatar updated.");
+    setSaveErr("");
+    setTimeout(() => setSaveMsg(""), 1400);
+  }
+
+  function renderChibiAvatar(preset, size = 68) {
+    if (!preset) return null;
+    const hair = preset.hair;
+    const skin = preset.skin;
+    const outfit = preset.outfit;
+    const accent = preset.accent;
+    const isHood = preset.style === "hood";
+    return (
+      <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ display: "block", filter: `drop-shadow(0 0 10px ${avatarCfg.accent}55)` }}>
+        <defs>
+          <radialGradient id={`skin-${preset.id}`} cx="35%" cy="25%" r="70%">
+            <stop offset="0%" stopColor="#fff5e9" stopOpacity="0.65" />
+            <stop offset="52%" stopColor={skin} />
+            <stop offset="100%" stopColor="#8b4f3d" stopOpacity="0.45" />
+          </radialGradient>
+          <linearGradient id={`robe-${preset.id}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={accent} stopOpacity="0.95" />
+            <stop offset="58%" stopColor={outfit} />
+            <stop offset="100%" stopColor="#111" stopOpacity="0.35" />
+          </linearGradient>
+        </defs>
+        <ellipse cx="50" cy="90" rx="29" ry="7" fill="#000" opacity="0.22" />
+        <path d="M25 93 C29 72 38 64 50 64 C62 64 71 72 75 93 Z" fill={`url(#robe-${preset.id})`} />
+        <path d="M41 66 C43 75 57 75 59 66 L58 59 L42 59 Z" fill={skin} opacity="0.92" />
+        {isHood && <path d="M21 54 C20 25 36 10 52 10 C72 13 84 31 78 58 C72 47 64 30 51 26 C37 29 28 43 21 54 Z" fill={outfit} />}
+        {preset.style === "bun" && <><circle cx="31" cy="34" r="10" fill={hair}/><circle cx="69" cy="34" r="10" fill={hair}/></>}
+        {preset.style === "twin" && <><path d="M26 39 C12 52 16 75 30 80 C25 64 36 55 34 42 Z" fill={hair}/><path d="M74 39 C88 52 84 75 70 80 C75 64 64 55 66 42 Z" fill={hair}/></>}
+        {preset.style === "topknot" && <><circle cx="50" cy="16" r="8" fill={hair}/><path d="M42 18 C42 9 58 9 58 18 Z" fill={hair}/></>}
+        {preset.style === "spiky" && <path d="M24 39 L31 18 L38 29 L47 12 L55 29 L66 16 L75 40 Z" fill={hair} />}
+        {preset.style === "long" && <path d="M25 35 C20 55 23 78 38 88 C34 66 39 52 50 30 C61 52 66 66 62 88 C77 78 80 55 75 35 C70 18 31 18 25 35 Z" fill={hair} />}
+        {preset.style === "wave" && <path d="M24 39 C22 23 36 15 51 15 C70 17 81 34 75 54 C69 44 62 38 51 34 C39 37 31 45 24 58 Z" fill={hair} />}
+        {preset.style === "bob" && <path d="M23 40 C24 20 38 13 52 14 C70 16 78 30 76 52 C70 44 63 39 50 39 C37 39 30 45 23 54 Z" fill={hair} />}
+        {preset.style === "short" && <path d="M25 39 C25 23 38 16 51 16 C66 17 76 29 75 43 C64 35 40 35 25 43 Z" fill={hair} />}
+        {preset.style === "side" && <path d="M24 39 C26 21 42 14 56 17 C71 21 78 34 75 48 C64 35 44 39 31 48 Z" fill={hair} />}
+        <circle cx="50" cy="45" r="26" fill={`url(#skin-${preset.id})`} />
+        <path d="M27 39 C32 25 45 21 59 24 C70 27 76 37 77 47 C67 37 51 35 35 40 C31 42 28 43 27 39 Z" fill={hair} opacity="0.96" />
+        <circle cx="40" cy="47" r="4.2" fill="#16100e" />
+        <circle cx="60" cy="47" r="4.2" fill="#16100e" />
+        <circle cx="38.5" cy="45.5" r="1.2" fill="#fff" opacity="0.8" />
+        <circle cx="58.5" cy="45.5" r="1.2" fill="#fff" opacity="0.8" />
+        <path d="M44 58 C48 62 53 62 57 58" fill="none" stroke="#6b3229" strokeWidth="2.2" strokeLinecap="round" />
+        <circle cx="33" cy="55" r="3" fill="#ff9fb0" opacity="0.34" />
+        <circle cx="67" cy="55" r="3" fill="#ff9fb0" opacity="0.34" />
+        <path d="M34 77 L50 68 L66 77" fill="none" stroke={accent} strokeWidth="3" strokeLinecap="round" opacity="0.82" />
+        <circle cx="50" cy="73" r="3" fill={accent} opacity="0.92" />
+      </svg>
+    );
+  }
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10001, background: pageBg, color: text, overflowY: "auto" }}>
@@ -2070,46 +2144,15 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
               backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)",
               overflow: "hidden",
             }}>
-              <svg viewBox="0 0 100 100" aria-hidden="true" style={{ position: "absolute", inset: 5, width: "calc(100% - 10px)", height: "calc(100% - 10px)", transform: `rotate(${avatarTurn}deg)`, opacity: tier === "mortal" ? 0.45 : 0.72 }}>
-                <circle cx="50" cy="50" r="42" fill="none" stroke={avatarCfg.accent} strokeWidth="1.2" opacity="0.48" />
-                <circle cx="50" cy="50" r="31" fill="none" stroke={avatarCfg.accent2} strokeWidth="0.7" opacity="0.34" strokeDasharray={tier === "mortal" ? "4 7" : tier === "gu_master" ? "8 4" : "3 4"} />
-                {tier === "gu_master" && <polygon points="50,12 83,31 83,69 50,88 17,69 17,31" fill="none" stroke={avatarCfg.accent} strokeWidth="1.1" opacity="0.34" />}
-                {tier === "gu_immortal" && <path d="M50 10 C74 24 76 76 50 90 C24 76 26 24 50 10Z" fill="none" stroke={avatarCfg.accent2} strokeWidth="1" opacity="0.36" />}
-                {tier === "venerable" && <polygon points="50,8 61,37 92,50 61,63 50,92 39,63 8,50 39,37" fill="none" stroke={avatarCfg.accent2} strokeWidth="1.15" opacity="0.42" />}
-                {Array.from({ length: avatarNodeCount }).map((_, i) => {
-                  const angle = (Math.PI * 2 * i) / avatarNodeCount;
-                  const x = 50 + Math.cos(angle) * 39;
-                  const y = 50 + Math.sin(angle) * 39;
-                  const x2 = 50 + Math.cos(angle) * 31;
-                  const y2 = 50 + Math.sin(angle) * 31;
-                  return <g key={i} opacity={i % 2 === 0 ? 0.72 : 0.44}>
-                    <line x1={x2} y1={y2} x2={x} y2={y} stroke={avatarCfg.accent} strokeWidth={tier === "venerable" ? "1.4" : "1"} />
-                    <circle cx={x} cy={y} r={tier === "venerable" && i % 2 === 0 ? "2.1" : "1.5"} fill={avatarCfg.accent2} />
-                  </g>;
-                })}
-              </svg>
-              <div style={{
-                position: "absolute", inset: 0,
-                background: `radial-gradient(circle at 36% 25%, rgba(255,255,255,0.24), transparent 25%), radial-gradient(circle, transparent 46%, ${avatarCfg.accent}18 72%, transparent 74%)`,
-                pointerEvents: "none"
-              }} />
-              <div style={{
-                position: "absolute", right: 9, top: 9,
-                fontFamily: headFont,
-                fontSize: 10,
-                color: avatarCfg.accent,
-                opacity: 0.62,
-                transform: `rotate(${avatarTilt}deg)`,
-                textShadow: `0 0 8px ${avatarCfg.accent}66`
-              }}>{avatarSealMark}</div>
-              <div style={{
-                position: "relative", zIndex: 1,
-                fontFamily: headFont,
-                fontSize: initials.length > 1 ? 21 : 25,
-                color: text,
-                letterSpacing: "0.08em",
-                textShadow: `0 0 12px ${avatarCfg.accent}88, 0 1px 2px rgba(0,0,0,0.45)`
-              }}>{initials}</div>
+              <div style={{ position: "absolute", inset: 0, opacity: 0.34, transform: `rotate(${avatarTurn}deg)` }}>
+                <svg viewBox="0 0 100 100" aria-hidden="true" style={{ width: "100%", height: "100%" }}>
+                  <circle cx="50" cy="50" r="42" fill="none" stroke={avatarCfg.accent} strokeWidth="1.1" opacity="0.55" />
+                  <circle cx="50" cy="50" r="31" fill="none" stroke={avatarCfg.accent2} strokeWidth="0.7" opacity="0.38" strokeDasharray="4 5" />
+                </svg>
+              </div>
+              <div style={{ position: "relative", zIndex: 1, transform: "translateY(2px)" }}>
+                {renderChibiAvatar(activeAvatar, 66)}
+              </div>
             </div>
 
             <div style={{
@@ -2216,6 +2259,33 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
               <div style={{ marginTop: 12 }}>
                 <label style={{ display: "block", fontSize: 10, color: textDim, marginBottom: 5, fontFamily: headFont, textTransform: "uppercase", letterSpacing: "0.08em" }}>Display Name</label>
                 <input value={editName} onChange={e => { setEditName(e.target.value); setSaveErr(""); setSaveMsg(""); }} placeholder="Your display name" style={{ width: "100%", padding: "10px 14px", borderRadius: 12, fontSize: 13, background: D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)", border: `1px solid ${border}`, color: text, fontFamily: "inherit", outline: "none", marginBottom: 12 }} />
+
+                <label style={{ display: "block", fontSize: 10, color: textDim, marginBottom: 8, fontFamily: headFont, textTransform: "uppercase", letterSpacing: "0.08em" }}>Default Avatar</label>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(72px, 1fr))", gap: 8, marginBottom: 12 }}>
+                  {defaultAvatars.map(a => {
+                    const chosen = activeAvatarId === a.id;
+                    return (
+                      <button key={a.id} onClick={() => chooseAvatar(a.id)} title={`${a.label} · ${a.gender}`} style={{
+                        minHeight: 86,
+                        borderRadius: 14,
+                        border: `1px solid ${chosen ? avatarCfg.accent + "aa" : border}`,
+                        background: chosen ? `${avatarCfg.accent}16` : (D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)"),
+                        color: text,
+                        cursor: "pointer",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 3,
+                        boxShadow: chosen ? `0 0 16px ${avatarCfg.accent}22` : "none",
+                      }}>
+                        {renderChibiAvatar(a, 44)}
+                        <span style={{ fontFamily: headFont, fontSize: 8.5, letterSpacing: "0.07em", textTransform: "uppercase", color: chosen ? avatarCfg.accent : textDim }}>{a.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
                 <label style={{ display: "block", fontSize: 10, color: textDim, marginBottom: 5, fontFamily: headFont, textTransform: "uppercase", letterSpacing: "0.08em" }}>Email</label>
                 <input value={editEmail} disabled={isEmailBound} onChange={e => { setEditEmail(e.target.value); setSaveErr(""); setSaveMsg(""); }} placeholder={isEmailBound ? "Managed by login" : "your@email.com"} style={{ width: "100%", padding: "10px 14px", borderRadius: 12, fontSize: 13, background: isEmailBound ? (D ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)") : (D ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)"), border: `1px solid ${border}`, color: text, fontFamily: "inherit", outline: "none", opacity: isEmailBound ? 0.75 : 1 }} />
                 <div style={{ fontSize: 10, color: textDim, marginTop: 7, lineHeight: 1.5 }}>{isEmailBound ? "This email comes from your logged-in account." : "Optional for guests. Login with email to sync across devices."}</div>
