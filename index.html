@@ -2594,6 +2594,25 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
   const textDim = D ? "#9d998f" : S ? "#7a4e18" : "#706b64";
+  const menuWrapRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function closeIfOutside(e) {
+      const wrap = menuWrapRef.current;
+      if (wrap && wrap.contains(e.target)) return;
+      onClose();
+    }
+    // Capture phase: closes even if another app element stops propagation.
+    document.addEventListener("pointerdown", closeIfOutside, true);
+    document.addEventListener("touchstart", closeIfOutside, true);
+    document.addEventListener("click", closeIfOutside, true);
+    return () => {
+      document.removeEventListener("pointerdown", closeIfOutside, true);
+      document.removeEventListener("touchstart", closeIfOutside, true);
+      document.removeEventListener("click", closeIfOutside, true);
+    };
+  }, [open, onClose]);
 
   const menuItems = [
     { id: "home", label: "Home", onClick: () => { onClose(); onHome(); }, disabled: false },
@@ -2619,6 +2638,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
         />
       )}
       <div
+        ref={menuWrapRef}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
         style={{ position: "relative", zIndex: 45, flexShrink: 0, marginRight: 2 }}
