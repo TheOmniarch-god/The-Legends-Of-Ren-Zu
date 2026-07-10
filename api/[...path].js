@@ -4,6 +4,7 @@ import annotations from "../lib/api/annotations.js";
 import bookmarks from "../lib/api/bookmarks.js";
 import flutterwaveWebhook from "../lib/api/flutterwave-webhook.js";
 import getCode from "../lib/api/get-code.js";
+import hall from "../lib/api/hall.js";
 import linkDevice from "../lib/api/link-device.js";
 import me from "../lib/api/me.js";
 import publicConfig from "../lib/api/public-config.js";
@@ -29,6 +30,7 @@ const routes = {
   "bookmarks": bookmarks,
   "flutterwave-webhook": flutterwaveWebhook,
   "get-code": getCode,
+  "hall": hall,
   "link-device": linkDevice,
   "me": me,
   "public-config": publicConfig,
