@@ -2221,7 +2221,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
             </div>
             <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
               {tier === "venerable"
-                ? "Control Hall listing and preview the entry reserved for ascended profiles."
+                ? "Control Venerable Listing and preview the entry reserved for ascended profiles."
                 : "The Hall opens to Venerable profiles. Realm frame and Codex progress determine the displayed honor."}
             </div>
             <button onClick={onOpenHall} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: tier === "venerable" ? "rgba(255,211,106,0.12)" : "transparent", border: `1px solid ${tier === "venerable" ? "rgba(255,211,106,0.42)" : border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Hall Of Venerables</button>
@@ -2399,8 +2399,8 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
             </div>
             <div style={{ marginTop: 14, padding: "12px", borderRadius: 16, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)", fontFamily: bodyFont, fontSize: 12.4, color: textDim, lineHeight: 1.6 }}>
               {eligible
-                ? "Eligible for Hall listing. Visibility is controlled by opt-in consent."
-                : "Venerable realm required before Hall listing can open."}
+                ? "Eligible for Venerable Listing. Visibility is controlled by opt-in consent."
+                : "Venerable realm required before Venerable Listing can open."}
             </div>
             <button onClick={() => setHallOptIn(!optedIn)} disabled={!eligible} style={{ marginTop: 12, width: "100%", padding: "11px 14px", borderRadius: 14, border: `1px solid ${eligible ? borderStrong : border}`, background: optedIn ? "rgba(255,211,106,0.16)" : "transparent", color: eligible ? text : textDim, cursor: eligible ? "pointer" : "default", fontFamily: headFont, fontSize: 11, letterSpacing: "0.08em" }}>
               {eligible ? (optedIn ? "Listing Preview Enabled" : "Enable Listing Preview") : "Venerable Realm Required"}
@@ -2413,7 +2413,7 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
               {[
                 ["Ascend", "Only Venerable profiles may enter the Hall."],
                 ["Refine", "Codex completion adds the Myriad aura to the Hall frame."],
-                ["Consent", "Hall listing is opt-in only. No profile appears by force."],
+                ["Consent", "Venerable Listing is opt-in only. No profile appears by force."],
                 ["Glory", "The Hall displays username, realm, avatar, Codex progress, and ascension date."],
               ].map(([t,d]) => (
                 <div key={t} style={{ padding: "11px 12px", borderRadius: 15, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)" }}>
