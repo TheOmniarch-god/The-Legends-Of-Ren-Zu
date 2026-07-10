@@ -1816,7 +1816,7 @@ function PaymentRecoveryModal({ data, onClose, onRedeem, onRetry, D, S }) {
 }
 
 // ─── Profile Modal — realm, username, essence balance ─────────────────────────
-function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex, bookmarks, onOpenBookmarks, annotations, onOpenAnnotations }) {
+function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex, onOpenHall, bookmarks, onOpenBookmarks, annotations, onOpenAnnotations }) {
   const [editName, setEditName] = useState(username || "");
   const [editEmail, setEditEmail] = useState(email || "");
   const [saving, setSaving] = useState(false);
@@ -2214,6 +2214,19 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
             <button onClick={onOpenCodex} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Codex</button>
           </div>
 
+          <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${tier === "venerable" ? "rgba(255,211,106,0.42)" : border}`, background: tier === "venerable" ? (D ? "rgba(255,211,106,0.055)" : "rgba(255,211,106,0.09)") : cardBg }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: tier === "venerable" ? "#d8a34d" : textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Hall of Venerables</div>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.08em" }}>{tier === "venerable" ? "Eligible" : "Locked"}</div>
+            </div>
+            <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
+              {tier === "venerable"
+                ? "Preview your public Hall entry and choose whether your name appears among the ascended."
+                : "Only Venerables may enter the Hall. Your profile frame and Codex progress will matter when you ascend."}
+            </div>
+            <button onClick={onOpenHall} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: tier === "venerable" ? "rgba(255,211,106,0.12)" : "transparent", border: `1px solid ${tier === "venerable" ? "rgba(255,211,106,0.42)" : border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Hall</button>
+          </div>
+
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
               <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Bookmarks</div>
@@ -2303,6 +2316,119 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
               <button onClick={onSignOut} style={{ width: "100%", padding: "11px 20px", borderRadius: 14, background: "transparent", border: `1px solid ${border}`, color: textDim, fontFamily: headFont, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Sign Out</button>
             )}
             <button onClick={copyDeviceId} style={{ width: "100%", marginTop: 8, padding: "10px 16px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: textDim, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Copy Device ID</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId, tier, tierName, codexCount, totalGu, accountMode }) {
+  const [optedIn, setOptedIn] = useState(() => {
+    try { return localStorage.getItem("renzu_hall_opt_in") === "1"; } catch (_) { return false; }
+  });
+  if (!open) return null;
+
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const borderStrong = D ? "rgba(255,211,106,0.42)" : "rgba(190,130,36,0.45)";
+  const surface = D ? "rgba(8,8,10,0.96)" : S ? "rgba(245,230,200,0.96)" : "rgba(255,250,240,0.96)";
+  const pageBg = D ? "#050507" : S ? "linear-gradient(170deg, #e2c985 0%, #d0ae62 50%, #e1c57f 100%)" : "#f6f2ea";
+  const cardBg = D ? "rgba(255,255,255,0.04)" : S ? "rgba(139,94,26,0.08)" : "rgba(0,0,0,0.03)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
+  const bodyFont = "'IM Fell English', Georgia, serif";
+  const displayName = (username || "Unnamed Cultivator").trim() || "Unnamed Cultivator";
+  const eligible = tier === "venerable";
+  const complete = totalGu > 0 && codexCount >= totalGu;
+  const frameSrc = complete ? "/assets/avatar-frame-myriad.webp" : tier === "venerable" ? "/assets/avatar-frame-venerable.webp" : tier === "gu_immortal" ? "/assets/avatar-frame-guimmortal.webp" : tier === "gu_master" ? "/assets/avatar-frame-gumaster.webp" : "/assets/avatar-frame-mortal.webp";
+
+  function hash(value) {
+    let h = 2166136261;
+    const str = String(value || "");
+    for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+  const picked = (() => {
+    try { return localStorage.getItem("renzu_avatar_choice") || ""; } catch (_) { return ""; }
+  })();
+  const avatarId = picked && /avatar_\d+/.test(picked)
+    ? picked.replace("avatar_", "")
+    : String((hash(`${displayName}|${email || ""}|${deviceId || ""}`) % 17) + 1).padStart(2, "0");
+  const avatarSrc = `/assets/avatars/avatar-${avatarId}.webp`;
+
+  function setHallOptIn(next) {
+    setOptedIn(next);
+    try { localStorage.setItem("renzu_hall_opt_in", next ? "1" : "0"); } catch (_) {}
+  }
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 10003, background: pageBg, color: text, overflowY: "auto" }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 2, background: surface, backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)", borderBottom: `1px solid ${border}` }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <button onClick={onClose} style={{ background: "transparent", border: "none", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 12, letterSpacing: "0.08em" }}>← Back</button>
+          <div style={{ fontFamily: headFont, fontSize: 13, letterSpacing: "0.14em", textTransform: "uppercase" }}>Hall of Venerables</div>
+          <div style={{ width: 48 }} />
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 18px 48px" }}>
+        <div style={{ textAlign: "center", marginBottom: 18 }}>
+          <div style={{ fontFamily: headFont, fontSize: 22, color: text, marginBottom: 6 }}>The Hall Awaits</div>
+          <div style={{ fontFamily: bodyFont, fontSize: 13, color: textDim, lineHeight: 1.65, maxWidth: 620, margin: "0 auto" }}>
+            Only Venerables may stand here. Those who refine every visible Legends Gu bear the Myriad aura above their name.
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
+          <div style={{ padding: "18px", borderRadius: 22, border: `1px solid ${eligible ? borderStrong : border}`, background: eligible ? (D ? "rgba(255,211,106,0.08)" : "rgba(255,211,106,0.12)") : cardBg }}>
+            <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: eligible ? "#d8a34d" : textDim, marginBottom: 12 }}>Your Hall Entry</div>
+            <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+              <div style={{ width: 108, height: 108, position: "relative", flex: "0 0 108px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ position: "absolute", inset: 18, borderRadius: "50%", background: D ? "rgba(0,0,0,0.36)" : "rgba(255,255,255,0.28)", overflow: "hidden" }}>
+                  <img src={avatarSrc} alt="" style={{ width: "112%", height: "112%", objectFit: "cover", objectPosition: "center", transform: "translate(-5%, -4%)" }} />
+                </div>
+                <img src={frameSrc} alt="" style={{ position: "absolute", inset: -4, width: "calc(100% + 8px)", height: "calc(100% + 8px)", objectFit: "contain", filter: "drop-shadow(0 0 18px rgba(216,163,77,0.32))" }} />
+              </div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontFamily: headFont, fontSize: 17, color: text, marginBottom: 5, overflowWrap: "anywhere" }}>{displayName}</div>
+                <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: eligible ? "#d8a34d" : textDim, marginBottom: 8 }}>{tierName}</div>
+                <div style={{ fontFamily: bodyFont, fontSize: 12.5, color: textDim, lineHeight: 1.55 }}>{codexCount}/{totalGu} Legends Gu refined</div>
+                {complete && <div style={{ marginTop: 7, fontFamily: headFont, fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "#ffd36a" }}>Myriad Gu Refined</div>}
+              </div>
+            </div>
+            <div style={{ marginTop: 14, padding: "12px", borderRadius: 16, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)", fontFamily: bodyFont, fontSize: 12.4, color: textDim, lineHeight: 1.6 }}>
+              {eligible
+                ? "You may opt in when the Hall backend is connected. This preview shows how your public entry will appear."
+                : "Ascend to Venerable before this entry can appear publicly."}
+            </div>
+            <button onClick={() => setHallOptIn(!optedIn)} disabled={!eligible} style={{ marginTop: 12, width: "100%", padding: "11px 14px", borderRadius: 14, border: `1px solid ${eligible ? borderStrong : border}`, background: optedIn ? "rgba(255,211,106,0.16)" : "transparent", color: eligible ? text : textDim, cursor: eligible ? "pointer" : "default", fontFamily: headFont, fontSize: 11, letterSpacing: "0.08em" }}>
+              {eligible ? (optedIn ? "Opted In Locally" : "Preview Opt-In") : "Venerable Required"}
+            </button>
+          </div>
+
+          <div style={{ padding: "18px", borderRadius: 22, border: `1px solid ${border}`, background: cardBg }}>
+            <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim, marginBottom: 10 }}>Hall Rules</div>
+            <div style={{ display: "grid", gap: 10 }}>
+              {[
+                ["Ascend", "Only Venerable accounts may enter the Hall."],
+                ["Refine", "Codex completion adds the Myriad aura to your public frame."],
+                ["Consent", "Public listing must be opt-in. No one appears by force."],
+                ["Glory", "The Hall will show username, realm, avatar, Codex progress, and ascension date."],
+              ].map(([t,d]) => (
+                <div key={t} style={{ padding: "11px 12px", borderRadius: 15, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)" }}>
+                  <div style={{ fontFamily: headFont, fontSize: 10, color: text, marginBottom: 3 }}>{t}</div>
+                  <div style={{ fontFamily: bodyFont, fontSize: 12.2, color: textDim, lineHeight: 1.55 }}>{d}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 14, padding: "16px", borderRadius: 22, border: `1px dashed ${border}`, background: D ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.025)", textAlign: "center" }}>
+          <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim, marginBottom: 6 }}>Public Hall Feed</div>
+          <div style={{ fontFamily: bodyFont, fontSize: 12.5, color: textDim, lineHeight: 1.6 }}>
+            Backend Hall entries come next: a small API/table will store opt-in Venerables and display them here.
           </div>
         </div>
       </div>
@@ -2589,7 +2715,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onTreasure, onSaved, onSettings, onInstall, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onHall, onTreasure, onSaved, onSettings, onInstall, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -2618,6 +2744,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
     { id: "home", label: "Home", onClick: () => { onClose(); onHome(); }, disabled: false },
     { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
     { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
+    { id: "hall", label: "Hall", onClick: () => { onClose(); onHall(); }, disabled: false },
     { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
     { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     ...(isReading ? [
@@ -3120,6 +3247,7 @@ const chapterKeyRef = useRef(null);
   const [showTreasure, setShowTreasure] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showCodex, setShowCodex] = useState(false);
+  const [showHall, setShowHall] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [paymentReturn, setPaymentReturn] = useState({
     visible: false,
@@ -5747,6 +5875,7 @@ function getOrBuildSentences() {
                   onProfile={() => setShowProfile(true)}
                   onTreasure={() => openTreasureYellowHeaven()}
                   onCodex={() => setShowCodex(true)}
+                  onHall={() => setShowHall(true)}
                   onSaved={() => {
                     if (!requireLoginForSavedFeature()) return;
                     setShowSavedHub(true);
@@ -5994,9 +6123,9 @@ function getOrBuildSentences() {
             })}
 
             {/* ── SOCIAL LINKS ── */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, marginTop: 32 }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <img src={IMG_LOGO} alt="The Omniarch" style={{ width: "min(230px, 62vw)", height: "auto", maxHeight: 150, objectFit: "contain", filter: "drop-shadow(0 8px 28px rgba(212,168,60,0.48))" }} />
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7, marginTop: 26 }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: -2 }}>
+                <img src={IMG_LOGO} alt="The Omniarch" style={{ width: "min(380px, 88vw)", height: "auto", maxHeight: 240, objectFit: "contain", filter: "drop-shadow(0 10px 30px rgba(212,168,60,0.44))" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
                 {[
@@ -6289,9 +6418,9 @@ function getOrBuildSentences() {
             </div>
 
             {/* ── SOCIAL LINKS (also shown on reading pages) ── */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, marginTop: 32, paddingBottom: 8 }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <img src={IMG_LOGO} alt="The Omniarch" style={{ width: "min(190px, 54vw)", height: "auto", maxHeight: 124, objectFit: "contain", filter: "drop-shadow(0 6px 22px rgba(212,168,60,0.42))", opacity: D ? 0.88 : 1 }} />
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7, marginTop: 28, paddingBottom: 8 }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: -2 }}>
+                <img src={IMG_LOGO} alt="The Omniarch" style={{ width: "min(330px, 82vw)", height: "auto", maxHeight: 210, objectFit: "contain", filter: "drop-shadow(0 8px 26px rgba(212,168,60,0.42))", opacity: D ? 0.9 : 1 }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
                 {[
@@ -6577,10 +6706,28 @@ function getOrBuildSentences() {
           onContinueReading={continueReading}
           onResetReadingProgress={resetReadingProgress}
           onOpenCodex={() => { setShowProfile(false); setShowCodex(true); }}
+          onOpenHall={() => { setShowProfile(false); setShowHall(true); }}
           bookmarks={bookmarks}
           onOpenBookmarks={() => { setShowProfile(false); setShowBookmarks(true); }}
           annotations={annotations}
           onOpenAnnotations={() => { setShowProfile(false); setShowAnnotations(true); }}
+        />
+      )}
+
+      {showHall && (
+        <HallOfVenerablesModal
+          open={showHall}
+          onClose={() => setShowHall(false)}
+          D={D}
+          S={S}
+          username={userName}
+          email={userEmail}
+          deviceId={deviceId}
+          tier={getProfilePreviewTier() || tier}
+          tierName={getTierName(getProfilePreviewTier() || tier)}
+          codexCount={isProfilePreviewComplete() ? GU_POOL_ORDERED.length : (Array.isArray(collectedGu) ? collectedGu.filter(g => codexIsEffectivelyRefined(g, getProfilePreviewTier() || tier) && GU_BY_ID[g.id]?.tier !== "hold").length : 0)}
+          totalGu={GU_POOL_ORDERED.length}
+          accountMode={accountMode}
         />
       )}
 
