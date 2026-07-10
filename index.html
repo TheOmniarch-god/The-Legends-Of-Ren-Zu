@@ -1847,7 +1847,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
   const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
   const isEmailBound = accountMode === "email";
-  const displayName = (editName || username || "Reader").trim() || "Reader";
+  const displayName = (editName || username || "Unnamed Cultivator").trim() || "Unnamed Cultivator";
   const initials = displayName
     .split(/\s+/)
     .filter(Boolean)
@@ -4349,6 +4349,10 @@ const chapterKeyRef = useRef(null);
       setUserEmail(data.userEmail || "");
       setUserName(data.userName || "");
       setAccountMode(data.accountMode || "device");
+
+      if (data.accountMode === "email" && !data.userName) {
+        setShowProfile(true);
+      }
 
       if (Array.isArray(data.collectedGu)) {
         setCollectedGu(prev => {
