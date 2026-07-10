@@ -2323,10 +2323,38 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   );
 }
 
-function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId, tier, tierName, codexCount, totalGu, accountMode }) {
+function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId, tier, tierName, codexCount, totalGu, accountMode, getAuthHeaders }) {
   const [optedIn, setOptedIn] = useState(() => {
     try { return localStorage.getItem("renzu_hall_opt_in") === "1"; } catch (_) { return false; }
   });
+  const [loading, setLoading] = useState(false);
+  const [venerables, setVenerables] = useState([]);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const headers = getAuthHeaders ? await getAuthHeaders() : {};
+        const res = await fetch("/api/hall", { headers });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success) {
+            setVenerables(json.list || []);
+            setOptedIn(!!json.optedIn);
+            try { localStorage.setItem("renzu_hall_opt_in", json.optedIn ? "1" : "0"); } catch (_) {}
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load Hall of Venerables data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (open) {
+      load();
+    }
+  }, [open, getAuthHeaders]);
+
   if (!open) return null;
 
   const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
@@ -2339,7 +2367,7 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
   const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
   const bodyFont = "'IM Fell English', Georgia, serif";
   const displayName = (username || "Unnamed Cultivator").trim() || "Unnamed Cultivator";
-  const eligible = tier === "venerable";
+  const eligible = tier === "venerable" && accountMode === "email";
   const complete = totalGu > 0 && codexCount >= totalGu;
   const frameSrc = complete ? "/assets/avatar-frame-myriad.webp" : tier === "venerable" ? "/assets/avatar-frame-venerable.webp" : tier === "gu_immortal" ? "/assets/avatar-frame-guimmortal.webp" : tier === "gu_master" ? "/assets/avatar-frame-gumaster.webp" : "/assets/avatar-frame-mortal.webp";
 
@@ -2357,9 +2385,46 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
     : String((hash(`${displayName}|${email || ""}|${deviceId || ""}`) % 17) + 1).padStart(2, "0");
   const avatarSrc = `/assets/avatars/avatar-${avatarId}.webp`;
 
-  function setHallOptIn(next) {
+  function getVenerableTierName(t) {
+    if (t === "venerable") return "Supreme Venerable";
+    if (t === "gu_immortal") return "Gu Immortal";
+    if (t === "gu_master") return "Gu Master";
+    return "Mortal";
+  }
+
+  async function setHallOptIn(next) {
     setOptedIn(next);
     try { localStorage.setItem("renzu_hall_opt_in", next ? "1" : "0"); } catch (_) {}
+    try {
+      const headers = getAuthHeaders ? await getAuthHeaders() : {};
+      const res = await fetch("/api/hall", {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          optedIn: next,
+          avatarChoice: `avatar_${avatarId}`,
+          totalGu
+        })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) {
+          // Reload public list after toggling
+          const listRes = await fetch("/api/hall", { headers });
+          if (listRes.ok) {
+            const listJson = await listRes.json();
+            if (listJson.success) {
+              setVenerables(listJson.list || []);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to update opt-in state on server:", err);
+    }
   }
 
   return (
@@ -2400,10 +2465,16 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
             <div style={{ marginTop: 14, padding: "12px", borderRadius: 16, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)", fontFamily: bodyFont, fontSize: 12.4, color: textDim, lineHeight: 1.6 }}>
               {eligible
                 ? "Eligible for Venerable Listing. Visibility is controlled by opt-in consent."
-                : "Venerable realm required before Venerable Listing can open."}
+                : accountMode !== "email"
+                  ? "Email Account required before Venerable Listing can open."
+                  : "Venerable realm required before Venerable Listing can open."}
             </div>
             <button onClick={() => setHallOptIn(!optedIn)} disabled={!eligible} style={{ marginTop: 12, width: "100%", padding: "11px 14px", borderRadius: 14, border: `1px solid ${eligible ? borderStrong : border}`, background: optedIn ? "rgba(255,211,106,0.16)" : "transparent", color: eligible ? text : textDim, cursor: eligible ? "pointer" : "default", fontFamily: headFont, fontSize: 11, letterSpacing: "0.08em" }}>
-              {eligible ? (optedIn ? "Listing Preview Enabled" : "Enable Listing Preview") : "Venerable Realm Required"}
+              {eligible 
+                ? (optedIn ? "Listing Preview Enabled" : "Enable Listing Preview") 
+                : accountMode !== "email"
+                  ? "Email Account Required"
+                  : "Venerable Realm Required"}
             </button>
           </div>
 
@@ -2413,7 +2484,7 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
               {[
                 ["Ascend", "Only Venerable profiles may enter the Hall."],
                 ["Refine", "Codex completion adds the Myriad aura to the Hall frame."],
-                ["Consent", "Venerable Listing is opt-in only. No profile appears by force."],
+                ["Consent", "Hall Listing is opt-in only. No profile appears by force."],
                 ["Glory", "The Hall displays username, realm, avatar, Codex progress, and ascension date."],
               ].map(([t,d]) => (
                 <div key={t} style={{ padding: "11px 12px", borderRadius: 15, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)" }}>
@@ -2425,11 +2496,46 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
           </div>
         </div>
 
-        <div style={{ marginTop: 14, padding: "16px", borderRadius: 22, border: `1px dashed ${border}`, background: D ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.025)", textAlign: "center" }}>
-          <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim, marginBottom: 6 }}>Ascendant Roll</div>
-          <div style={{ fontFamily: bodyFont, fontSize: 12.5, color: textDim, lineHeight: 1.6 }}>
-            Opted-in Venerables will appear here with realm frame, avatar, Codex progress, and ascension record.
-          </div>
+        <div style={{ marginTop: 24 }}>
+          <div style={{ fontFamily: headFont, fontSize: 13, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim, marginBottom: 12, textAlign: "center" }}>Ascendant Roll</div>
+          {loading ? (
+            <div style={{ textAlign: "center", fontFamily: bodyFont, fontSize: 14, color: textDim, padding: "24px" }}>
+              Loading ascendants from the River of Time...
+            </div>
+          ) : venerables.length === 0 ? (
+            <div style={{ padding: "32px 16px", borderRadius: 22, border: `1px dashed ${border}`, background: D ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.025)", textAlign: "center" }}>
+              <div style={{ fontFamily: bodyFont, fontSize: 13, color: textDim, lineHeight: 1.6 }}>
+                The Hall is currently empty. No Venerable has opted in to reveal their glory yet.
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
+              {venerables.map((v) => {
+                const isComplete = v.total_gu > 0 && v.codex_count >= v.total_gu;
+                const vFrame = isComplete ? "/assets/avatar-frame-myriad.webp" : "/assets/avatar-frame-venerable.webp";
+                const vAvatarId = String(v.avatar_choice || "").replace("avatar_", "") || "01";
+                const vAvatarSrc = `/assets/avatars/avatar-${vAvatarId.padStart(2, "0")}.webp`;
+                const dateStr = v.created_at ? new Date(v.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Ascended Date Unknown";
+
+                return (
+                  <div key={v.id} style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px", borderRadius: 20, border: `1px solid ${border}`, background: cardBg }}>
+                    <div style={{ width: 84, height: 84, position: "relative", flex: "0 0 84px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ position: "absolute", inset: 14, borderRadius: "50%", background: D ? "rgba(0,0,0,0.36)" : "rgba(255,255,255,0.28)", overflow: "hidden" }}>
+                        <img src={vAvatarSrc} alt="" style={{ width: "112%", height: "112%", objectFit: "cover", objectPosition: "center", transform: "translate(-5%, -4%)" }} />
+                      </div>
+                      <img src={vFrame} alt="" style={{ position: "absolute", inset: -3, width: "calc(100% + 6px)", height: "calc(100% + 6px)", objectFit: "contain", filter: isComplete ? "drop-shadow(0 0 12px rgba(216,163,77,0.32))" : "none" }} />
+                    </div>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontFamily: headFont, fontSize: 14.5, color: text, marginBottom: 3, overflowWrap: "anywhere" }}>{v.username}</div>
+                      <div style={{ fontFamily: headFont, fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "#ffd36a", marginBottom: 5 }}>Supreme Venerable</div>
+                      <div style={{ fontFamily: bodyFont, fontSize: 12, color: textDim, lineHeight: 1.4 }}>{v.codex_count}/{v.total_gu} Gu refined</div>
+                      <div style={{ fontFamily: bodyFont, fontSize: 10.5, color: textDim, marginTop: 4, fontStyle: "italic" }}>{dateStr}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -6728,6 +6834,7 @@ function getOrBuildSentences() {
           codexCount={isProfilePreviewComplete() ? GU_POOL_ORDERED.length : (Array.isArray(collectedGu) ? collectedGu.filter(g => codexIsEffectivelyRefined(g, getProfilePreviewTier() || tier) && GU_BY_ID[g.id]?.tier !== "hold").length : 0)}
           totalGu={GU_POOL_ORDERED.length}
           accountMode={accountMode}
+          getAuthHeaders={getAuthHeaders}
         />
       )}
 
