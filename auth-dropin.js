@@ -1159,7 +1159,7 @@
           </div>
 
           <div class="rz-auth-gate-form">
-            <div class="rz-auth-gate-form-title">Open the Archive</div>
+            <div class="rz-auth-gate-form-title">Gate of Fate Login</div>
             <div class="rz-auth-gate-form-note">
               Enter your email. The Omniarch will send a sacred code to complete the binding.
             </div>
@@ -1262,7 +1262,7 @@
         <div class="rz-auth-head">
           <div class="rz-auth-kicker">The Legends of Ren Zu</div>
           <div class="rz-auth-title">${
-            loggedIn ? "Bound by Fate" : "Open the Archive"
+            loggedIn ? "Bound by Fate" : "Gate of Fate Login"
           }</div>
         </div>
 
@@ -1308,7 +1308,7 @@
 
                   <div class="rz-auth-actions">
                     <button class="rz-auth-secondary" id="rz-auth-resend">Resend</button>
-                    <button class="rz-auth-primary" id="rz-auth-verify">Open Archive</button>
+                    <button class="rz-auth-primary" id="rz-auth-verify">Gate of Fate Login</button>
                   </div>
                 </div>
 

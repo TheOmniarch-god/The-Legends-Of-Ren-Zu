@@ -2308,7 +2308,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
             <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 8 }}>Account Access</div>
             <div style={{ fontSize: 12.5, color: text, lineHeight: 1.65, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 12 }}>
-              {isEmailBound ? "You are logged in. Your account can sync access and progress across devices." : "Login to keep purchases and progress tied to your account."}
+              {isEmailBound ? "Your soul mark is bound. Your account syncs access and progress across devices." : "Open the Gate of Fate to keep purchases and progress tied to your account."}
             </div>
             {!isEmailBound ? (
               <button onClick={onBindAccount} style={{ width: "100%", padding: "11px 20px", borderRadius: 14, background: D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)", border: `1px solid ${borderStrong}`, color: text, fontFamily: headFont, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Login with Email</button>
