@@ -2216,15 +2216,15 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
 
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${tier === "venerable" ? "rgba(255,211,106,0.42)" : border}`, background: tier === "venerable" ? (D ? "rgba(255,211,106,0.055)" : "rgba(255,211,106,0.09)") : cardBg }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
-              <div style={{ fontFamily: headFont, fontSize: 9, color: tier === "venerable" ? "#d8a34d" : textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Hall of Venerables</div>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: tier === "venerable" ? "#d8a34d" : textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Hall Of Venerables</div>
               <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.08em" }}>{tier === "venerable" ? "Eligible" : "Locked"}</div>
             </div>
             <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
               {tier === "venerable"
-                ? "Control Hall listing and preview the public entry reserved for ascended profiles."
+                ? "Control Hall listing and preview the entry reserved for ascended profiles."
                 : "The Hall opens to Venerable profiles. Realm frame and Codex progress determine the displayed honor."}
             </div>
-            <button onClick={onOpenHall} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: tier === "venerable" ? "rgba(255,211,106,0.12)" : "transparent", border: `1px solid ${tier === "venerable" ? "rgba(255,211,106,0.42)" : border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Hall of Venerables</button>
+            <button onClick={onOpenHall} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: tier === "venerable" ? "rgba(255,211,106,0.12)" : "transparent", border: `1px solid ${tier === "venerable" ? "rgba(255,211,106,0.42)" : border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Hall Of Venerables</button>
           </div>
 
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
@@ -2367,16 +2367,16 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
       <div style={{ position: "sticky", top: 0, zIndex: 2, background: surface, backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)", borderBottom: `1px solid ${border}` }}>
         <div style={{ maxWidth: 960, margin: "0 auto", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <button onClick={onClose} style={{ background: "transparent", border: "none", color: textDim, cursor: "pointer", fontFamily: headFont, fontSize: 12, letterSpacing: "0.08em" }}>← Back</button>
-          <div style={{ fontFamily: headFont, fontSize: 13, letterSpacing: "0.14em", textTransform: "uppercase" }}>Hall of Venerables</div>
+          <div style={{ fontFamily: headFont, fontSize: 13, letterSpacing: "0.14em", textTransform: "uppercase" }}>Hall Of Venerables</div>
           <div style={{ width: 48 }} />
         </div>
       </div>
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 18px 48px" }}>
         <div style={{ textAlign: "center", marginBottom: 18 }}>
-          <div style={{ fontFamily: headFont, fontSize: 22, color: text, marginBottom: 6 }}>Hall of Venerables</div>
+          <div style={{ fontFamily: headFont, fontSize: 22, color: text, marginBottom: 6 }}>Hall Of Venerables</div>
           <div style={{ fontFamily: bodyFont, fontSize: 13, color: textDim, lineHeight: 1.65, maxWidth: 620, margin: "0 auto" }}>
-            A public roll of ascended profiles. Venerables may be listed by choice; full Codex refinement bears the Myriad aura.
+            A roll of ascended profiles. Venerables may be listed by choice; full Codex refinement bears the Myriad aura.
           </div>
         </div>
 
@@ -2399,8 +2399,8 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
             </div>
             <div style={{ marginTop: 14, padding: "12px", borderRadius: 16, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)", fontFamily: bodyFont, fontSize: 12.4, color: textDim, lineHeight: 1.6 }}>
               {eligible
-                ? "Eligible for Hall listing. Public appearance is controlled by opt-in consent."
-                : "Venerable realm required before public Hall listing can open."}
+                ? "Eligible for Hall listing. Visibility is controlled by opt-in consent."
+                : "Venerable realm required before Hall listing can open."}
             </div>
             <button onClick={() => setHallOptIn(!optedIn)} disabled={!eligible} style={{ marginTop: 12, width: "100%", padding: "11px 14px", borderRadius: 14, border: `1px solid ${eligible ? borderStrong : border}`, background: optedIn ? "rgba(255,211,106,0.16)" : "transparent", color: eligible ? text : textDim, cursor: eligible ? "pointer" : "default", fontFamily: headFont, fontSize: 11, letterSpacing: "0.08em" }}>
               {eligible ? (optedIn ? "Listing Preview Enabled" : "Enable Listing Preview") : "Venerable Realm Required"}
@@ -2412,8 +2412,8 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
             <div style={{ display: "grid", gap: 10 }}>
               {[
                 ["Ascend", "Only Venerable profiles may enter the Hall."],
-                ["Refine", "Codex completion adds the Myriad aura to the public frame."],
-                ["Consent", "Public listing is opt-in only. No profile appears by force."],
+                ["Refine", "Codex completion adds the Myriad aura to the Hall frame."],
+                ["Consent", "Hall listing is opt-in only. No profile appears by force."],
                 ["Glory", "The Hall displays username, realm, avatar, Codex progress, and ascension date."],
               ].map(([t,d]) => (
                 <div key={t} style={{ padding: "11px 12px", borderRadius: 15, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)" }}>
@@ -2744,7 +2744,7 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
     { id: "home", label: "Home", onClick: () => { onClose(); onHome(); }, disabled: false },
     { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
     { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
-    { id: "hall", label: "Hall of Venerables", onClick: () => { onClose(); onHall(); }, disabled: false },
+    { id: "hall", label: "Hall Of Venerables", onClick: () => { onClose(); onHall(); }, disabled: false },
     { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
     { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     ...(isReading ? [
