@@ -2715,7 +2715,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onHall, onTreasure, onSaved, onSettings, onInstall, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onHall, onTreasure, onBookmarks, onAnnotations, onSettings, onInstall, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -2745,7 +2745,8 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
     { id: "profile", label: "Profile", onClick: () => { onClose(); onProfile(); }, disabled: false },
     { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
     { id: "hall", label: "Hall Of Venerables", onClick: () => { onClose(); onHall(); }, disabled: false },
-    { id: "saved", label: "Saved", onClick: () => { onClose(); onSaved(); }, disabled: false },
+    { id: "bookmarks", label: "Bookmarks", onClick: () => { onClose(); onBookmarks(); }, disabled: false },
+    { id: "notes", label: "Highlights & Notes", onClick: () => { onClose(); onAnnotations(); }, disabled: false },
     { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     ...(isReading ? [
       { id: "settings", label: "Settings", onClick: () => { onClose(); onSettings(); }, disabled: false },
@@ -5876,9 +5877,13 @@ function getOrBuildSentences() {
                   onTreasure={() => openTreasureYellowHeaven()}
                   onCodex={() => setShowCodex(true)}
                   onHall={() => setShowHall(true)}
-                  onSaved={() => {
+                  onBookmarks={() => {
                     if (!requireLoginForSavedFeature()) return;
-                    setShowSavedHub(true);
+                    setShowBookmarks(true);
+                  }}
+                  onAnnotations={() => {
+                    if (!requireLoginForSavedFeature()) return;
+                    setShowAnnotations(true);
                   }}
                   onInstall={installApp}
                   onSettings={() => {
