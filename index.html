@@ -4043,11 +4043,19 @@ const chapterKeyRef = useRef(null);
         return;
       }
 
-      const res = await fetch("/api/annotations", { headers: { ...authHeaders } });
-      const data = await res.json().catch(() => ({}));
+      const [hRes, nRes] = await Promise.all([
+        fetch("/api/highlights", { headers: { ...authHeaders } }),
+        fetch("/api/notes", { headers: { ...authHeaders } })
+      ]);
 
-      if (res.ok && Array.isArray(data.annotations)) {
-        setAnnotations(data.annotations);
+      if (hRes.ok && nRes.ok) {
+        const hData = await hRes.json().catch(() => ({}));
+        const nData = await nRes.json().catch(() => ({}));
+        const combined = [
+          ...(hData.highlights || []),
+          ...(nData.notes || [])
+        ];
+        setAnnotations(combined);
       }
     } catch (_) {}
   }
@@ -4074,7 +4082,9 @@ const chapterKeyRef = useRef(null);
 
     try {
       const authHeaders = await getAuthHeaders();
-      const res = await fetch("/api/annotations", {
+      const endpoint = payload.type === "note" ? "/api/notes" : "/api/highlights";
+
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify(payload)
@@ -4082,14 +4092,16 @@ const chapterKeyRef = useRef(null);
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.success) throw new Error(data.error || "Could not save.");
 
-      if (data.annotation) {
+      const savedItem = data.highlight || data.note || data.annotation;
+
+      if (savedItem) {
         setAnnotations(prev => {
-          const without = prev.filter(a => a.id !== data.annotation.id && !(a.type === data.annotation.type && a.chapterNum === data.annotation.chapterNum && Number(a.sentenceIdx) === Number(data.annotation.sentenceIdx)));
-          return [data.annotation, ...without];
+          const without = prev.filter(a => a.id !== savedItem.id && !(a.type === savedItem.type && a.chapterNum === savedItem.chapterNum && Number(a.sentenceIdx) === Number(savedItem.sentenceIdx)));
+          return [savedItem, ...without];
         });
       }
 
-      return data.annotation || null;
+      return savedItem || null;
     } catch (err) {
       console.error("saveAnnotation failed", err);
       return null;
@@ -4103,7 +4115,10 @@ const chapterKeyRef = useRef(null);
     setAnnotationBusy(true);
     try {
       const authHeaders = await getAuthHeaders();
-      const res = await fetch(`/api/annotations?id=${encodeURIComponent(id)}`, { method: "DELETE", headers: { ...authHeaders } });
+      const item = annotations.find(a => a.id === id);
+      const endpoint = item && item.type === "note" ? `/api/notes?id=${encodeURIComponent(id)}` : `/api/highlights?id=${encodeURIComponent(id)}`;
+
+      const res = await fetch(endpoint, { method: "DELETE", headers: { ...authHeaders } });
       if (!res.ok) throw new Error("Could not remove.");
       setAnnotations(prev => prev.filter(a => a.id !== id));
     } catch (err) {
