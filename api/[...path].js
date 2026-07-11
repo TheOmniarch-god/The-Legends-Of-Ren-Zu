@@ -5,8 +5,10 @@ import bookmarks from "../lib/api/bookmarks.js";
 import flutterwaveWebhook from "../lib/api/flutterwave-webhook.js";
 import getCode from "../lib/api/get-code.js";
 import hall from "../lib/api/hall.js";
+import highlights from "../lib/api/highlights.js";
 import linkDevice from "../lib/api/link-device.js";
 import me from "../lib/api/me.js";
+import notes from "../lib/api/notes.js";
 import publicConfig from "../lib/api/public-config.js";
 import redeemCode from "../lib/api/redeem-code.js";
 import updateProfile from "../lib/api/update-profile.js";
@@ -31,8 +33,10 @@ const routes = {
   "flutterwave-webhook": flutterwaveWebhook,
   "get-code": getCode,
   "hall": hall,
+  "highlights": highlights,
   "link-device": linkDevice,
   "me": me,
+  "notes": notes,
   "public-config": publicConfig,
   "redeem-code": redeemCode,
   "update-profile": updateProfile,
