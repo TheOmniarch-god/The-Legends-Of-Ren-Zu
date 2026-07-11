@@ -1553,7 +1553,7 @@ function NoteEditorModal({ open, data, D, S, saving, onClose, onSave, onDelete }
   );
 }
 
-function AnnotationsModal({ open, onClose, D, S, annotations, onOpenAnnotation, onDeleteAnnotation }) {
+function AnnotationsModal({ open, onClose, D, S, annotations, onOpenAnnotation, onDeleteAnnotation, mode = "all" }) {
   if (!open) return null;
 
   const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
@@ -1561,7 +1561,12 @@ function AnnotationsModal({ open, onClose, D, S, annotations, onOpenAnnotation, 
   const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
   const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
   const headFont = "Metamorphous, 'Palatino Linotype', Georgia, serif";
-  const items = Array.isArray(annotations) ? annotations : [];
+  const allItems = Array.isArray(annotations) ? annotations : [];
+  const items = mode === "highlights" 
+    ? allItems.filter(item => item.type === "highlight") 
+    : mode === "notes" 
+      ? allItems.filter(item => item.type === "note") 
+      : allItems;
 
   return (
     <div style={{
@@ -1582,15 +1587,15 @@ function AnnotationsModal({ open, onClose, D, S, annotations, onOpenAnnotation, 
         }}>✕</button>
 
         <div style={{ fontFamily: headFont, fontSize: 20, fontWeight: 700, color: text, marginBottom: 6 }}>
-          Highlights & Notes
+          {mode === "highlights" ? "Highlights" : mode === "notes" ? "Notes" : "Highlights & Notes"}
         </div>
         <div style={{ fontSize: 12.5, color: textDim, lineHeight: 1.55, marginBottom: 16, fontFamily: "'IM Fell English', Georgia, serif" }}>
-          Passages you highlighted or annotated.
+          {mode === "highlights" ? "Passages you highlighted while reading." : mode === "notes" ? "Your personal thoughts and notes on the text." : "Passages you highlighted or annotated."}
         </div>
 
         {items.length === 0 ? (
           <div style={{ padding: "34px 14px", textAlign: "center", border: `1px solid ${border}`, borderRadius: 18, color: textDim, fontSize: 12 }}>
-            No highlights or notes yet. Long-press a passage while reading.
+            {mode === "highlights" ? "No highlights yet. Long-press a passage while reading." : mode === "notes" ? "No notes yet. Long-press a passage while reading." : "No highlights or notes yet. Long-press a passage while reading."}
           </div>
         ) : (
           <div style={{ display: "grid", gap: 10 }}>
@@ -1816,7 +1821,7 @@ function PaymentRecoveryModal({ data, onClose, onRedeem, onRetry, D, S }) {
 }
 
 // ─── Profile Modal — realm, username, essence balance ─────────────────────────
-function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex, onOpenHall, bookmarks, onOpenBookmarks, annotations, onOpenAnnotations }) {
+function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, tierName, tierIcon, essenceStatus, onSave, accountMode, onBindAccount, onSignOut, readingProgress, onContinueReading, onResetReadingProgress, totalEntries, codexCount, totalGu, onOpenCodex, onOpenHall, bookmarks, onOpenBookmarks, annotations, onOpenHighlights, onOpenNotes }) {
   const [editName, setEditName] = useState(username || "");
   const [editEmail, setEditEmail] = useState(email || "");
   const [saving, setSaving] = useState(false);
@@ -2243,16 +2248,30 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
 
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
-              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Highlights & Notes</div>
-              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.08em" }}>{annotations.length} saved</div>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Highlights</div>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.08em" }}>{annotations.filter(i => i.type === "highlight").length} saved</div>
             </div>
             <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
-              {annotations.length ? "Review highlighted passages and personal notes." : "No highlights or notes yet. Long-press a passage while reading."}
+              {annotations.filter(i => i.type === "highlight").length ? "Review your highlighted passages." : "No highlights yet. Long-press a passage while reading."}
             </div>
             <button onClick={() => {
               if (!isEmailBound) { onBindAccount(); return; }
-              onOpenAnnotations();
-            }} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Highlights & Notes</button>
+              onOpenHighlights();
+            }} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Highlights</button>
+          </div>
+
+          <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>Notes</div>
+              <div style={{ fontFamily: headFont, fontSize: 9, color: textDim, letterSpacing: "0.08em" }}>{annotations.filter(i => i.type === "note").length} saved</div>
+            </div>
+            <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
+              {annotations.filter(i => i.type === "note").length ? "Review your personal thoughts and annotations." : "No notes yet. Long-press a passage while reading."}
+            </div>
+            <button onClick={() => {
+              if (!isEmailBound) { onBindAccount(); return; }
+              onOpenNotes();
+            }} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: "transparent", border: `1px solid ${border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Open Notes</button>
           </div>
 
           <div style={{ padding: "16px 16px 14px", borderRadius: 18, border: `1px solid ${border}`, background: cardBg }}>
@@ -2715,7 +2734,7 @@ function CodexModal({ open, onClose, D, S, collectedGu, accountMode, currentTier
   );
 }
 
-function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onHall, onTreasure, onBookmarks, onAnnotations, onSettings, onInstall, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
+function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onHome, onContinue, onProfile, onCodex, onHall, onTreasure, onBookmarks, onHighlights, onNotes, onSettings, onInstall, onBookmarkChapter, isReading, isChapterBookmarked, hasContinue }) {
   const border = D ? "rgba(255,255,255,0.12)" : S ? "rgba(180,130,40,0.42)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#09090c" : S ? "#f2dfb6" : "#fffaf0";
   const text = D ? "#ece7db" : S ? "#2a1502" : "#11100d";
@@ -2746,7 +2765,8 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
     { id: "codex", label: "Codex", onClick: () => { onClose(); onCodex(); }, disabled: false },
     { id: "hall", label: "Hall Of Venerables", onClick: () => { onClose(); onHall(); }, disabled: false },
     { id: "bookmarks", label: "Bookmarks", onClick: () => { onClose(); onBookmarks(); }, disabled: false },
-    { id: "notes", label: "Highlights & Notes", onClick: () => { onClose(); onAnnotations(); }, disabled: false },
+    { id: "highlights", label: "Highlights", onClick: () => { onClose(); onHighlights(); }, disabled: false },
+    { id: "notes", label: "Notes", onClick: () => { onClose(); onNotes(); }, disabled: false },
     { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
     ...(isReading ? [
       { id: "settings", label: "Settings", onClick: () => { onClose(); onSettings(); }, disabled: false },
@@ -3212,7 +3232,8 @@ function RenZuReader() {
   const [bookmarks, setBookmarks] = useState([]);
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [bookmarkBusy, setBookmarkBusy] = useState(false);
-  const [showAnnotations, setShowAnnotations] = useState(false);
+  const [showHighlights, setShowHighlights] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const [showSettingsHub, setShowSettingsHub] = useState(false);
   const [showSavedHub, setShowSavedHub] = useState(false);
   const [annotations, setAnnotations] = useState([]);
@@ -5911,9 +5932,13 @@ function getOrBuildSentences() {
                     if (!requireLoginForSavedFeature()) return;
                     setShowBookmarks(true);
                   }}
-                  onAnnotations={() => {
+                  onHighlights={() => {
                     if (!requireLoginForSavedFeature()) return;
-                    setShowAnnotations(true);
+                    setShowHighlights(true);
+                  }}
+                  onNotes={() => {
+                    if (!requireLoginForSavedFeature()) return;
+                    setShowNotes(true);
                   }}
                   onInstall={installApp}
                   onSettings={() => {
@@ -6753,7 +6778,8 @@ function getOrBuildSentences() {
           bookmarks={bookmarks}
           onOpenBookmarks={() => { setShowProfile(false); setShowBookmarks(true); }}
           annotations={annotations}
-          onOpenAnnotations={() => { setShowProfile(false); setShowAnnotations(true); }}
+          onOpenHighlights={() => { setShowProfile(false); setShowHighlights(true); }}
+          onOpenNotes={() => { setShowProfile(false); setShowNotes(true); }}
         />
       )}
 
@@ -6786,15 +6812,29 @@ function getOrBuildSentences() {
         />
       )}
 
-      {showAnnotations && (
+      {showHighlights && (
         <AnnotationsModal
-          open={showAnnotations}
-          onClose={() => setShowAnnotations(false)}
+          open={showHighlights}
+          onClose={() => setShowHighlights(false)}
           D={D}
           S={S}
           annotations={annotations}
           onOpenAnnotation={openAnnotation}
           onDeleteAnnotation={deleteAnnotation}
+          mode="highlights"
+        />
+      )}
+
+      {showNotes && (
+        <AnnotationsModal
+          open={showNotes}
+          onClose={() => setShowNotes(false)}
+          D={D}
+          S={S}
+          annotations={annotations}
+          onOpenAnnotation={openAnnotation}
+          onDeleteAnnotation={deleteAnnotation}
+          mode="notes"
         />
       )}
 
