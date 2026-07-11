@@ -4393,6 +4393,36 @@ const chapterKeyRef = useRef(null);
     }
   }
 
+  function getTierGlowStyle(displayTier = tier) {
+    switch (displayTier) {
+      case "venerable":
+        return {
+          borderColor: D ? "rgba(255, 211, 106, 0.55)" : S ? "rgba(180, 130, 40, 0.6)" : "rgba(216, 163, 77, 0.5)",
+          boxShadow: D 
+            ? "0 0 18px rgba(255, 211, 106, 0.38), inset 0 1px 0 rgba(255,255,255,0.08)" 
+            : "0 0 15px rgba(216, 163, 77, 0.35), inset 0 1px 0 rgba(255,255,255,0.65)",
+          color: D ? "#fff3c8" : S ? "#2a1502" : "#0d0c09"
+        };
+      case "gu_immortal":
+        return {
+          borderColor: D ? "rgba(98, 232, 255, 0.55)" : S ? "rgba(40, 150, 180, 0.6)" : "rgba(60, 180, 210, 0.5)",
+          boxShadow: D 
+            ? "0 0 18px rgba(98, 232, 255, 0.38), inset 0 1px 0 rgba(255,255,255,0.08)" 
+            : "0 0 15px rgba(98, 232, 255, 0.35), inset 0 1px 0 rgba(255,255,255,0.65)",
+          color: D ? "#e0f9ff" : S ? "#052230" : "#012030"
+        };
+      case "gu_master":
+        return {
+          borderColor: D ? "rgba(216, 110, 40, 0.55)" : S ? "rgba(139, 94, 26, 0.6)" : "rgba(190, 100, 30, 0.5)",
+          boxShadow: D 
+            ? "0 0 15px rgba(216, 110, 40, 0.35), inset 0 1px 0 rgba(255,255,255,0.08)" 
+            : "0 0 12px rgba(216, 110, 40, 0.30), inset 0 1px 0 rgba(255,255,255,0.65)",
+        };
+      default:
+        return {};
+    }
+  }
+
   function getProfilePreviewTier() {
     try {
       const params = new URLSearchParams(window.location.search || "");
@@ -6050,9 +6080,17 @@ function getOrBuildSentences() {
                   cursor: "pointer",
                   transition: "transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease",
                   boxShadow: D ? "inset 0 1px 0 rgba(255,255,255,0.07)" : "inset 0 1px 0 rgba(255,255,255,0.65)",
+                  ...getTierGlowStyle()
                 }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.borderColor = borderHov; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = border; }}
+                  onMouseEnter={e => { 
+                    e.currentTarget.style.transform = "translateY(-1px)"; 
+                    const customBorder = getTierGlowStyle()?.borderColor;
+                    e.currentTarget.style.borderColor = customBorder ? customBorder.replace("0.55", "0.82").replace("0.6", "0.9").replace("0.5", "0.8") : borderHov; 
+                  }}
+                  onMouseLeave={e => { 
+                    e.currentTarget.style.transform = "translateY(0)"; 
+                    e.currentTarget.style.borderColor = getTierGlowStyle()?.borderColor || border; 
+                  }}
                 >
                   <span style={{
                     width: 24, height: 24, borderRadius: "50%",
