@@ -5,6 +5,8 @@
   "start_url": "/",
   "scope": "/",
   "id": "/?homescreen=1",
+  "lang": "en",
+  "dir": "ltr",
   "categories": ["books", "entertainment"],
   "display": "fullscreen",
   "display_override": ["fullscreen", "standalone"],
