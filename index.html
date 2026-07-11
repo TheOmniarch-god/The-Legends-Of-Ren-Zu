@@ -1924,7 +1924,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
     setSaveErr("");
     setSaveMsg("");
     try {
-      await onSave({ username: editName, email: editEmail });
+      await onSave({ username: editName, email: editEmail, avatarChoice });
       setSaveMsg(isEmailBound ? "Profile updated." : "Profile saved on this device.");
       setManageOpen(false);
     } catch (err) {
@@ -4281,6 +4281,10 @@ const chapterKeyRef = useRef(null);
       setUserName(data.userName || "");
       setAccountMode(data.accountMode || "device");
 
+      if (data.avatarChoice) {
+        try { localStorage.setItem("renzu_avatar_choice", data.avatarChoice); } catch(_) {}
+      }
+
       if (Array.isArray(data.collectedGu)) {
         setCollectedGu(prev => {
           const merged = mergeGuCollections(data.collectedGu, prev);
@@ -4684,7 +4688,7 @@ const chapterKeyRef = useRef(null);
     showAscension(tierName);
   }
 
-  async function saveProfile({ username, email }) {
+  async function saveProfile({ username, email, avatarChoice }) {
     setUserName(username || "");
     setUserEmail(email || "");
 
@@ -4697,7 +4701,7 @@ const chapterKeyRef = useRef(null);
           "Content-Type": "application/json",
           ...authHeaders
         },
-        body: JSON.stringify({ deviceId, username: username || "", email: email || "" }),
+        body: JSON.stringify({ deviceId, username: username || "", email: email || "", avatarChoice }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -4709,6 +4713,9 @@ const chapterKeyRef = useRef(null);
       if (typeof data.userName === "string") setUserName(data.userName);
       if (typeof data.userEmail === "string") setUserEmail(data.userEmail);
       if (data.accountMode) setAccountMode(data.accountMode);
+      if (data.avatarChoice) {
+        try { localStorage.setItem("renzu_avatar_choice", data.avatarChoice); } catch(_) {}
+      }
 
       return data;
     }
