@@ -8,6 +8,22 @@
   "orientation": "portrait",
   "background_color": "#050403",
   "theme_color": "#050403",
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-1.png",
+      "sizes": "1080x2400",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Immersive Legends Homepage"
+    },
+    {
+      "src": "/screenshots/screenshot-2.png",
+      "sizes": "1080x2400",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Sacred Hall of Venerables"
+    }
+  ],
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
