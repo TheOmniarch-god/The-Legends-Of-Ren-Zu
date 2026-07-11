@@ -29,26 +29,12 @@ create policy "Hall venerables are publicly readable"
   on public.hall_venerables for select
   using (true);
 
--- Seed The Omniarch as first Hall entry if the profile exists.
-insert into public.hall_venerables (
-  id, username, title, avatar_choice, codex_count, total_gu, is_myriad, display_order, created_at, updated_at
-)
-select
-  p.id,
-  'The Omniarch',
-  'Founder · Supreme Venerable',
-  coalesce(p.avatar_choice, 'avatar_08'),
-  0,
-  0,
-  false,
-  0,
-  now(),
-  now()
-from public.profiles p
-where lower(p.email) = lower('omniarchportal@gmail.com')
-on conflict (id) do update set
-  username = 'The Omniarch',
-  title = 'Founder · Supreme Venerable',
-  avatar_choice = coalesce(public.hall_venerables.avatar_choice, excluded.avatar_choice),
-  display_order = 0,
-  updated_at = now();
+-- If an older patch inserted The Omniarch automatically, remove that automatic listing.
+-- The account will appear after enabling Venerable Listing from the Hall UI.
+delete from public.hall_venerables hv
+using public.profiles p
+where hv.id = p.id
+  and lower(p.email) = lower('omniarchportal@gmail.com')
+  and hv.created_at is not null;
+
+-- Founder title/order are applied automatically by /api/hall when The Omniarch enables listing.
