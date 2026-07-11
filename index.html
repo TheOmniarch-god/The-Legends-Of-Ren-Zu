@@ -16,7 +16,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Ren Zu">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
   <!-- Social preview -->
   <meta property="og:title" content="The Legends of Ren Zu">
@@ -29,7 +29,36 @@
   <meta name="twitter:description" content="A premium web reader for The Legends of Ren Zu.">
   <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png">
 
-  <style>* { margin: 0; padding: 0; box-sizing: border-box; } html { background: #ece8de; } body { background: transparent; overscroll-behavior: none; -webkit-overflow-scrolling: touch; }</style>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+    }
+    html {
+      min-height: 100%;
+      min-height: 100dvh;
+      width: 100%;
+      background: #ece8de;
+    }
+    body {
+      min-height: 100%;
+      min-height: 100dvh;
+      width: 100%;
+      background: transparent;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+      overflow-x: hidden;
+    }
+    #root {
+      min-height: 100vh;
+      min-height: 100dvh;
+      width: 100%;
+      overflow-x: clip;
+    }
+  </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -2226,7 +2255,7 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
             </div>
             <div style={{ fontSize: 12.5, color: text, lineHeight: 1.7, fontFamily: "'IM Fell English', Georgia, serif", marginBottom: 10 }}>
               {tier === "venerable"
-                ? "Manage Venerable Listing and preview the Hall entry reserved for ascended profiles."
+                ? "Control Venerable Listing and preview the entry reserved for ascended profiles."
                 : "The Hall opens to Venerable profiles. Realm frame and Codex progress determine the displayed honor."}
             </div>
             <button onClick={onOpenHall} style={{ width: "100%", padding: "10px 12px", borderRadius: 12, background: tier === "venerable" ? "rgba(255,211,106,0.12)" : "transparent", border: `1px solid ${tier === "venerable" ? "rgba(255,211,106,0.42)" : border}`, color: text, fontFamily: headFont, fontSize: 11, cursor: "pointer" }}>Hall Of Venerables</button>
@@ -2342,14 +2371,10 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   );
 }
 
-function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId, tier, tierName, codexCount, totalGu, accountMode, getAuthHeaders }) {
+function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId, tier, tierName, codexCount, totalGu, accountMode }) {
   const [optedIn, setOptedIn] = useState(() => {
     try { return localStorage.getItem("renzu_hall_opt_in") === "1"; } catch (_) { return false; }
   });
-  const [hallEntries, setHallEntries] = useState([]);
-  const [hallLoading, setHallLoading] = useState(false);
-  const [hallMsg, setHallMsg] = useState("");
-  const [hallErr, setHallErr] = useState("");
   if (!open) return null;
 
   const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
@@ -2380,53 +2405,9 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
     : String((hash(`${displayName}|${email || ""}|${deviceId || ""}`) % 17) + 1).padStart(2, "0");
   const avatarSrc = `/assets/avatars/avatar-${avatarId}.webp`;
 
-  async function loadHallEntries() {
-    setHallLoading(true);
-    setHallErr("");
-    try {
-      const authHeaders = await getAuthHeaders?.().catch(() => ({}));
-      const res = await fetch("/api/hall", { method: "GET", headers: { ...(authHeaders || {}) } });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.success === false) throw new Error(data.error || "Could not load Hall entries.");
-      const entries = Array.isArray(data.entries) ? data.entries : Array.isArray(data.list) ? data.list : [];
-      setHallEntries(entries);
-      if (typeof data.optedIn === "boolean") {
-        setOptedIn(data.optedIn);
-        try { localStorage.setItem("renzu_hall_opt_in", data.optedIn ? "1" : "0"); } catch (_) {}
-      }
-    } catch (err) {
-      setHallErr(err?.message || "Could not load Hall entries.");
-    } finally {
-      setHallLoading(false);
-    }
-  }
-
-  useEffect(() => { if (open) loadHallEntries(); }, [open]);
-
-  async function setHallOptIn(next) {
-    setHallMsg("");
-    setHallErr("");
+  function setHallOptIn(next) {
     setOptedIn(next);
     try { localStorage.setItem("renzu_hall_opt_in", next ? "1" : "0"); } catch (_) {}
-    try {
-      const authHeaders = await getAuthHeaders?.();
-      if (!authHeaders?.Authorization) {
-        setHallMsg(next ? "Login required before Venerable Listing can sync." : "Venerable Listing disabled locally.");
-        return;
-      }
-      const res = await fetch("/api/hall", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders },
-        body: JSON.stringify({ optIn: next, avatarChoice: `avatar_${avatarId}`, codexCount, totalGu, username: displayName })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.success === false) throw new Error(data.error || "Could not update Venerable Listing.");
-      setHallMsg(next ? "Venerable Listing enabled." : "Venerable Listing disabled.");
-      const entries = Array.isArray(data.entries) ? data.entries : Array.isArray(data.list) ? data.list : [];
-      setHallEntries(entries);
-    } catch (err) {
-      setHallErr(err?.message || "Could not update Venerable Listing.");
-    }
   }
 
   return (
@@ -2466,13 +2447,12 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
             </div>
             <div style={{ marginTop: 14, padding: "12px", borderRadius: 16, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)", fontFamily: bodyFont, fontSize: 12.4, color: textDim, lineHeight: 1.6 }}>
               {eligible
-                ? "Venerable Listing is available. Enable it to appear in the Ascendant Roll."
-                : "Venerable realm required before Venerable Listing opens."}
+                ? "Eligible for Venerable Listing. Visibility is controlled by opt-in consent."
+                : "Venerable realm required before Venerable Listing can open."}
             </div>
             <button onClick={() => setHallOptIn(!optedIn)} disabled={!eligible} style={{ marginTop: 12, width: "100%", padding: "11px 14px", borderRadius: 14, border: `1px solid ${eligible ? borderStrong : border}`, background: optedIn ? "rgba(255,211,106,0.16)" : "transparent", color: eligible ? text : textDim, cursor: eligible ? "pointer" : "default", fontFamily: headFont, fontSize: 11, letterSpacing: "0.08em" }}>
-              {eligible ? (optedIn ? "Venerable Listing Enabled" : "Enable Venerable Listing") : "Venerable Realm Required"}
+              {eligible ? (optedIn ? "Listing Preview Enabled" : "Enable Listing Preview") : "Venerable Realm Required"}
             </button>
-            {(hallMsg || hallErr) && <div style={{ marginTop: 10, fontFamily: bodyFont, fontSize: 12, color: hallErr ? "tomato" : textDim, lineHeight: 1.5 }}>{hallErr || hallMsg}</div>}
           </div>
 
           <div style={{ padding: "18px", borderRadius: 22, border: `1px solid ${border}`, background: cardBg }}>
@@ -2481,7 +2461,7 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
               {[
                 ["Ascend", "Only Venerable profiles may enter the Hall."],
                 ["Refine", "Codex completion adds the Myriad aura to the Hall frame."],
-                ["Consent", "Venerable Listing is optional. No profile appears without consent."],
+                ["Consent", "Venerable Listing is opt-in only. No profile appears by force."],
                 ["Glory", "The Hall displays username, realm, avatar, Codex progress, and ascension date."],
               ].map(([t,d]) => (
                 <div key={t} style={{ padding: "11px 12px", borderRadius: 15, border: `1px solid ${border}`, background: D ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)" }}>
@@ -2493,45 +2473,11 @@ function HallOfVenerablesModal({ open, onClose, D, S, username, email, deviceId,
           </div>
         </div>
 
-        <div style={{ marginTop: 14, padding: "16px", borderRadius: 22, border: `1px dashed ${border}`, background: D ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.025)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
-            <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim }}>Ascendant Roll</div>
-            <button onClick={loadHallEntries} style={{ border: `1px solid ${border}`, borderRadius: 999, padding: "6px 10px", background: "transparent", color: textDim, fontFamily: headFont, fontSize: 9, cursor: "pointer" }}>{hallLoading ? "Loading" : "Refresh"}</button>
+        <div style={{ marginTop: 14, padding: "16px", borderRadius: 22, border: `1px dashed ${border}`, background: D ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.025)", textAlign: "center" }}>
+          <div style={{ fontFamily: headFont, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: textDim, marginBottom: 6 }}>Ascendant Roll</div>
+          <div style={{ fontFamily: bodyFont, fontSize: 12.5, color: textDim, lineHeight: 1.6 }}>
+            Opted-in Venerables will appear here with realm frame, avatar, Codex progress, and ascension record.
           </div>
-          {hallLoading ? (
-            <div style={{ textAlign: "center", padding: "22px 10px", fontFamily: bodyFont, fontSize: 12.5, color: textDim }}>Opening the Hall…</div>
-          ) : hallEntries.length ? (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
-              {hallEntries.map((entry, idx) => {
-                const rawAvatar = String(entry.avatarChoice || entry.avatar_choice || entry.avatarId || entry.avatar_id || "avatar_01");
-                const entryAvatar = rawAvatar.replace("avatar_", "").padStart(2, "0");
-                const entryComplete = !!entry.isMyriad || !!entry.is_myriad;
-                const entryFrame = entryComplete ? "/assets/avatar-frame-myriad.webp" : "/assets/avatar-frame-venerable.webp";
-                return (
-                  <div key={entry.userId || entry.id || idx} style={{ padding: "12px", borderRadius: 18, border: `1px solid ${entryComplete ? "rgba(255,211,106,0.48)" : border}`, background: entryComplete ? (D ? "rgba(255,211,106,0.06)" : "rgba(255,211,106,0.10)") : (D ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.025)") }}>
-                    <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                      <div style={{ width: 72, height: 72, position: "relative", flex: "0 0 72px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <div style={{ position: "absolute", inset: 13, borderRadius: "50%", background: D ? "rgba(0,0,0,0.36)" : "rgba(255,255,255,0.28)", overflow: "hidden" }}>
-                          <img src={`/assets/avatars/avatar-${entryAvatar}.webp`} alt="" style={{ width: "112%", height: "112%", objectFit: "cover", objectPosition: "center", transform: "translate(-5%, -4%)" }} />
-                        </div>
-                        <img src={entryFrame} alt="" style={{ position: "absolute", inset: -3, width: "calc(100% + 6px)", height: "calc(100% + 6px)", objectFit: "contain" }} />
-                      </div>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ fontFamily: headFont, fontSize: 13.5, color: text, overflowWrap: "anywhere" }}>{entry.username || "Unnamed Venerable"}</div>
-                        <div style={{ fontFamily: headFont, fontSize: 8.5, letterSpacing: "0.13em", textTransform: "uppercase", color: "#d8a34d", marginTop: 4 }}>{entry.title || "Venerable"}</div>
-                        <div style={{ fontFamily: bodyFont, fontSize: 11.5, color: textDim, marginTop: 4 }}>{entry.codexCount ?? entry.codex_count ?? 0}/{entry.totalGu ?? entry.total_gu ?? totalGu} Gu refined</div>
-                        {entryComplete && <div style={{ fontFamily: headFont, fontSize: 8, letterSpacing: "0.13em", textTransform: "uppercase", color: "#ffd36a", marginTop: 5 }}>Myriad Gu Refined</div>}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div style={{ fontFamily: bodyFont, fontSize: 12.5, color: textDim, lineHeight: 1.6, textAlign: "center", padding: "20px 10px" }}>
-              No Venerable Listings yet.
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -5876,7 +5822,8 @@ function getOrBuildSentences() {
 
   return (
     <div style={{
-      minHeight: "100vh",
+      minHeight: "100dvh",
+      paddingBottom: "env(safe-area-inset-bottom, 0px)",
       background: bgGrad,
       color: text,
       fontFamily: headFont,
@@ -6902,7 +6849,6 @@ function getOrBuildSentences() {
           codexCount={isProfilePreviewComplete() ? GU_POOL_ORDERED.length : (Array.isArray(collectedGu) ? collectedGu.filter(g => codexIsEffectivelyRefined(g, getProfilePreviewTier() || tier) && GU_BY_ID[g.id]?.tier !== "hold").length : 0)}
           totalGu={GU_POOL_ORDERED.length}
           accountMode={accountMode}
-          getAuthHeaders={getAuthHeaders}
         />
       )}
 
