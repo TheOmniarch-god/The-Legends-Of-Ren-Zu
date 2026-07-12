@@ -133,16 +133,16 @@ function writePage(urlPath, html) {
 function css() {
   return `
     :root {
-      --paper: #F7F3E8;
-      --paper-deep: #EFE8D7;
-      --paper-card: #FCFAF2;
-      --ink: #15120C;
-      --ink-soft: #5B5142;
-      --ink-faint: #93897A;
-      --seal: #B3331E;
-      --seal-soft: rgba(179,51,30,.10);
-      --gold: #9C7A1E;
-      --gold-line: #D4B25A;
+      --paper: #ECE8DE;
+      --paper-deep: #E3DDCF;
+      --paper-card: #F5F0E6;
+      --ink: #111111;
+      --ink-soft: #4F493F;
+      --ink-faint: #7F786E;
+      --seal: #8A6A2C;
+      --seal-soft: rgba(138,106,44,.10);
+      --gold: #9B7A3A;
+      --gold-line: #B79963;
       --line: rgba(21,18,12,.13);
       --line-soft: rgba(21,18,12,.07);
       --shadow: 0 18px 50px rgba(17, 12, 7, 0.08);
@@ -158,7 +158,7 @@ function css() {
     body {
       background: var(--paper);
       color: var(--ink);
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       min-height: 100vh;
@@ -174,7 +174,7 @@ function css() {
       z-index: 0;
       border-radius: 999px;
       filter: blur(70px);
-      opacity: .18;
+      opacity: .14;
     }
     body::before {
       width: 44vw;
@@ -188,20 +188,20 @@ function css() {
       height: 36vw;
       right: -12vw;
       top: 20vh;
-      background: radial-gradient(circle, var(--seal), transparent 72%);
-      opacity: .10;
+      background: radial-gradient(circle, rgba(155,122,58,.48), transparent 72%);
+      opacity: .07;
     }
     a { color: inherit; text-decoration: none; }
     a:hover { color: var(--seal); }
     img { max-width: 100%; display: block; }
     h1, h2, h3, h4 {
-      font-family: 'Unbounded', 'Space Grotesk', sans-serif;
+      font-family: 'IM Fell English', Georgia, serif;
       line-height: 1.08;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.01em;
       color: var(--ink);
       margin: 0 0 14px;
     }
-    h1 { font-size: clamp(2.25rem, 5vw, 4.35rem); }
+    h1 { font-size: clamp(2.1rem, 4.7vw, 3.7rem); }
     h2 { font-size: clamp(1.65rem, 3vw, 2.65rem); }
     h3 { font-size: clamp(1.06rem, 1.35vw, 1.28rem); }
     p { margin: 0 0 1rem; }
@@ -211,7 +211,7 @@ function css() {
       position: sticky;
       top: 0;
       z-index: 30;
-      background: rgba(247,243,232,.86);
+      background: rgba(236,232,222,.82);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--line);
     }
@@ -225,7 +225,7 @@ function css() {
       padding: 14px 0;
     }
     .brand {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Poppins', sans-serif;
       font-weight: 700;
       font-size: .98rem;
       letter-spacing: .01em;
@@ -260,7 +260,7 @@ function css() {
     .hero-inner {
       width: min(calc(100% - 36px), var(--max));
       margin: 0 auto;
-      padding: 68px 0 34px;
+      padding: 42px 0 24px;
       display: grid;
       gap: 18px;
       position: relative;
@@ -271,9 +271,10 @@ function css() {
       align-items: center;
       gap: 10px;
       color: var(--seal);
-      font-family: 'Fragment Mono', monospace;
-      font-size: .73rem;
-      letter-spacing: .16em;
+      font-family: 'Poppins', sans-serif;
+      font-size: .74rem;
+      font-weight: 600;
+      letter-spacing: .12em;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
@@ -305,7 +306,7 @@ function css() {
       padding: 12px 20px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.62);
+      background: rgba(255,255,255,.55);
       color: var(--ink);
       font-weight: 600;
       font-size: .94rem;
@@ -319,9 +320,9 @@ function css() {
       color: var(--seal);
     }
     .button.primary {
-      background: var(--seal);
+      background: #15120C;
       color: var(--paper);
-      border-color: var(--seal);
+      border-color: #15120C;
     }
     .button.primary:hover {
       background: var(--ink);
@@ -403,7 +404,7 @@ function css() {
     .stat { padding: 16px; }
     .stat strong {
       display: block;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Poppins', sans-serif;
       font-size: 1.18rem;
       margin-bottom: 4px;
       color: var(--ink);
@@ -453,6 +454,8 @@ function css() {
       background: rgba(255,255,255,.7);
       color: var(--ink-soft);
       font-style: italic;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.05rem;
     }
     .two-col {
       display: grid;
@@ -488,10 +491,107 @@ function css() {
       outline-offset: 3px;
       border-radius: 6px;
     }
+    .topnav {
+      transition: transform .26s var(--ease), background .26s var(--ease);
+    }
+    .topnav.nav-hidden { transform: translateY(-110%); }
+    .nav-desktop { display: block; }
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      color: var(--ink);
+      font: inherit;
+      box-shadow: 0 8px 18px rgba(17,12,7,.04);
+    }
+    .menu-toggle span {
+      display: block;
+      width: 15px;
+      height: 1.5px;
+      background: var(--ink);
+      border-radius: 999px;
+    }
+    .menu-toggle em {
+      font-style: normal;
+      font-size: .92rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+    .menu-panel {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 18px;
+      right: 18px;
+      z-index: 35;
+    }
+    body.menu-open .menu-panel { display: block; }
+    .menu-panel-inner {
+      background: rgba(252,250,242,.98);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 24px 70px rgba(17,12,7,.14);
+      padding: 18px;
+    }
+    .menu-eyebrow {
+      font-family: 'Poppins', sans-serif;
+      font-size: .72rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--seal);
+      margin-bottom: 14px;
+    }
+    .menu-links {
+      display: grid;
+      gap: 10px;
+    }
+    .menu-links a {
+      display: block;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid var(--line-soft);
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(250px, 390px);
+      align-items: start;
+      gap: 22px;
+    }
+    .hero-copy { min-width: 0; }
+    .hero-visual-wrap {
+      align-self: stretch;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .hero-visual {
+      width: 100%;
+      max-width: 390px;
+      aspect-ratio: 1 / 1.08;
+      object-fit: cover;
+      border-radius: 19% / 16%;
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 60px rgba(17,12,7,.12);
+      background: #ddd;
+    }
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual-wrap { justify-content: flex-start; }
+      .hero-visual { max-width: 520px; }
+    }
     @media (max-width: 860px) {
       .two-col { grid-template-columns: 1fr; }
-      .topnav-inner { align-items: flex-start; }
-      .navlinks { justify-content: flex-start; }
+      .topnav-inner { align-items: center; }
+      .nav-desktop { display: none; }
+      .menu-toggle { display: inline-flex; }
+      .hero-inner { padding-top: 34px; }
+      .hero-visual { max-width: 100%; border-radius: 18% / 15%; }
     }
   `;
 }
@@ -516,7 +616,7 @@ function baseHead({ title, description, canonicalUrl, type = 'website' }) {
     <meta name="twitter:image" content="${HERO_IMAGE}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
@@ -717,8 +817,22 @@ function navHtml() {
     <div class="topnav">
       <div class="topnav-inner">
         <a class="brand" href="/">${SITE_NAME}</a>
-        <div class="navlinks">
-          ${navItems.map((item) => `<a href="${item.href}">${item.label}</a>`).join('')}
+        <div class="nav-desktop">
+          <div class="navlinks">
+            ${navItems.map((item) => `<a href="${item.href}">${item.label}</a>`).join('')}
+          </div>
+        </div>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open navigation menu">
+          <span></span><span></span><span></span>
+          <em>Menu</em>
+        </button>
+      </div>
+      <div class="menu-panel" data-menu-panel>
+        <div class="menu-panel-inner">
+          <div class="menu-eyebrow">Navigate</div>
+          <div class="menu-links">
+            ${navItems.map((item) => `<a href="${item.href}">${item.label}</a>`).join('')}
+          </div>
         </div>
       </div>
     </div>
@@ -744,7 +858,7 @@ function footerHtml() {
   `;
 }
 
-function renderPage({ canonicalPath, title, description, heroEyebrow, heroTitle, heroLead, heroChips = [], bodyHtml, type = 'website', schema = [] }) {
+function renderPage({ canonicalPath, title, description, heroEyebrow, heroTitle, heroLead, heroChips = [], bodyHtml, type = 'website', schema = [], heroImage = '/assets/renzu-main-app-image.jpg' }) {
   const head = baseHead({ title, description, canonicalUrl: pathToUrl(canonicalPath), type });
   return `<!DOCTYPE html>
 <html lang="en">
@@ -755,24 +869,63 @@ ${head}
 <body>
   ${navHtml()}
   <header class="hero">
-    <div class="hero-inner">
-      <div class="eyebrow">${htmlEscape(heroEyebrow)}</div>
-      <h1>${htmlEscape(heroTitle)}</h1>
-      <p class="lead">${htmlEscape(heroLead)}</p>
-      ${heroChips.length ? `<div class="chip-row">${heroChips.map((chip) => `<span class="chip">${htmlEscape(chip)}</span>`).join('')}</div>` : ''}
-      <div class="actions">
-        <a class="button primary" href="/">Open immersive reader</a>
-        <a class="button" href="/chapters/">Browse chapters</a>
-        <a class="button" href="/guides/">Open guides</a>
+    <div class="hero-inner hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">${htmlEscape(heroEyebrow)}</div>
+        <h1>${htmlEscape(heroTitle)}</h1>
+        <p class="lead">${htmlEscape(heroLead)}</p>
+        ${heroChips.length ? `<div class="chip-row">${heroChips.map((chip) => `<span class="chip">${htmlEscape(chip)}</span>`).join('')}</div>` : ''}
+        <div class="actions">
+          <a class="button primary" href="/">Open immersive reader</a>
+          <a class="button" href="/chapters/">Browse chapters</a>
+          <a class="button" href="/guides/">Open guides</a>
+        </div>
       </div>
+      ${heroImage ? `<div class="hero-visual-wrap"><img class="hero-visual" src="${heroImage}" alt="The Legends of Ren Zu hero artwork" /></div>` : ''}
     </div>
   </header>
   <main class="wrap stack">
     ${bodyHtml}
   </main>
   ${footerHtml()}
+  ${pageScript()}
 </body>
 </html>`;
+}
+
+function pageScript() {
+  return `
+  <script>
+    (() => {
+      const body = document.body;
+      const menuBtn = document.querySelector('[data-menu-toggle]');
+      const menuPanel = document.querySelector('[data-menu-panel]');
+      const nav = document.querySelector('.topnav');
+      const links = menuPanel ? menuPanel.querySelectorAll('a') : [];
+      let lastY = window.scrollY || 0;
+      let open = false;
+
+      function setMenu(next) {
+        open = next;
+        body.classList.toggle('menu-open', next);
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', next ? 'true' : 'false');
+      }
+
+      if (menuBtn && menuPanel) {
+        menuBtn.addEventListener('click', () => setMenu(!open));
+        links.forEach((link) => link.addEventListener('click', () => setMenu(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+      }
+
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY || 0;
+        if (!nav) return;
+        if (y > 120 && y > lastY + 8 && !open) nav.classList.add('nav-hidden');
+        else nav.classList.remove('nav-hidden');
+        lastY = y;
+      }, { passive: true });
+    })();
+  </script>`;
 }
 
 function guideCardHtml(key) {
