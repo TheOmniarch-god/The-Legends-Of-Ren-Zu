@@ -1471,7 +1471,7 @@ function LegalTrustModal({ open, onClose, D, S }) {
   );
 }
 
-function SettingsHubModal({ open, onClose, D, S, onReader, onAudio, onLegal }) {
+function SettingsHubModal({ open, onClose, D, S, isReading, onReader, onAudio, onLegal }) {
   if (!open) return null;
   const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
   const surface = D ? "#08080a" : S ? "#f2dfb6" : "#fffaf0";
@@ -1488,7 +1488,16 @@ function SettingsHubModal({ open, onClose, D, S, onReader, onAudio, onLegal }) {
           <div style={{ width:42 }} />
         </div>
         <div style={{ display:"grid", gap:10 }}>
-          {[{t:"Reader Settings", d:"Text size, spacing, width", a:onReader}, {t:"Audio Settings", d:"Voice, accent, speed", a:onAudio}, {t:"Trust & Policies", d:"Privacy, terms, refunds, contact", a:onLegal}].map(x => (
+          {(isReading
+            ? [
+                {t:"Reader Settings", d:"Text size, spacing, width", a:onReader},
+                {t:"Audio Settings", d:"Voice, accent, speed", a:onAudio},
+                {t:"Trust & Policies", d:"Privacy, terms, refunds, contact", a:onLegal}
+              ]
+            : [
+                {t:"Trust & Policies", d:"Privacy, terms, refunds, contact", a:onLegal}
+              ]
+          ).map(x => (
             <button key={x.t} onClick={x.a} style={{ padding:"16px", borderRadius:18, border:`1px solid ${border}`, background:surface, color:text, textAlign:"left", cursor:"pointer", fontFamily:headFont }}>
               <div style={{ fontSize:13, fontWeight:700 }}>{x.t}</div>
               <div style={{ fontSize:12, color:textDim, marginTop:4, fontFamily:"'IM Fell English', Georgia, serif" }}>{x.d}</div>
@@ -6953,6 +6962,7 @@ function getOrBuildSentences() {
         onClose={() => setShowSettingsHub(false)}
         D={D}
         S={S}
+        isReading={!!selected}
         onReader={() => { setShowSettingsHub(false); setShowReaderSettingsPage(true); }}
         onAudio={() => { setShowSettingsHub(false); setShowAudioSettingsPage(true); }}
         onLegal={() => { setShowSettingsHub(false); setShowLegal(true); }}
