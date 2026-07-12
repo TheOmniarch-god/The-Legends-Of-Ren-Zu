@@ -5110,7 +5110,12 @@ const chapterKeyRef = useRef(null);
         prefetchTts(idx + 2, myChainId);
         prefetchTts(idx + 3, myChainId);
 
-        if (idx === 0) { setAudioLoading(false); setAudioPlaying(true); }
+        // Once a segment is ready to play, the control must become Pause and
+        // the current sentence highlight must be visible even when narration
+        // starts from the middle via “Read from here”.
+        setAudioLoading(false);
+        setAudioPlaying(true);
+        setAudioPaused(false);
 
         // Wait while paused — audio blob is already fetched, we just hold here.
         // The AudioContext is suspended so nothing plays while we wait.
