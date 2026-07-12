@@ -1,0 +1,58 @@
+#!/bin/bash
+# Delete files from The-Legends-Of-Ren-Zu repository
+
+# Files to delete from root
+rm -f assets/avatar-frame-blue.png
+rm -f assets/avatar-frame-gold.png
+rm -f assets/avatar-frame-myriad.png
+rm -f avatar-selection-preview.png
+rm -f avatar-selection-preview.html
+rm -f profile-avatar-tier-preview.html
+rm -f renzu-profile-frame-current-preview.png
+rm -f AVATAR_EMAIL_NAV_CODEX_FIX_NOTES.md
+rm -f AVATAR_PICKER_THEMATIC_NAV_PATCH_NOTES.md
+rm -f CODEX_CANONICAL_PATH_COUNT_FIX_NOTES.md
+rm -f CODEX_FOUNDATION_TRACE_REFINED_NOTES.md
+rm -f CODEX_LEGENDS_PURITY_DESTINY_FIX_NOTES.md
+rm -f CODEX_PUBLIC_RANK_GATES_NOTES.md
+rm -f CODEX_REALM_CORRECT_REFINED_STATUS_NOTES.md
+rm -f CODEX_UI_POLISH_COUNT_LABEL_FIX_NOTES.md
+rm -f CODEX_UI_POLISH_NOTES.md
+rm -f FOOTER_LOGO_BG_SIZE_POSITION_FIX_NOTES.md
+rm -f FOOTER_LOGO_CROP_SIZE_FIX_NOTES.md
+rm -f FOOTER_LOGO_SIZE_RESTORE_NOTES.md
+rm -f FOOTER_LOGO_SYMBOL_FIX_NOTES.md
+rm -f HALL_ACTUAL_OPT_IN_AND_MYRIAD_FIX_NOTES.md
+rm -f HALL_AVATAR_SYNC_FIX_NOTES.md
+rm -f HALL_COPY_NAV_CORRECTION_NOTES.md
+rm -f HALL_OF_VENERABLES_FOUNDATION_NOTES.md
+rm -f HALL_VENERABLE_LISTING_WORDING_NOTES.md
+rm -f HALL_WORDING_CAPS_FIX_NOTES.md
+rm -f LATEST_LOGO_SPLASH_EMAIL_ICONS_NOTES.md
+rm -f MAIN_IMAGE_ICON_SPLASH_CORRECTION_NOTES.md
+rm -f NAV_ANYWHERE_OUTSIDE_CLOSE_FIX_NOTES.md
+rm -f NO_PWA_ICON_SPLASH_CHANGE_FIX_NOTES.md
+rm -f PROFILE_ANIMATED_AVATAR_RINGS_NOTES.md
+rm -f PROFILE_AVATAR_CORE_SIGILS_NOTES.md
+rm -f PROFILE_AVATAR_FRAMES_NOTES.md
+rm -f PROFILE_DEFAULT_CHIBI_AVATARS_NOTES.md
+rm -f PROFILE_FRAME_PREVIEW_OPTIMIZED_NOTES.md
+rm -f PROFILE_FRAME_STYLE_ALIGNMENT_NOTES.md
+rm -f PROFILE_LIVE_TIER_PREVIEW_NOTES.md
+rm -f PROFILE_REAL_CHIBI_AVATAR_ASSETS_NOTES.md
+rm -f PROFILE_UPLOADED_FRAME_ASSETS_NOTES.md
+rm -f PWA_NATIVE_SPLASH_BLACK_RENZU_NOTES.md
+rm -f REALM_ASCENSION_GEM_PATCH_NOTES.md
+rm -f REALM_ASCENSION_IMAGE_CLEANUP_NOTES.md
+rm -f REALM_ASCENSION_LITE_PATCH_NOTES.md
+rm -f SQUIRCLE_RENZU_APP_ICONS_NOTES.md
+rm -f lib/api/[...path].js
+
+# Stage deletions
+git add -u
+
+# Create commit
+git commit -m "Remove preview files, patch notes, and consolidate API routing"
+
+# Push to repository
+git push
