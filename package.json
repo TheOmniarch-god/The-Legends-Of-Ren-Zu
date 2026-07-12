@@ -4,6 +4,7 @@
   "description": "Backend API for The Legends of Ren Zu reader — cultivation billing system",
   "type": "module",
   "scripts": {
+    "generate:seo": "node scripts/generate-seo-pages.mjs",
     "deploy": "vercel --prod"
   },
   "dependencies": {

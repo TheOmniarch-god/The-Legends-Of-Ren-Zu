@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thelegendsofrenzu.theomniarch.com.ng/sitemap.xml
