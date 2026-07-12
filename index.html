@@ -1997,12 +1997,23 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
   const activeAvatarId = avatarChoice || defaultAvatars[avatarSeed % defaultAvatars.length].id;
   const activeAvatar = defaultAvatars.find(a => a.id === activeAvatarId) || defaultAvatars[avatarSeed % defaultAvatars.length];
 
-  function chooseAvatar(id) {
+  async function chooseAvatar(id) {
     setAvatarChoice(id);
     try { localStorage.setItem("renzu_avatar_choice", id); } catch (_) {}
-    setSaveMsg("Avatar updated.");
     setSaveErr("");
-    setTimeout(() => setSaveMsg(""), 1400);
+    setSaveMsg(isEmailBound ? "Saving avatar…" : "Avatar updated on this device.");
+
+    if (isEmailBound) {
+      try {
+        await onSave({ username: editName, email: editEmail, avatarChoice: id });
+        setSaveMsg("Avatar synced to account.");
+      } catch (err) {
+        setSaveErr(err?.message || "Could not sync avatar.");
+        setSaveMsg("");
+      }
+    }
+
+    setTimeout(() => setSaveMsg(""), 1800);
   }
 
   function renderAvatarImage(preset, size = 68) {
@@ -4799,6 +4810,29 @@ const chapterKeyRef = useRef(null);
       if (data.avatarChoice) {
         try { localStorage.setItem("renzu_avatar_choice", data.avatarChoice); } catch(_) {}
       }
+
+      // If Venerable Listing is already enabled, keep the Hall avatar in sync
+      // when the profile avatar changes. This prevents having to toggle listing
+      // off/on just to refresh the Hall entry.
+      try {
+        const hallOptedIn = localStorage.getItem("renzu_hall_opt_in") === "1";
+        if (hallOptedIn && tier === "venerable" && authHeaders.Authorization) {
+          const codexCountForHall = Array.isArray(collectedGu)
+            ? collectedGu.filter(g => codexIsEffectivelyRefined(g, tier) && GU_BY_ID[g.id]?.tier !== "hold").length
+            : 0;
+          await fetch("/api/hall", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", ...authHeaders },
+            body: JSON.stringify({
+              optIn: true,
+              avatarChoice: avatarChoice || data.avatarChoice || "",
+              codexCount: codexCountForHall,
+              totalGu: GU_POOL_ORDERED.length,
+              username: data.userName || username || ""
+            })
+          });
+        }
+      } catch (_) {}
 
       return data;
     }
