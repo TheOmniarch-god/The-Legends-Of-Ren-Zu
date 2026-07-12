@@ -3003,8 +3003,8 @@ function NavigationMenu({ open, onToggle, onClose, D, S, mode, onThemeCycle, onH
     { id: "highlights", label: "Highlights", onClick: () => { onClose(); onHighlights(); }, disabled: false },
     { id: "notes", label: "Notes", onClick: () => { onClose(); onNotes(); }, disabled: false },
     { id: "treasure", label: "Treasure", onClick: () => { onClose(); onTreasure(); }, disabled: false },
+    { id: "settings", label: "Settings", onClick: () => { onClose(); onSettings(); }, disabled: false },
     ...(isReading ? [
-      { id: "settings", label: "Settings", onClick: () => { onClose(); onSettings(); }, disabled: false },
       { id: "bookmark-chapter", label: isChapterBookmarked ? "Unbookmark" : "Bookmark", onClick: () => { onClose(); onBookmarkChapter(); }, disabled: false },
     ] : []),
     { id: "theme", label: `Theme · ${mode === "light" ? "Light" : mode === "dark" ? "Dark" : "Scroll"}`, onClick: () => { onClose(); onThemeCycle(); }, disabled: false },
@@ -6248,7 +6248,6 @@ function getOrBuildSentences() {
                   }}
                   onInstall={installApp}
                   onSettings={() => {
-                    if (!selected) return;
                     setShowSettingsHub(true);
                   }}
                   onBookmarkChapter={() => selected && toggleChapterBookmark(selected)}
