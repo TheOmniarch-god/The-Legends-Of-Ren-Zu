@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About The Legends of Ren Zu Reader | The Omniarch</title>
-    <meta name="description" content="Learn what this reader project is, why the search-friendly pages exist, and how they fit around the main Legends of Ren Zu experience." />
+    <meta name="description" content="Learn why this project has an immersive reader, a chapter archive, and a growing knowledge layer built for search and discoverability." />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/about/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="About The Legends of Ren Zu Reader | The Omniarch" />
-    <meta property="og:description" content="Learn what this reader project is, why the search-friendly pages exist, and how they fit around the main Legends of Ren Zu experience." />
+    <meta property="og:description" content="Learn why this project has an immersive reader, a chapter archive, and a growing knowledge layer built for search and discoverability." />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/about/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="About The Legends of Ren Zu Reader | The Omniarch" />
-    <meta name="twitter:description" content="Learn what this reader project is, why the search-friendly pages exist, and how they fit around the main Legends of Ren Zu experience." />
+    <meta name="twitter:description" content="Learn why this project has an immersive reader, a chapter archive, and a growing knowledge layer built for search and discoverability." />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"AboutPage","name":"About The Legends of Ren Zu Reader | The Omniarch","url":"https://thelegendsofrenzu.theomniarch.com.ng/about/","description":"Learn what this reader project is, why the search-friendly pages exist, and how they fit around the main Legends of Ren Zu experience.","isPartOf":{"@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"About","item":"https://thelegendsofrenzu.theomniarch.com.ng/about/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"AboutPage","name":"About The Legends of Ren Zu Reader | The Omniarch","url":"https://thelegendsofrenzu.theomniarch.com.ng/about/","description":"Learn why this project has an immersive reader, a chapter archive, and a growing knowledge layer built for search and discoverability.","isPartOf":{"@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"About","item":"https://thelegendsofrenzu.theomniarch.com.ng/about/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
-      <div class="eyebrow">About this project</div>
-      <h1>Why the site now has a search-friendly layer</h1>
-      <p class="lead">The main reader stays intact, while supporting pages make the project easier to discover, crawl, and rank.</p>
+    <div class="hero-inner">
+      <div class="eyebrow">About the project</div>
+      <h1>A reader experience with a search layer built around it</h1>
+      <p class="lead">The immersive reader remains the emotional core, while the archive and guide pages make the project easier to discover, index, and share.</p>
+      <div class="chip-row"><span class="chip">Reader-first</span><span class="chip">Search-supportive</span><span class="chip">Shareable URLs</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,50 +324,55 @@
   </header>
   <main class="wrap stack">
     
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <span>About</span>
-      </nav>
-      <div class="callout">This site now has two layers: the immersive reader for human experience and a stable static page layer for search engines, direct linking, and discoverability.</div>
-      <div>
-        <h2 class="section-title">Why this site exists</h2>
-        <p>The Omniarch reader was designed to feel atmospheric and premium. That works well for readers, but search engines prefer stable pages with plain HTML, individual titles, and internal links. The search layer was added so the project can compete for branded and related queries without tearing apart the existing reader.</p>
-        <p>In other words, the chapter archive, guides, character pages, and theme explainers are here to make the site easier to discover, easier to share, and easier to understand at a glance.</p>
-      </div>
-      <div>
-        <h2 class="section-title">What to use first</h2>
-        <ul class="list">
-          <li>Use the immersive reader when you want the full experience.</li>
-          <li>Use the chapter archive when you want direct chapter URLs.</li>
-          <li>Use the guides if you arrived from search and need context first.</li>
-          <li>Use the FAQ if you want the shortest answers possible.</li>
-        </ul>
-      </div>
+    
+    <section class="card">
+      <div class="eyebrow">Project structure</div>
+      <h2 class="section-title">Why the site now has multiple layers</h2>
+      <p>The immersive reader was built for atmosphere, rhythm, and experience. Search engines, however, understand stable HTML pages more easily than a single app-like interface. That is why this project now has a second layer: a chapter archive plus a growing library of original guide pages.</p><p>The goal is not to replace the reader. The goal is to let the reader stay dramatic and fragile while the companion layer becomes easy to crawl, easy to share, and easy to understand for someone discovering the project for the first time.</p><div class="stats"><div class="stat"><strong>Reader</strong><span class="small">Immersive experience</span></div><div class="stat"><strong>Archive</strong><span class="small">Stable chapter URLs</span></div><div class="stat"><strong>Guides</strong><span class="small">Related-search support</span></div><div class="stat"><strong>FAQ</strong><span class="small">Fast answers</span></div></div>
+    </section>
+  
+    
+    <section class="card" id="use-cases">
+      <div class="eyebrow">Use cases</div>
+      <h2 class="section-title">How to use the site well</h2>
+      <ul><li>Use the immersive reader when you want the richest interface and the strongest narrative atmosphere.</li><li>Use the chapter archive when you want direct links, stable search pages, or a cleaner crawlable structure.</li><li>Use the guides, theme pages, and character pages when you want context before reading or when you arrive from search.</li><li>Use the FAQ when you want short answers and then move outward into deeper pages.</li></ul>
+    </section>
+  
+    
+    <section class="card">
+      <div class="eyebrow">Next clicks</div>
+      <h2 class="section-title">Best supporting pages from here</h2>
       <div class="grid">
-    <article class="info-card">
-      <div class="eyebrow">Guides</div>
-      <h3><a href="/guides/">Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order</a></h3>
-      <p>A hub for beginner-friendly guides, reading order, character context, and theme explainers.</p>
+    <article class="guide-card">
+      <div class="eyebrow">Guide hub</div>
+      <h3><a href="/guides/">Legends of Ren Zu Guides | Reader Guides, Explainers, and Summaries</a></h3>
+      <p>A hub for reading order, summaries, explainers, and beginner-friendly entry points.</p>
       <a href="/guides/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Reading order</div>
       <h3><a href="/guides/reading-order/">Legends of Ren Zu Reading Order | Chapter Guide and Best Place to Start</a></h3>
-      <p>Where to start, what the combined chapter labels mean, and how to move between the archive and the immersive reader.</p>
+      <p>Where to begin, how the combined parts work, and the cleanest reading route.</p>
       <a href="/guides/reading-order/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Explained</div>
+      <h3><a href="/guides/the-legends-of-ren-zu-explained/">The Legends of Ren Zu Explained | Beginner Guide</a></h3>
+      <p>A plain-language introduction to what the work is, how to read it, and why it matters.</p>
+      <a href="/guides/the-legends-of-ren-zu-explained/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">FAQ</div>
       <h3><a href="/faq/">Legends of Ren Zu FAQ | Chapters, Ren Zu, Hope Gu, and Reading Guide</a></h3>
-      <p>Short answers to the questions new readers and searchers usually ask first.</p>
+      <p>Fast answers to the questions new readers and search visitors ask first.</p>
       <a href="/faq/">Open page</a>
     </article>
   </div>
     </section>
+  
   
   </main>
   

@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Part 12: Road of Life and Death | The Legends of Ren Zu</title>
-    <meta name="description" content="Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extreme…" />
+    <meta name="description" content="Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extremely upset a…" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-12-road-of-life-and-death/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Part 12: Road of Life and Death | The Legends of Ren Zu" />
-    <meta property="og:description" content="Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extreme…" />
+    <meta property="og:description" content="Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extremely upset a…" />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-12-road-of-life-and-death/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Part 12: Road of Life and Death | The Legends of Ren Zu" />
-    <meta name="twitter:description" content="Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extreme…" />
+    <meta name="twitter:description" content="Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extremely upset a…" />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 12: Road of Life and Death","headline":"Part 12: Road of Life and Death","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-12-road-of-life-and-death/","description":"Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extreme…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 12: Road of Life and Death","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-12-road-of-life-and-death/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 12: Road of Life and Death","headline":"Part 12: Road of Life and Death","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-12-road-of-life-and-death/","description":"Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extremely upset a…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 12: Road of Life and Death","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-12-road-of-life-and-death/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">The Legends of Ren Zu</div>
       <h1>Part 12: Road of Life and Death</h1>
-      <p class="lead">Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extreme…</p>
+      <p class="lead">Read Part 12: Road of Life and Death from The Legends of Ren Zu. Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extremely upset a…</p>
+      <div class="chip-row"><span class="chip">Direct chapter URL</span><span class="chip">Guide-linked</span><span class="chip">Search-indexable</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,64 +324,82 @@
   </header>
   <main class="wrap stack">
     
+    <div class="two-col">
+      <div class="stack">
+        
     <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>Part 12: Road of Life and Death</span>
-      </nav>
-      <div class="meta">
-        <span>Part 12</span>
-        <span>Gu Zhen Ren</span>
-        <span>The Omniarch reader companion</span>
-      </div>
-      <div class="chapter-body">
-        <p>Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extremely upset after receiving the news, finding Wisdom Gu for an explanation. It was Wisdom Gu who taught Verdant Great Sun to drink, causing the series of events thereafter. Wisdom Gu quickly said: “Ren Zu, oh Ren Zu, don't find trouble with me. Although your son died, it is not impossible to revive him. As long as you enter the Door of Life and Death and lead him towards the Road of Life, walking under the sunlight, he would be revived.” Ren Zu was shocked, before becoming overjoyed, and then extremely furious. He grabbed Wisdom Gu and questioned: “Wisdom Gu, oh Wisdom Gu, do you still think I am that ignorant boy from before? The Door of Life and Death is a dangerous place, once I enter, I will never be able to leave, after harming my son, you want to kill me too?” Wisdom Gu quickly said: “Other living beings do not know the secret of the Door of Life and Death, thus they cannot leave. But I can teach you all of these secrets. You are a living person, to enter the Door of Life and Death, you have to enter from the Road of Death. This road is extraordinary; it was the road left behind by Fate Gu when it left Fairness Gu. The road left behind was called the path of destiny. There are many Suffering Gu inside the Road of Life; you have to enter from the Road of Death, and you need to own Courage Gu. That way, you will not fear the torture of suffering. When you enter the Door of Life and Death, and see Fairness Gu, you are already dead. But at the same time, you will see your eldest son, Verdant Great Sun's soul. You will bring him away and go out from another road, the Road of Life. Road of Life was the path trodden on by Fate Gu when it visited Fairness Gu; it is also called the path of destiny. But during this path, you will meet three obstacles. One is Dang Hun Mountain, another is called Luo Po Valley, and lastly the Reverse Flow River. To climb past Dang Hun Mountain, you have to smash the Gut stones on it and obtain Guts Gu's help. To get past Luo Po Valley, you need to find Faith Gu to help. To get through the Reverse Flow River, you have to move forward continuously, not stopping for even a second</p>
-<p>during the process.” Dang Hun Mountain, known as Crystal Mountain in The Legends of Ren Zu. As long as any living creatures enter the range of Dang Hun Mountain, their soul would receive a shock. The closer they get to the peak, the stronger the force of the shock would be. Many living beings don’t have strong souls, and their soul would often scatter when they reach halfway up the mountain. Ren Zu heard Wisdom Gu's words and let it go. He quickly found Faith Gu. Ever since he became blind, Faith Gu's light was the only light he could see. “Oh Ren Zu, I can feel your determination in getting back your eldest son. I am willing to help you, but I urge you not to give up on this goal. Because when you give up, I will leave you for good,” Faith Gu said with concern. Ren Zu found Courage Gu next. Courage Gu and Hope Gu were good companions. Ren Zu had Hope Gu, and thus saw Courage Gu occasionally; he had a decent relationship with it. After getting Courage Gu's help, Ren Zu came to the Door of Life and Death, entering the Road of Death. The Road of Death was pure darkness, the large number of Suffering Gu were like yellow fireflies, swarming towards Ren Zu. At this time, Courage Gu shone brightly, chasing away the Suffering Gu for Ren Zu. Courage was needed to face death. Ren Zu succeeded in going down; his body turned whiter as it turned hollow, gradually turning into a ghost. He could “see” again. When he got to the end of the road, a midst the calm darkness, he saw Fairness Gu. He was extremely shocked by Fairness Gu's huge body, exclaiming: “You are Fairness Gu? Why is your body so huge? A mountain is a speck of dust compared to you. The sea is like a droplet compared to you.” Fairness Gu's voice was grand: “Life and death are the greatest fairness in this world; when I am inside the Door of Life and Death, my body will become enormous. Oh Ren Zu, you are here for your son right. Feel free to go; he is right there.” Ren Zu was overjoyed upon seeing his son and ran towards him. Verdant Great Sun had turned into a white ghost and was lying beside a lake, scooping out the water with a bowl and drinking it.</p>
-<p>The water was like wine with its fragrance pervading the area. Verdant Great Sun drank it with utmost satisfaction. “My son don't drink anymore. Come, let's go back,” Ren Zu walked towards Verdant Great Sun and shouted. “Esteemed father, how did you come here? This is great; let's drink together,” Verdant Great Sun opened his hazy eyes and looked at Ren Zu. Ren Zu seized the wine bowl from him and said with exasperation: “Don't drink anymore; you only know how to drink wine! Everyone knows there is a bewitching lake in the land of the dead, and its water is the Bewitching Soup. When ghosts drink it, they become muddle-headed and lose the desire to leave.” Verdant Great Sun, however, refuted: “Father, you are wrong. This is not the Bewitching Soup; it is the Soul Calming Wine. It can calm down your soul and remove all the impurities; your soul will no longer be restless, and you will experience utmost tranquility in your heart. This is one of the best quality wines in this world.” “I don't care what wine it is; you have to follow me back,” Ren Zu pulled Verdant Great Sun's hand, but found Verdant Great Sun was as heavy as a mountain and could not be budged. Verdant Great Sun shook his head: “Some people, upon death, will be as heavy as a mountain. Some people, upon death, will be light as a feather. Father, I had Reputation Gu in my life and died after bathing in the light of glory. When I arrived here, my body had become heavier than a mountain; I cannot even walk a single step and can only lie down here.” “What!” Ren Zu immediately felt gloomy and anxiously shouted, “I told you before, a tall tree attracts the wind; reputation is not always a good thing. Throw away the Reputation Gu.” Verdant Great Sun shook his head and sighed: “We were not born with fame and fortune; we also cannot take them with us after death. After I died, Reputation Gu left me. It is Fixed Immortal Travel Gu that has accompanied me.” Fixed Immortal Travel Gu could bring Verdant Great Sun's soul out of the Door of Life and Death or even bring him to any place in the outside world. However, Verdant Great Sun could only truly resurrect after walking through the Road of Life. “What do we do now...” Ren Zu realized he had been played by Wisdom Gu. Although he had arrived at the deepest part of the Door of Life and Death — a death domain that had endless darkness, and has also found Verdant Great Sun, he discovered he could not bring back his son.</p>
-<p>At this moment, Fairness Gu spoke: “Oh Ren Zu, do you still not understand? There are only two paths in Door of Life and Death, both appeared because of Fate Gu. Life and death are determined by fate! All living beings live and thus die; this is the cycle that allows the universe to continue existing. Your eldest son Verdant Great Sun died; this is fate and you should accept it. Moreover, he is living a good life here, Obsession Death Domain is the world's most tranquil place. He is drinking the world's supreme quality wine and is free from all the worries of the outside world; do you know how blissful this is?” If the soul was weak, it could be easily resolved by using guts Gu to strengthen his soul. There were many guts Gu on Dang Hun mountain, these were all items of the highest quality for strengthening the soul. But the irritation of the soul required pacifying the soul. The best way to pacify the soul was to use the Bewitching Lake’s water, found in Obsession Death Domain. It was praised by Verdant Great Sun as an excellent wine. Ren Zu stood there and looked at his flesh and blood for a while before heaving a deep sigh. He knew he could not bring back his son's soul, at least it was like that for now. He bid farewell to the Fairness Gu and also his son and left the Obsession Death Domain. He stepped on another path this time; it was the Road of Life which went from darkness to light. However, Ren Zu soon realized walking this path was countless times more difficult than when he walked in through theRoad of Death. There were many more Suffering Gu on the Road of Life than the Road of Death. When Ren Zu had walked through the Road of Death, his journey became smoother along the way and the Suffering Gu lesser the further he walked. But as he walked through the Road of Life, there was not only more Suffering Gu, but every step he took would cause much more Suffering Gu to fly over and obstruct him. Courage Gu could not resist them any longer: “Ren Zu, there are too many Suffering Gu, and they will continue to increase. There is peace in death, but life has endless suffering. Go to Dang Hun Mountain quickly and break some Gut stones. If you want to survive, just relying on courage won't be enough; you need guts too.” Ren Zu hurried forward to Dang Hun Mountain and picked the guts Gu while enduring the tremors in his soul. With guts Gu's help, his soul strengthened greatly, and although he still suffered the tremors, it was not of much worry.</p>
-<p>He passed through Dang Hun Mountain and arrived at Luo Po Valley. Luo Po Valley was a maze with winding and twisted paths. Occasionally, there were large areas of Bewilderment Fog which could cause the soul to loosen, and occasionally, Luo Po Wind would blow through and cut apart the soul. Ren Zu had fallen into the lowest part of my life and could not distinguish the directions. Because his soul was strengthened by Guts Gu, it was loosening in the Bewilderment Fog at a slower speed. The loosened soul was cut apart by the Luo Po Wind. Ren Zu almost completely lost his way, but fortunately at this time, Faith Gu flew out and shone upon his path. The best way to strengthen the soul is Dang Hun mountain’s guts Gu, the best way to refine the soul is Luo Po valley’s bewilderment fog and Luo Po wind, as for pacifying the soul, it would be the pacifying soul soup in Bewitching Lake. But if it was used excessively, it would get rid of even the essence of their soul. Ren Zu was able to walk out of the Luo Po Valley with only the essence of his soul remaining. He let out a huge breath of relief and could feel he was close to success. He walked to the Reverse Flow River; this was the final barrier in the Road of Life. It was extremely difficult to move against the stream. Endless suffering pushed upon him, causing him to make very slow progress. However, he forcibly persevered and walked towards the light. “Almost there.” He looked at the success that was just ahead of him; only one final step remained. He let out a breath of turbid air and relaxed, forgetting the warning of the Wisdom Gu; he stopped. This brief pause caused Ren Zu to be washed away by the river. Life was not easy; it was like a boat moving against the flow of the river. If you do not continue moving forward, you will be pushed back. Ren Zu was washed away by the river into the depths of Luo Po Valley, he was so tired he could not budge a bit and was trapped in the Luo Po Valley.</p>
-      </div>
-      <div class="pager">
-        <div>
-          <div class="small">Previous</div><a href="/chapters/part-10-11-not-knowing-ones-limits/">Part 10 &amp; 11: Not knowing one’s limits</a>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Next</div><a href="/chapters/part-13-love-is-cruel/">Part 13: Love is cruel</a>
-        </div>
-      </div>
+      <div class="eyebrow">Chapter text</div>
+      <h2 class="section-title">Part 12: Road of Life and Death</h2>
+      
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>Part 12: Road of Life and Death</span>
+            </nav>
+            <div class="meta">
+              <span>Part 12</span>
+              <span>Gu Zhen Ren</span>
+              <span>The Omniarch reader companion</span>
+            </div>
+            <div class="chapter-body"><p>Verdant Great Sun flew towards the sky and ended up plunging to his death. Ren Zu, as his father, was extremely upset after receiving the news, finding Wisdom Gu for an explanation. It was Wisdom Gu who taught Verdant Great Sun to drink, causing the series of events thereafter. Wisdom Gu quickly said: “Ren Zu, oh Ren Zu, don't find trouble with me. Although your son died, it is not impossible to revive him. As long as you enter the Door of Life and Death and lead him towards the Road of Life, walking under the sunlight, he would be revived.” Ren Zu was shocked, before becoming overjoyed, and then extremely furious. He grabbed Wisdom Gu and questioned: “Wisdom Gu, oh Wisdom Gu, do you still think I am that ignorant boy from before? The Door of Life and Death is a dangerous place, once I enter, I will never be able to leave, after harming my son, you want to kill me too?” Wisdom Gu quickly said: “Other living beings do not know the secret of the Door of Life and Death, thus they cannot leave. But I can teach you all of these secrets. You are a living person, to enter the Door of Life and Death, you have to enter from the Road of Death. This road is extraordinary; it was the road left behind by Fate Gu when it left Fairness Gu. The road left behind was called the path of destiny. There are many Suffering Gu inside the Road of Life; you have to enter from the Road of Death, and you need to own Courage Gu. That way, you will not fear the torture of suffering. When you enter the Door of Life and Death, and see Fairness Gu, you are already dead. But at the same time, you will see your eldest son, Verdant Great Sun's soul. You will bring him away and go out from another road, the Road of Life. Road of Life was the path trodden on by Fate Gu when it visited Fairness Gu; it is also called the path of destiny. But during this path, you will meet three obstacles. One is Dang Hun Mountain, another is called Luo Po Valley, and lastly the Reverse Flow River. To climb past Dang Hun Mountain, you have to smash the Gut stones on it and obtain Guts Gu's help. To get past Luo Po Valley, you need to find Faith Gu to help. To get through the Reverse Flow River, you have to move forward continuously, not stopping for even a second</p><p>during the process.” Dang Hun Mountain, known as Crystal Mountain in The Legends of Ren Zu. As long as any living creatures enter the range of Dang Hun Mountain, their soul would receive a shock. The closer they get to the peak, the stronger the force of the shock would be. Many living beings don’t have strong souls, and their soul would often scatter when they reach halfway up the mountain. Ren Zu heard Wisdom Gu's words and let it go. He quickly found Faith Gu. Ever since he became blind, Faith Gu's light was the only light he could see. “Oh Ren Zu, I can feel your determination in getting back your eldest son. I am willing to help you, but I urge you not to give up on this goal. Because when you give up, I will leave you for good,” Faith Gu said with concern. Ren Zu found Courage Gu next. Courage Gu and Hope Gu were good companions. Ren Zu had Hope Gu, and thus saw Courage Gu occasionally; he had a decent relationship with it. After getting Courage Gu's help, Ren Zu came to the Door of Life and Death, entering the Road of Death. The Road of Death was pure darkness, the large number of Suffering Gu were like yellow fireflies, swarming towards Ren Zu. At this time, Courage Gu shone brightly, chasing away the Suffering Gu for Ren Zu. Courage was needed to face death. Ren Zu succeeded in going down; his body turned whiter as it turned hollow, gradually turning into a ghost. He could “see” again. When he got to the end of the road, a midst the calm darkness, he saw Fairness Gu. He was extremely shocked by Fairness Gu's huge body, exclaiming: “You are Fairness Gu? Why is your body so huge? A mountain is a speck of dust compared to you. The sea is like a droplet compared to you.” Fairness Gu's voice was grand: “Life and death are the greatest fairness in this world; when I am inside the Door of Life and Death, my body will become enormous. Oh Ren Zu, you are here for your son right. Feel free to go; he is right there.” Ren Zu was overjoyed upon seeing his son and ran towards him. Verdant Great Sun had turned into a white ghost and was lying beside a lake, scooping out the water with a bowl and drinking it.</p><p>The water was like wine with its fragrance pervading the area. Verdant Great Sun drank it with utmost satisfaction. “My son don't drink anymore. Come, let's go back,” Ren Zu walked towards Verdant Great Sun and shouted. “Esteemed father, how did you come here? This is great; let's drink together,” Verdant Great Sun opened his hazy eyes and looked at Ren Zu. Ren Zu seized the wine bowl from him and said with exasperation: “Don't drink anymore; you only know how to drink wine! Everyone knows there is a bewitching lake in the land of the dead, and its water is the Bewitching Soup. When ghosts drink it, they become muddle-headed and lose the desire to leave.” Verdant Great Sun, however, refuted: “Father, you are wrong. This is not the Bewitching Soup; it is the Soul Calming Wine. It can calm down your soul and remove all the impurities; your soul will no longer be restless, and you will experience utmost tranquility in your heart. This is one of the best quality wines in this world.” “I don't care what wine it is; you have to follow me back,” Ren Zu pulled Verdant Great Sun's hand, but found Verdant Great Sun was as heavy as a mountain and could not be budged. Verdant Great Sun shook his head: “Some people, upon death, will be as heavy as a mountain. Some people, upon death, will be light as a feather. Father, I had Reputation Gu in my life and died after bathing in the light of glory. When I arrived here, my body had become heavier than a mountain; I cannot even walk a single step and can only lie down here.” “What!” Ren Zu immediately felt gloomy and anxiously shouted, “I told you before, a tall tree attracts the wind; reputation is not always a good thing. Throw away the Reputation Gu.” Verdant Great Sun shook his head and sighed: “We were not born with fame and fortune; we also cannot take them with us after death. After I died, Reputation Gu left me. It is Fixed Immortal Travel Gu that has accompanied me.” Fixed Immortal Travel Gu could bring Verdant Great Sun's soul out of the Door of Life and Death or even bring him to any place in the outside world. However, Verdant Great Sun could only truly resurrect after walking through the Road of Life. “What do we do now...” Ren Zu realized he had been played by Wisdom Gu. Although he had arrived at the deepest part of the Door of Life and Death — a death domain that had endless darkness, and has also found Verdant Great Sun, he discovered he could not bring back his son.</p><p>At this moment, Fairness Gu spoke: “Oh Ren Zu, do you still not understand? There are only two paths in Door of Life and Death, both appeared because of Fate Gu. Life and death are determined by fate! All living beings live and thus die; this is the cycle that allows the universe to continue existing. Your eldest son Verdant Great Sun died; this is fate and you should accept it. Moreover, he is living a good life here, Obsession Death Domain is the world's most tranquil place. He is drinking the world's supreme quality wine and is free from all the worries of the outside world; do you know how blissful this is?” If the soul was weak, it could be easily resolved by using guts Gu to strengthen his soul. There were many guts Gu on Dang Hun mountain, these were all items of the highest quality for strengthening the soul. But the irritation of the soul required pacifying the soul. The best way to pacify the soul was to use the Bewitching Lake’s water, found in Obsession Death Domain. It was praised by Verdant Great Sun as an excellent wine. Ren Zu stood there and looked at his flesh and blood for a while before heaving a deep sigh. He knew he could not bring back his son's soul, at least it was like that for now. He bid farewell to the Fairness Gu and also his son and left the Obsession Death Domain. He stepped on another path this time; it was the Road of Life which went from darkness to light. However, Ren Zu soon realized walking this path was countless times more difficult than when he walked in through theRoad of Death. There were many more Suffering Gu on the Road of Life than the Road of Death. When Ren Zu had walked through the Road of Death, his journey became smoother along the way and the Suffering Gu lesser the further he walked. But as he walked through the Road of Life, there was not only more Suffering Gu, but every step he took would cause much more Suffering Gu to fly over and obstruct him. Courage Gu could not resist them any longer: “Ren Zu, there are too many Suffering Gu, and they will continue to increase. There is peace in death, but life has endless suffering. Go to Dang Hun Mountain quickly and break some Gut stones. If you want to survive, just relying on courage won't be enough; you need guts too.” Ren Zu hurried forward to Dang Hun Mountain and picked the guts Gu while enduring the tremors in his soul. With guts Gu's help, his soul strengthened greatly, and although he still suffered the tremors, it was not of much worry.</p><p>He passed through Dang Hun Mountain and arrived at Luo Po Valley. Luo Po Valley was a maze with winding and twisted paths. Occasionally, there were large areas of Bewilderment Fog which could cause the soul to loosen, and occasionally, Luo Po Wind would blow through and cut apart the soul. Ren Zu had fallen into the lowest part of my life and could not distinguish the directions. Because his soul was strengthened by Guts Gu, it was loosening in the Bewilderment Fog at a slower speed. The loosened soul was cut apart by the Luo Po Wind. Ren Zu almost completely lost his way, but fortunately at this time, Faith Gu flew out and shone upon his path. The best way to strengthen the soul is Dang Hun mountain’s guts Gu, the best way to refine the soul is Luo Po valley’s bewilderment fog and Luo Po wind, as for pacifying the soul, it would be the pacifying soul soup in Bewitching Lake. But if it was used excessively, it would get rid of even the essence of their soul. Ren Zu was able to walk out of the Luo Po Valley with only the essence of his soul remaining. He let out a huge breath of relief and could feel he was close to success. He walked to the Reverse Flow River; this was the final barrier in the Road of Life. It was extremely difficult to move against the stream. Endless suffering pushed upon him, causing him to make very slow progress. However, he forcibly persevered and walked towards the light. “Almost there.” He looked at the success that was just ahead of him; only one final step remained. He let out a breath of turbid air and relaxed, forgetting the warning of the Wisdom Gu; he stopped. This brief pause caused Ren Zu to be washed away by the river. Life was not easy; it was like a boat moving against the flow of the river. If you do not continue moving forward, you will be pushed back. Ren Zu was washed away by the river into the depths of Luo Po Valley, he was so tired he could not budge a bit and was trapped in the Luo Po Valley.</p></div>
+            <div class="pager">
+              <div><div class="small">Previous</div><a href="/chapters/part-10-11-not-knowing-ones-limits/">Part 10 &amp; 11: Not knowing one’s limits</a></div>
+              <div style="text-align:right"><div class="small">Next</div><a href="/chapters/part-13-love-is-cruel/">Part 13: Love is cruel</a></div>
+            </div>
+          
     </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
+  
       </div>
+      <div class="stack">
+        
+    <section class="card">
+      <div class="eyebrow">At a glance</div>
+      <h2 class="section-title">Why this page matters</h2>
+      
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            <div class="stats"><div class="stat"><strong>Part 12</strong><span class="small">Archive label</span></div><div class="stat"><strong>5</strong><span class="small">Reading blocks</span></div><div class="stat"><strong>6</strong><span class="small">Related guide links</span></div></div>
+          
+    </section>
+  
+        
+    <section class="card">
+      <div class="eyebrow">Related guides</div>
+      <h2 class="section-title">Explore the ideas around this chapter</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Hope Gu</div>
       <h3><a href="/themes/hope-gu/">Hope Gu Explained Theme Guide</a></h3>
-      <p>Why Hope Gu matters, what it represents, and where it shapes the story most strongly.</p>
+      <p>Why Hope Gu matters, what it symbolizes, and where it shapes the story most strongly.</p>
       <a href="/themes/hope-gu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Hope Gu meaning</div>
+      <h3><a href="/guides/hope-gu-meaning/">Hope Gu Meaning | Key Moments and Theme Guide</a></h3>
+      <p>An original guide to what Hope Gu means and why readers remember it so strongly.</p>
+      <a href="/guides/hope-gu-meaning/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
+      <div class="eyebrow">Fate Gu</div>
+      <h3><a href="/themes/fate-gu/">Fate Gu Explained Theme Guide</a></h3>
+      <p>A focused guide to Fate Gu itself: what it represents and why it towers over the work.</p>
+      <a href="/themes/fate-gu/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Fate and Freedom</div>
       <h3><a href="/themes/fate-and-freedom/">Fate and Freedom in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>A guide to Fate Gu, rebellion, and the long struggle for freedom.</p>
       <a href="/themes/fate-and-freedom/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Wisdom, Strength, and Self</div>
       <h3><a href="/themes/wisdom-strength-and-self/">Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.</p>
@@ -296,6 +407,9 @@
     </article>
   </div>
     </section>
+  
+      </div>
+    </div>
   
   </main>
   

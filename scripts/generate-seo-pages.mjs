@@ -52,7 +52,7 @@ function extractChapters(indexHtml) {
   }
 
   const arraySource = indexHtml.slice(start + 'window.__CHAPTERS__ = '.length, i + 1);
-  const chapters = eval(arraySource); // trusted local source from the repository
+  const chapters = eval(arraySource); // trusted local repository source
   if (!Array.isArray(chapters) || chapters.length === 0) throw new Error('Chapter array was empty');
   return chapters;
 }
@@ -92,7 +92,7 @@ function paragraphize(body) {
     .filter(Boolean);
 }
 
-function teaser(body, max = 160) {
+function teaser(body, max = 170) {
   const first = paragraphize(body)[0] || cleanWhitespace(body);
   if (first.length <= max) return first;
   return `${first.slice(0, max - 1).trimEnd()}…`;
@@ -107,7 +107,7 @@ function chapterTitle(chapter) {
 }
 
 function descriptionForChapter(chapter) {
-  return cleanWhitespace(`Read ${chapterTitle(chapter)} from ${SITE_NAME}. ${teaser(chapter.body, 110)}`);
+  return cleanWhitespace(`Read ${chapterTitle(chapter)} from ${SITE_NAME}. ${teaser(chapter.body, 120)}`);
 }
 
 function ensureDir(dirPath) {
@@ -133,37 +133,52 @@ function writePage(urlPath, html) {
 function css() {
   return `
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -172,13 +187,14 @@ function css() {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -188,36 +204,40 @@ function css() {
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -228,81 +248,142 @@ function css() {
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -310,6 +391,17 @@ function css() {
       gap: 12px 18px;
       margin-top: 10px;
       font-size: 0.95rem;
+    }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
     }
   `;
 }
@@ -340,6 +432,16 @@ function baseHead({ title, description, canonicalUrl, type = 'website' }) {
   `;
 }
 
+function websiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: `${SITE_URL}/`,
+    inLanguage: 'en',
+  };
+}
+
 function bookSchema(extra = {}) {
   return {
     '@context': 'https://schema.org',
@@ -350,16 +452,6 @@ function bookSchema(extra = {}) {
     inLanguage: 'en',
     image: HERO_IMAGE,
     ...extra,
-  };
-}
-
-function websiteSchema() {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: SITE_NAME,
-    url: `${SITE_URL}/`,
-    inLanguage: 'en',
   };
 }
 
@@ -400,43 +492,91 @@ const pageCatalog = {
     href: '/about/',
     label: 'About',
     title: 'About The Legends of Ren Zu Reader | The Omniarch',
-    blurb: 'What this site is, why the search-friendly layer exists, and how it connects to the immersive reader.',
+    blurb: 'Why the site has both an immersive reader and a search-friendly knowledge layer.',
   },
   guidesHub: {
     href: '/guides/',
-    label: 'Guides',
-    title: 'Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order',
-    blurb: 'A hub for beginner-friendly guides, reading order, character context, and theme explainers.',
+    label: 'Guide hub',
+    title: 'Legends of Ren Zu Guides | Reader Guides, Explainers, and Summaries',
+    blurb: 'A hub for reading order, summaries, explainers, and beginner-friendly entry points.',
   },
   readingOrder: {
     href: '/guides/reading-order/',
     label: 'Reading order',
     title: 'Legends of Ren Zu Reading Order | Chapter Guide and Best Place to Start',
-    blurb: 'Where to start, what the combined chapter labels mean, and how to move between the archive and the immersive reader.',
+    blurb: 'Where to begin, how the combined parts work, and the cleanest reading route.',
   },
-  renZu: {
-    href: '/characters/ren-zu/',
-    label: 'Ren Zu',
-    title: 'Who Is Ren Zu? | The Legends of Ren Zu Character Guide',
-    blurb: 'A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.',
+  renZuSummary: {
+    href: '/guides/ren-zu-summary/',
+    label: 'Ren Zu summary',
+    title: 'Ren Zu Summary | The Legends of Ren Zu Guide',
+    blurb: 'A detailed, original summary of Ren Zu as a figure, a mythic protagonist, and a human symbol.',
+  },
+  legendsExplained: {
+    href: '/guides/the-legends-of-ren-zu-explained/',
+    label: 'Explained',
+    title: 'The Legends of Ren Zu Explained | Beginner Guide',
+    blurb: 'A plain-language introduction to what the work is, how to read it, and why it matters.',
+  },
+  bestChapters: {
+    href: '/guides/best-ren-zu-chapters/',
+    label: 'Best chapters',
+    title: 'Best Ren Zu Chapters to Start With | Reader Guide',
+    blurb: 'A curated list of chapters to sample first if you want the strongest emotional and philosophical entry points.',
+  },
+  hopeMeaning: {
+    href: '/guides/hope-gu-meaning/',
+    label: 'Hope Gu meaning',
+    title: 'Hope Gu Meaning | Key Moments and Theme Guide',
+    blurb: 'An original guide to what Hope Gu means and why readers remember it so strongly.',
   },
   charactersHub: {
     href: '/characters/',
     label: 'Characters',
     title: 'Legends of Ren Zu Characters | Starting Character Guide',
-    blurb: 'A clean starting point for character-focused pages, beginning with Ren Zu himself.',
+    blurb: 'A clean hub for character pages focused on the names readers are most likely to search.',
+  },
+  renZu: {
+    href: '/characters/ren-zu/',
+    label: 'Ren Zu',
+    title: 'Who Is Ren Zu? | The Legends of Ren Zu Character Guide',
+    blurb: 'A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.',
+  },
+  verdant: {
+    href: '/characters/verdant-great-sun/',
+    label: 'Verdant Great Sun',
+    title: 'Who Is Verdant Great Sun? | Character Guide',
+    blurb: 'A guide to Ren Zu’s eldest son, his symbolism, and why his arc matters to the work’s early worldview.',
+  },
+  desolate: {
+    href: '/characters/desolate-ancient-moon/',
+    label: 'Desolate Ancient Moon',
+    title: 'Who Is Desolate Ancient Moon? | Character Guide',
+    blurb: 'A guide to Ren Zu’s daughter, sacrifice, rescue, and the emotional force of filial struggle.',
+  },
+  northern: {
+    href: '/characters/northern-dark-ice-soul/',
+    label: 'Northern Dark Ice Soul',
+    title: 'Who Is Northern Dark Ice Soul? | Character Guide',
+    blurb: 'A guide to one of Ren Zu’s most symbolically charged children: darkness, distance, and difficult purpose.',
+  },
+  boundless: {
+    href: '/characters/boundless-forest-samsara/',
+    label: 'Boundless Forest Samsara',
+    title: 'Who Is Boundless Forest Samsara? | Character Guide',
+    blurb: 'A guide to Boundless Forest Samsara, Ordinary Abyss, scale, horizon, and the politics of limitation.',
   },
   themesHub: {
     href: '/themes/',
     label: 'Themes',
-    title: 'Legends of Ren Zu Themes | Hope, Fate, Freedom, Wisdom, and Self',
-    blurb: 'Theme pages explaining the major ideas that repeat through the legends.',
+    title: 'Legends of Ren Zu Themes | Hope, Fate, Freedom, Wisdom, Strength, and Self',
+    blurb: 'A thematic hub for the big ideas readers search for most often.',
   },
   hopeGu: {
     href: '/themes/hope-gu/',
     label: 'Hope Gu',
     title: 'Hope Gu Explained | The Legends of Ren Zu Theme Guide',
-    blurb: 'Why Hope Gu matters, what it represents, and where it shapes the story most strongly.',
+    blurb: 'Why Hope Gu matters, what it symbolizes, and where it shapes the story most strongly.',
   },
   fateFreedom: {
     href: '/themes/fate-and-freedom/',
@@ -450,11 +590,23 @@ const pageCatalog = {
     title: 'Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide',
     blurb: 'How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.',
   },
+  fateGu: {
+    href: '/themes/fate-gu/',
+    label: 'Fate Gu',
+    title: 'Fate Gu Explained | The Legends of Ren Zu Theme Guide',
+    blurb: 'A focused guide to Fate Gu itself: what it represents and why it towers over the work.',
+  },
+  freedomGu: {
+    href: '/themes/freedom-gu/',
+    label: 'Freedom Gu',
+    title: 'Freedom Gu Explained | The Legends of Ren Zu Theme Guide',
+    blurb: 'A guide to what Freedom Gu means, why it is costly, and why it never stays light for long.',
+  },
   faq: {
     href: '/faq/',
     label: 'FAQ',
     title: 'Legends of Ren Zu FAQ | Chapters, Ren Zu, Hope Gu, and Reading Guide',
-    blurb: 'Short answers to the questions new readers and searchers usually ask first.',
+    blurb: 'Fast answers to the questions new readers and search visitors ask first.',
   },
 };
 
@@ -499,7 +651,7 @@ function footerHtml() {
   `;
 }
 
-function renderPage({ canonicalPath, title, description, heroEyebrow, heroTitle, heroLead, bodyHtml, type = 'website', schema = [] }) {
+function renderPage({ canonicalPath, title, description, heroEyebrow, heroTitle, heroLead, heroChips = [], bodyHtml, type = 'website', schema = [] }) {
   const head = baseHead({ title, description, canonicalUrl: pathToUrl(canonicalPath), type });
   return `<!DOCTYPE html>
 <html lang="en">
@@ -510,10 +662,11 @@ ${head}
 <body>
   ${navHtml()}
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">${htmlEscape(heroEyebrow)}</div>
       <h1>${htmlEscape(heroTitle)}</h1>
       <p class="lead">${htmlEscape(heroLead)}</p>
+      ${heroChips.length ? `<div class="chip-row">${heroChips.map((chip) => `<span class="chip">${htmlEscape(chip)}</span>`).join('')}</div>` : ''}
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -532,7 +685,7 @@ ${head}
 function guideCardHtml(key) {
   const page = pageCatalog[key];
   return `
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">${htmlEscape(page.label)}</div>
       <h3><a href="${page.href}">${htmlEscape(page.title.replace(` | ${SITE_NAME}`, '').replace(' | The Omniarch', ''))}</a></h3>
       <p>${htmlEscape(page.blurb)}</p>
@@ -543,6 +696,10 @@ function guideCardHtml(key) {
 
 function guideGrid(keys) {
   return `<div class="grid">${keys.map(guideCardHtml).join('')}</div>`;
+}
+
+function statGrid(items) {
+  return `<div class="stats">${items.map((item) => `<div class="stat"><strong>${htmlEscape(item.value)}</strong><span class="small">${htmlEscape(item.label)}</span></div>`).join('')}</div>`;
 }
 
 function chapterLink(num, label = null) {
@@ -560,24 +717,54 @@ function chapterReferenceList(items) {
     .filter(Boolean)
     .map((link) => `<li>${link}</li>`)
     .join('');
-  return `<ul class="link-list">${rows}</ul>`;
+  return `<ul>${rows}</ul>`;
 }
 
-function chapterQuickCards(chapter) {
-  const text = chapter.body.toLowerCase();
+function sectionCard({ id = '', eyebrow = '', title = '', content = '' }) {
+  return `
+    <section class="card"${id ? ` id="${id}"` : ''}>
+      ${eyebrow ? `<div class="eyebrow">${htmlEscape(eyebrow)}</div>` : ''}
+      ${title ? `<h2 class="section-title">${htmlEscape(title)}</h2>` : ''}
+      ${content}
+    </section>
+  `;
+}
+
+function tocCard(items) {
+  return sectionCard({
+    eyebrow: 'Page map',
+    title: 'Quick navigation',
+    content: `<div class="toc">${items.map((item) => `<a href="#${item.id}">${htmlEscape(item.label)}</a>`).join('')}</div>`,
+  });
+}
+
+function textBlocks(paragraphs) {
+  return paragraphs.map((p) => `<p>${htmlEscape(p)}</p>`).join('');
+}
+
+function bulletList(items) {
+  return `<ul>${items.map((item) => `<li>${item}</li>`).join('')}</ul>`;
+}
+
+function relatedChapterKeysFromText(chapter) {
+  const t = chapter.body.toLowerCase();
   const keys = ['renZu'];
-  if (text.includes('hope')) keys.push('hopeGu');
-  if (text.includes('fate') || text.includes('freedom')) keys.push('fateFreedom');
-  if (text.includes('wisdom') || text.includes('strength') || text.includes('self gu') || text.includes(' self ')) keys.push('wisdomStrengthSelf');
+  if (t.includes('hope')) keys.push('hopeGu', 'hopeMeaning');
+  if (t.includes('fate')) keys.push('fateGu', 'fateFreedom');
+  if (t.includes('freedom')) keys.push('freedomGu', 'fateFreedom');
+  if (t.includes('wisdom') || t.includes('strength') || t.includes('self gu') || t.includes(' self ')) keys.push('wisdomStrengthSelf');
+  if (t.includes('verdant great sun')) keys.push('verdant');
+  if (t.includes('desolate ancient moon')) keys.push('desolate');
+  if (t.includes('northern dark ice soul')) keys.push('northern');
+  if (t.includes('boundless forest samsara')) keys.push('boundless');
   keys.push('guidesHub');
-  const unique = [...new Set(keys)].slice(0, 4);
-  return guideGrid(unique);
+  return [...new Set(keys)].slice(0, 6);
 }
 
 function chapterArchivePage() {
   const canonicalPath = '/chapters/';
   const title = `${SITE_NAME} Chapters | Archive, Reader, Reading Order, and Lore Guide`;
-  const description = `Browse every available chapter entry from ${SITE_NAME}, then jump into reading guides, theme explainers, and the immersive Omniarch reader.`;
+  const description = `Browse every available chapter entry from ${SITE_NAME}, then jump into guides, theme explainers, character pages, and the immersive reader.`;
   const schema = [
     websiteSchema(),
     bookSchema({ url: `${SITE_URL}/`, description: `${SITE_NAME} by ${AUTHOR}.` }),
@@ -598,43 +785,47 @@ function chapterArchivePage() {
   `).join('');
 
   const bodyHtml = `
-    <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <span>Chapters</span>
-      </nav>
-      <div class="meta">
-        <span>${chapters.length} indexed entries</span>
-        <span>Original work reference: Reverend Insanity</span>
-        <span>Author: ${AUTHOR}</span>
-      </div>
-      <p class="small">This archive is the search-friendly layer built around the fragile main reader. It gives Google stable URLs, while still sending human readers back into the immersive experience whenever they want it.</p>
-    </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Start here</div>
-        <h2 class="section-title">Quick guides before you read</h2>
-        <p class="small">If someone lands here from search, these supporting pages help them understand Ren Zu, Hope Gu, Fate, Freedom, and the best reading order.</p>
-      </div>
-      ${guideGrid(['guidesHub', 'readingOrder', 'renZu', 'hopeGu', 'fateFreedom', 'faq'])}
-    </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Archive</div>
-        <h2 class="section-title">All available chapters</h2>
-      </div>
-      <div class="grid">${cards}</div>
-    </section>
+    ${sectionCard({
+      eyebrow: 'Archive overview',
+      title: 'The searchable chapter archive',
+      content: `
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a><span>›</span><span>Chapters</span>
+        </nav>
+        <div class="meta">
+          <span>${chapters.length} indexed entries</span>
+          <span>Original work reference: Reverend Insanity</span>
+          <span>Author: ${AUTHOR}</span>
+        </div>
+        <p class="small">This page is built for stability, search discovery, and deep linking. It sits beside the immersive reader rather than replacing it.</p>
+        ${statGrid([
+          { value: `${chapters.length}`, label: 'Indexed entries' },
+          { value: '44', label: 'Named chapter numbers' },
+          { value: '10+', label: 'Guide pages live' },
+          { value: '1', label: 'Immersive reader experience' },
+        ])}
+      `,
+    })}
+    ${sectionCard({
+      eyebrow: 'Start here',
+      title: 'Support pages for searchers and new readers',
+      content: `<p class="small">These pages answer the most likely questions people search before or during reading.</p>${guideGrid(['guidesHub', 'readingOrder', 'legendsExplained', 'renZuSummary', 'renZu', 'hopeGu', 'fateGu', 'faq'])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Full archive',
+      title: 'Every available chapter page',
+      content: `<div class="grid">${cards}</div>`,
+    })}
   `;
 
   return renderPage({
     canonicalPath,
     title,
     description,
-    heroEyebrow: `${SITE_NAME} · Chapter Archive`,
+    heroEyebrow: `${SITE_NAME} · Chapter archive`,
     heroTitle: `${SITE_NAME} Chapters`,
-    heroLead: 'Explore the available entries, open any chapter on its own search-friendly page, or move through the supporting guides before jumping back into the full reader.',
+    heroLead: 'A stable archive for direct chapter reading, indexing, internal discovery, and fast jumps back into the immersive experience.',
+    heroChips: ['Search-friendly', 'Direct URLs', 'Guide-linked', 'Reader companion'],
     bodyHtml,
     schema,
   });
@@ -644,9 +835,10 @@ function chapterPage(chapter, index) {
   const canonicalPath = `/chapters/${chapter.slug}/`;
   const title = `${chapterTitle(chapter)} | ${SITE_NAME}`;
   const description = descriptionForChapter(chapter);
-  const paragraphs = paragraphize(chapter.body).map((p) => `<p>${htmlEscape(p)}</p>`).join('\n');
+  const paragraphs = paragraphize(chapter.body).map((p) => `<p>${htmlEscape(p)}</p>`).join('');
   const prev = chapters[index - 1];
   const next = chapters[index + 1];
+  const relatedGuideKeys = relatedChapterKeysFromText(chapter);
 
   const schema = [
     websiteSchema(),
@@ -675,39 +867,48 @@ function chapterPage(chapter, index) {
   ];
 
   const bodyHtml = `
-    <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>${htmlEscape(chapterTitle(chapter))}</span>
-      </nav>
-      <div class="meta">
-        <span>Part ${htmlEscape(chapter.num)}</span>
-        <span>${htmlEscape(AUTHOR)}</span>
-        <span>${htmlEscape(BRAND)} reader companion</span>
+    <div class="two-col">
+      <div class="stack">
+        ${sectionCard({
+          eyebrow: 'Chapter text',
+          title: chapterTitle(chapter),
+          content: `
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>${htmlEscape(chapterTitle(chapter))}</span>
+            </nav>
+            <div class="meta">
+              <span>Part ${htmlEscape(chapter.num)}</span>
+              <span>${htmlEscape(AUTHOR)}</span>
+              <span>${htmlEscape(BRAND)} reader companion</span>
+            </div>
+            <div class="chapter-body">${paragraphs}</div>
+            <div class="pager">
+              <div>${prev ? `<div class="small">Previous</div>${chapterLink(prev.num)}` : ''}</div>
+              <div style="text-align:right">${next ? `<div class="small">Next</div>${chapterLink(next.num)}` : ''}</div>
+            </div>
+          `,
+        })}
       </div>
-      <div class="chapter-body">
-        ${paragraphs}
+      <div class="stack">
+        ${sectionCard({
+          eyebrow: 'At a glance',
+          title: 'Why this page matters',
+          content: `
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            ${statGrid([
+              { value: `Part ${chapter.num}`, label: 'Archive label' },
+              { value: `${Math.max(1, paragraphize(chapter.body).length)}`, label: 'Reading blocks' },
+              { value: `${relatedGuideKeys.length}`, label: 'Related guide links' },
+            ])}
+          `,
+        })}
+        ${sectionCard({
+          eyebrow: 'Related guides',
+          title: 'Explore the ideas around this chapter',
+          content: guideGrid(relatedGuideKeys),
+        })}
       </div>
-      <div class="pager">
-        <div>
-          ${prev ? `<div class="small">Previous</div>${chapterLink(prev.num)}` : ''}
-        </div>
-        <div style="text-align:right">
-          ${next ? `<div class="small">Next</div>${chapterLink(next.num)}` : ''}
-        </div>
-      </div>
-    </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
-      </div>
-      ${chapterQuickCards(chapter)}
-    </section>
+    </div>
   `;
 
   return renderPage({
@@ -717,6 +918,7 @@ function chapterPage(chapter, index) {
     heroEyebrow: SITE_NAME,
     heroTitle: chapterTitle(chapter),
     heroLead: description,
+    heroChips: ['Direct chapter URL', 'Guide-linked', 'Search-indexable'],
     bodyHtml,
     type: 'article',
     schema,
@@ -726,76 +928,87 @@ function chapterPage(chapter, index) {
 const faqEntries = [
   {
     q: 'What is The Legends of Ren Zu?',
-    a: 'It is a mythic narrative associated with Reverend Insanity that follows Ren Zu, the ancestor of humanity, as he struggles against suffering, limitation, and fate itself.',
+    a: 'It is a mythic narrative associated with Reverend Insanity that follows Ren Zu, the ancestor of humanity, through hardship, bargaining, revelation, and defiance.',
   },
   {
     q: 'Who is Ren Zu?',
-    a: 'Ren Zu is the first human and the central figure of the legends. He is presented as a primordial ancestor whose life becomes a chain of bargains, losses, revelations, and acts of defiance.',
+    a: 'Ren Zu is the first human and the emotional center of the legends. He is the figure through whom the work explores loneliness, effort, loss, selfhood, and freedom.',
   },
   {
     q: 'What is Hope Gu?',
-    a: 'Hope Gu is one of the most important symbolic Gu in the entire work. It repeatedly represents the ability to keep moving through despair even after strength, wisdom, and certainty fail.',
+    a: 'Hope Gu is one of the most memorable symbolic Gu in the work. It repeatedly represents the ability to keep moving when strength, certainty, and comfort have already failed.',
   },
   {
     q: 'Do I need to read the chapters in order?',
-    a: 'Yes. The cleanest reading order is from Part 1 onward, because later entries build on earlier symbols, family relationships, and philosophical themes.',
+    a: 'Yes. The cleanest path is from Part 1 onward, because later entries build on earlier symbols, family arcs, and conceptual threads.',
   },
   {
     q: 'Why does this site have separate chapter pages and an immersive reader?',
-    a: 'The immersive reader is the richer reading experience for people. The separate static chapter pages exist so search engines can crawl and understand the content more clearly.',
+    a: 'The immersive reader is better for human experience. The static pages exist so search engines can crawl the material more clearly and readers can share stable URLs.',
   },
   {
-    q: 'Why does Google still say some pages are unknown?',
-    a: 'That is normal right after a sitemap submission or indexing request. Search Console often needs time to process the sitemap, crawl the pages, and refresh its reports.',
+    q: 'Why does Search Console say some URLs are unknown to Google?',
+    a: 'That is normal right after sitemap submission and indexing requests. Google often needs time to crawl, process, and refresh the reporting layer.',
   },
 ];
+
+function standardSchema(canonicalPath, title, description, pageType, breadcrumbTrail) {
+  return [
+    websiteSchema(),
+    webPageSchema({ pageType, name: title, url: pathToUrl(canonicalPath), description }),
+    breadcrumbSchema(breadcrumbTrail),
+  ];
+}
 
 function aboutPage() {
   const canonicalPath = '/about/';
   const title = pageCatalog.about.title;
-  const description = 'Learn what this reader project is, why the search-friendly pages exist, and how they fit around the main Legends of Ren Zu experience.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'AboutPage', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'About', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
+  const description = 'Learn why this project has an immersive reader, a chapter archive, and a growing knowledge layer built for search and discoverability.';
+  const schema = standardSchema(canonicalPath, title, description, 'AboutPage', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'About', url: pathToUrl(canonicalPath) },
+  ]);
 
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <span>About</span>
-      </nav>
-      <div class="callout">This site now has two layers: the immersive reader for human experience and a stable static page layer for search engines, direct linking, and discoverability.</div>
-      <div>
-        <h2 class="section-title">Why this site exists</h2>
-        <p>The Omniarch reader was designed to feel atmospheric and premium. That works well for readers, but search engines prefer stable pages with plain HTML, individual titles, and internal links. The search layer was added so the project can compete for branded and related queries without tearing apart the existing reader.</p>
-        <p>In other words, the chapter archive, guides, character pages, and theme explainers are here to make the site easier to discover, easier to share, and easier to understand at a glance.</p>
-      </div>
-      <div>
-        <h2 class="section-title">What to use first</h2>
-        <ul class="list">
-          <li>Use the immersive reader when you want the full experience.</li>
-          <li>Use the chapter archive when you want direct chapter URLs.</li>
-          <li>Use the guides if you arrived from search and need context first.</li>
-          <li>Use the FAQ if you want the shortest answers possible.</li>
-        </ul>
-      </div>
-      ${guideGrid(['guidesHub', 'readingOrder', 'faq'])}
-    </section>
+    ${sectionCard({
+      eyebrow: 'Project structure',
+      title: 'Why the site now has multiple layers',
+      content: `${textBlocks([
+        'The immersive reader was built for atmosphere, rhythm, and experience. Search engines, however, understand stable HTML pages more easily than a single app-like interface. That is why this project now has a second layer: a chapter archive plus a growing library of original guide pages.',
+        'The goal is not to replace the reader. The goal is to let the reader stay dramatic and fragile while the companion layer becomes easy to crawl, easy to share, and easy to understand for someone discovering the project for the first time.',
+      ])}${statGrid([
+        { value: 'Reader', label: 'Immersive experience' },
+        { value: 'Archive', label: 'Stable chapter URLs' },
+        { value: 'Guides', label: 'Related-search support' },
+        { value: 'FAQ', label: 'Fast answers' },
+      ])}`,
+    })}
+    ${sectionCard({
+      id: 'use-cases',
+      eyebrow: 'Use cases',
+      title: 'How to use the site well',
+      content: bulletList([
+        'Use the immersive reader when you want the richest interface and the strongest narrative atmosphere.',
+        'Use the chapter archive when you want direct links, stable search pages, or a cleaner crawlable structure.',
+        'Use the guides, theme pages, and character pages when you want context before reading or when you arrive from search.',
+        'Use the FAQ when you want short answers and then move outward into deeper pages.',
+      ]),
+    })}
+    ${sectionCard({
+      eyebrow: 'Next clicks',
+      title: 'Best supporting pages from here',
+      content: guideGrid(['guidesHub', 'readingOrder', 'legendsExplained', 'faq']),
+    })}
   `;
 
   return renderPage({
     canonicalPath,
     title,
     description,
-    heroEyebrow: 'About this project',
-    heroTitle: 'Why the site now has a search-friendly layer',
-    heroLead: 'The main reader stays intact, while supporting pages make the project easier to discover, crawl, and rank.',
+    heroEyebrow: 'About the project',
+    heroTitle: 'A reader experience with a search layer built around it',
+    heroLead: 'The immersive reader remains the emotional core, while the archive and guide pages make the project easier to discover, index, and share.',
+    heroChips: ['Reader-first', 'Search-supportive', 'Shareable URLs'],
     bodyHtml,
     schema,
   });
@@ -804,30 +1017,26 @@ function aboutPage() {
 function guidesHubPage() {
   const canonicalPath = '/guides/';
   const title = pageCatalog.guidesHub.title;
-  const description = 'Open beginner-friendly guides for Ren Zu, Hope Gu, Fate, Freedom, reading order, and the major ideas behind The Legends of Ren Zu.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'CollectionPage', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Guides', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
+  const description = 'Open detailed reading guides, explainers, summaries, and topic pages built around how people actually search for The Legends of Ren Zu.';
+  const schema = standardSchema(canonicalPath, title, description, 'CollectionPage', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Guides', url: pathToUrl(canonicalPath) },
+  ]);
 
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <span>Guides</span>
-      </nav>
-      <div class="callout">These pages are written as original companion material. Their job is to answer the questions people actually search for before they commit to reading the full text.</div>
-      <div>
-        <h2 class="section-title">Start here</h2>
-        <p>If someone searched for Ren Zu, Hope Gu, Fate Gu, or simply wanted to know where to begin, these are the right entry points.</p>
-      </div>
-      ${guideGrid(['readingOrder', 'renZu', 'hopeGu', 'fateFreedom', 'wisdomStrengthSelf', 'faq', 'about'])}
-    </section>
+    ${sectionCard({
+      eyebrow: 'Guide hub',
+      title: 'The cleanest entry points for new readers',
+      content: `${textBlocks([
+        'These guide pages are intentionally written as original companion content. Their purpose is to answer the questions readers search first, reduce confusion, and move people deeper into the archive with better context.',
+        'If you arrived here from Google, start with the explained page or the reading order. If you already know the project and want a sharper angle, open the summary, the best-chapters guide, or the Hope Gu meaning page.',
+      ])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Guides',
+      title: 'Detailed support pages',
+      content: guideGrid(['readingOrder', 'legendsExplained', 'renZuSummary', 'bestChapters', 'hopeMeaning', 'faq']),
+    })}
   `;
 
   return renderPage({
@@ -835,8 +1044,9 @@ function guidesHubPage() {
     title,
     description,
     heroEyebrow: 'Guide hub',
-    heroTitle: 'Legends of Ren Zu guides and explainers',
-    heroLead: 'A clean hub for new readers, search visitors, and anyone who wants context before diving deeper.',
+    heroTitle: 'Detailed guides for The Legends of Ren Zu',
+    heroLead: 'Reading order, plain-language explanations, chapter recommendations, and support pages designed for discovery and clarity.',
+    heroChips: ['Beginner-friendly', 'Original commentary', 'Search-focused'],
     bodyHtml,
     schema,
   });
@@ -845,44 +1055,68 @@ function guidesHubPage() {
 function readingOrderPage() {
   const canonicalPath = '/guides/reading-order/';
   const title = pageCatalog.readingOrder.title;
-  const description = 'Use this reading order page to start The Legends of Ren Zu from the right place and understand the combined part labels in the archive.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'Article', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Guides', url: `${SITE_URL}/guides/` },
-      { name: 'Reading order', url: pathToUrl(canonicalPath) },
-    ]),
+  const description = 'Use this page to start The Legends of Ren Zu in the right order and understand the archive structure without confusion.';
+  const schema = standardSchema(canonicalPath, title, description, 'Article', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Guides', url: `${SITE_URL}/guides/` },
+    { name: 'Reading order', url: pathToUrl(canonicalPath) },
+  ]);
+  const toc = [
+    { id: 'best-start', label: 'Best place to start' },
+    { id: 'combined-labels', label: 'Combined chapter labels' },
+    { id: 'sample-route', label: 'Sample route' },
+    { id: 'where-next', label: 'Where to go next' },
   ];
 
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/guides/">Guides</a>
-        <span>›</span>
-        <span>Reading order</span>
-      </nav>
-      <div>
-        <h2 class="section-title">Best place to start</h2>
-        <p>The best place to begin is simple: start at Part 1 and keep moving forward. The later entries make more sense when you experience the symbolic development in order.</p>
+    <div class="two-col">
+      <div class="stack">
+        ${sectionCard({
+          id: 'best-start',
+          eyebrow: 'Section 01',
+          title: 'Best place to start',
+          content: `${textBlocks([
+            'The cleanest reading order is the simplest one: start at Part 1 and move forward. The later entries rely on earlier emotional and symbolic foundations, so jumping randomly gives you fragments instead of structure.',
+            'This matters especially because the project is less like a normal chaptered novel and more like a chain of conceptual parables. Small ideas introduced early become much heavier later.',
+          ])}`,
+        })}
+        ${sectionCard({
+          id: 'combined-labels',
+          eyebrow: 'Section 02',
+          title: 'How the archive labels work',
+          content: `${textBlocks([
+            'Most archive entries map to a single numbered part, but a few are merged. Part 4 & 5 and Part 10 & 11 are presented as combined archive entries, so the total archive entry count is lower than the headline chapter count.',
+            'That is why the site shows 44 chapters but 42 entries. Nothing is missing. It is simply an archive design choice.',
+          ])}${statGrid([
+            { value: '44', label: 'Named chapter numbers' },
+            { value: '42', label: 'Archive entries' },
+            { value: '2', label: 'Combined entries' },
+          ])}`,
+        })}
+        ${sectionCard({
+          id: 'sample-route',
+          eyebrow: 'Section 03',
+          title: 'A strong sample route if you want the essentials first',
+          content: `${textBlocks([
+            'If you want the best representative path without opening every page immediately, start with the foundation, then jump to the pages that reveal the philosophical core most clearly.',
+          ])}${chapterReferenceList(['1', '2', '3', '21', '34', '39', '44'])}`,
+        })}
+        ${sectionCard({
+          id: 'where-next',
+          eyebrow: 'Section 04',
+          title: 'Where to go next after the reading order',
+          content: guideGrid(['legendsExplained', 'renZuSummary', 'bestChapters', 'faq']),
+        })}
       </div>
-      <div>
-        <h2 class="section-title">How the archive is labeled</h2>
-        <ul class="list">
-          <li>Most entries are single numbered parts.</li>
-          <li>Part 4 &amp; 5 and Part 10 &amp; 11 are combined entries in the archive.</li>
-          <li>The archive ends at Part 44 in the current site version.</li>
-        </ul>
+      <div class="stack">
+        ${tocCard(toc)}
+        ${sectionCard({
+          eyebrow: 'Quick note',
+          title: 'Use the right page for the right need',
+          content: `<div class="callout">Use the archive for stability, the immersive reader for atmosphere, and the guides for context. The strongest experience comes from combining all three intentionally.</div>`,
+        })}
       </div>
-      <div>
-        <h2 class="section-title">Suggested first clicks</h2>
-        ${chapterReferenceList(['1', '2', '3', '4 & 5', '12', '34', '44'])}
-      </div>
-      <div class="callout">If you want atmosphere and reader features, open the immersive reader. If you want stable URLs for revisiting, use the chapter archive pages.</div>
-    </section>
+    </div>
   `;
 
   return renderPage({
@@ -891,7 +1125,249 @@ function readingOrderPage() {
     description,
     heroEyebrow: 'Reading guide',
     heroTitle: 'Best reading order for The Legends of Ren Zu',
-    heroLead: 'Start with Part 1, read forward, and use this page whenever you need a clean overview of the archive structure.',
+    heroLead: 'If you want clarity instead of confusion, start at Part 1, read forward, and use this page whenever you need a structural overview.',
+    heroChips: ['Start here', 'Archive structure', 'Best chapter path'],
+    bodyHtml,
+    schema,
+  });
+}
+
+function renZuSummaryPage() {
+  const canonicalPath = '/guides/ren-zu-summary/';
+  const title = pageCatalog.renZuSummary.title;
+  const description = 'A detailed Ren Zu summary that explains his role, his arc, his symbolic meaning, and the chapters that best reveal him.';
+  const schema = standardSchema(canonicalPath, title, description, 'Article', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Guides', url: `${SITE_URL}/guides/` },
+    { name: 'Ren Zu summary', url: pathToUrl(canonicalPath) },
+  ]);
+  const toc = [
+    { id: 'core-summary', label: 'Core summary' },
+    { id: 'symbolic-role', label: 'Symbolic role' },
+    { id: 'major-turns', label: 'Major turns' },
+    { id: 'best-pages', label: 'Best pages to read next' },
+  ];
+
+  const bodyHtml = `
+    <div class="two-col">
+      <div class="stack">
+        ${sectionCard({
+          id: 'core-summary',
+          eyebrow: 'Section 01',
+          title: 'Ren Zu in one clear summary',
+          content: `${textBlocks([
+            'Ren Zu is the ancestor figure at the center of the legends: the first human, the bearer of impossible burdens, and the person through whom the work examines how humanity survives a world that is older, harsher, and more structurally powerful than any individual life.',
+            'He begins as prey among Predicaments and moves through a long sequence of bargains, losses, recoveries, children, separations, revelations, and acts of resistance. As his journey expands, he stops feeling like a single man and starts feeling like a symbolic map of human existence itself.',
+          ])}`,
+        })}
+        ${sectionCard({
+          id: 'symbolic-role',
+          eyebrow: 'Section 02',
+          title: 'Why his role is bigger than a normal protagonist',
+          content: `${textBlocks([
+            'Ren Zu does not only carry plot. He carries the work’s theory of humanity. Each hardship he faces turns into a question: what keeps a person moving when strength fails, when wisdom fails, when companionship breaks, when fate imposes structure, and when freedom comes with unbearable weight?',
+            'That is why understanding Ren Zu first makes everything else easier. Hope Gu, Fate Gu, Self Gu, and the arcs of his children all become clearer when you see them as pressures acting on the human condition through him.',
+          ])}${bulletList([
+            'He is the emotional center of the archive.',
+            'He is the conceptual center of the archive.',
+            'He is the best bridge between chapter reading and thematic interpretation.',
+          ])}`,
+        })}
+        ${sectionCard({
+          id: 'major-turns',
+          eyebrow: 'Section 03',
+          title: 'Major turns that define Ren Zu',
+          content: `${bulletList([
+            'His earliest survival through Strength, Wisdom, and Hope.',
+            'The loneliness that pushes him toward radical transformation.',
+            'The long sequence of fatherhood, loss, and separation from his children.',
+            'The descent into larger questions about ordinary life, extraordinary life, fate, and freedom.',
+            'The later struggle over selfhood, truth, and what remains when identity itself becomes unstable.',
+          ])}`,
+        })}
+        ${sectionCard({
+          id: 'best-pages',
+          eyebrow: 'Section 04',
+          title: 'Best chapters and pages to understand him quickly',
+          content: `${chapterReferenceList(['1', '2', '21', '34', '39', '44'])}${guideGrid(['renZu', 'hopeGu', 'fateFreedom', 'wisdomStrengthSelf'])}`,
+        })}
+      </div>
+      <div class="stack">
+        ${tocCard(toc)}
+        ${sectionCard({
+          eyebrow: 'Key takeaway',
+          title: 'The short version',
+          content: `<blockquote class="quote">Ren Zu matters because the legends use his life to ask what a human being still is when every borrowed certainty has already been stripped away.</blockquote>`,
+        })}
+      </div>
+    </div>
+  `;
+
+  return renderPage({
+    canonicalPath,
+    title,
+    description,
+    heroEyebrow: 'Guide page',
+    heroTitle: 'Ren Zu summary',
+    heroLead: 'A concise but detailed way to understand Ren Zu as a character, a symbol, and the human center of the entire work.',
+    heroChips: ['Summary', 'Symbolism', 'Best chapters'],
+    bodyHtml,
+    schema,
+  });
+}
+
+function legendsExplainedPage() {
+  const canonicalPath = '/guides/the-legends-of-ren-zu-explained/';
+  const title = pageCatalog.legendsExplained.title;
+  const description = 'A beginner-friendly explanation of what The Legends of Ren Zu is, how to read it, and what kinds of ideas it keeps returning to.';
+  const schema = standardSchema(canonicalPath, title, description, 'Article', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Guides', url: `${SITE_URL}/guides/` },
+    { name: 'Explained', url: pathToUrl(canonicalPath) },
+  ]);
+
+  const bodyHtml = `
+    ${sectionCard({
+      eyebrow: 'Beginner guide',
+      title: 'What The Legends of Ren Zu actually is',
+      content: `${textBlocks([
+        'At the simplest level, The Legends of Ren Zu is a mythic narrative built around Ren Zu, the ancestor of humanity. But reading it only at that level misses what makes it powerful. The work is also a chain of symbolic stories about survival, despair, courage, identity, family, and resistance to fate.',
+        'That is why readers often talk about it with unusual intensity. It operates as story, parable, and philosophical pressure all at once.',
+      ])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'How to read it',
+      title: 'Best mindset for reading the archive',
+      content: `${bulletList([
+        'Read it in order first, because the symbols gain weight over time.',
+        'Treat every Gu as both a literal force and a conceptual one.',
+        'Pay attention to how family, suffering, and selfhood keep reappearing.',
+        'Do not expect a normal heroic progression. Expect a harsh, recursive human struggle.',
+      ])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'What to track',
+      title: 'The biggest recurring ideas',
+      content: `${guideGrid(['hopeGu', 'fateGu', 'freedomGu', 'wisdomStrengthSelf', 'renZu'])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Where to begin',
+      title: 'The best first pages after this one',
+      content: `${chapterReferenceList(['1', '2', '34'])}${guideGrid(['readingOrder', 'renZuSummary', 'faq'])}`,
+    })}
+  `;
+
+  return renderPage({
+    canonicalPath,
+    title,
+    description,
+    heroEyebrow: 'Beginner guide',
+    heroTitle: 'The Legends of Ren Zu explained',
+    heroLead: 'If you want the plain-language version of what this work is and why people care about it, start here.',
+    heroChips: ['Plain language', 'New reader friendly', 'Theme-first'],
+    bodyHtml,
+    schema,
+  });
+}
+
+function bestChaptersPage() {
+  const canonicalPath = '/guides/best-ren-zu-chapters/';
+  const title = pageCatalog.bestChapters.title;
+  const description = 'A curated guide to the best Ren Zu chapters for first-time readers who want a strong emotional and philosophical starting set.';
+  const schema = standardSchema(canonicalPath, title, description, 'Article', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Guides', url: `${SITE_URL}/guides/` },
+    { name: 'Best chapters', url: pathToUrl(canonicalPath) },
+  ]);
+
+  const bodyHtml = `
+    ${sectionCard({
+      eyebrow: 'How this list works',
+      title: 'What makes a Ren Zu chapter worth starting with',
+      content: `${textBlocks([
+        'A good starter chapter should either establish the emotional engine of the legends, showcase a core theme clearly, or reveal why Ren Zu feels larger than a normal protagonist.',
+        'This list is not meant to replace reading in order. It is meant to help curious readers sample the strongest material before committing to the full archive.',
+      ])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Starter set',
+      title: 'Five high-value starting points',
+      content: `${chapterReferenceList(['1', '2', '21', '34', '44'])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Theme-heavy additions',
+      title: 'Best chapters if you want the philosophy quickly',
+      content: `${chapterReferenceList(['12', '32', '33', '35', '39'])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Follow-up pages',
+      title: 'After the chapter sampler, read these',
+      content: `${guideGrid(['readingOrder', 'renZuSummary', 'legendsExplained', 'hopeMeaning'])}`,
+    })}
+  `;
+
+  return renderPage({
+    canonicalPath,
+    title,
+    description,
+    heroEyebrow: 'Curated reading',
+    heroTitle: 'Best Ren Zu chapters to start with',
+    heroLead: 'A fast, high-value chapter list for readers who want to feel the force of the work before diving through every entry.',
+    heroChips: ['Starter list', 'Theme-heavy picks', 'Reader sampler'],
+    bodyHtml,
+    schema,
+  });
+}
+
+function hopeMeaningPage() {
+  const canonicalPath = '/guides/hope-gu-meaning/';
+  const title = pageCatalog.hopeMeaning.title;
+  const description = 'A detailed guide to Hope Gu meaning, symbolism, and the chapters where its force becomes clearest.';
+  const schema = standardSchema(canonicalPath, title, description, 'Article', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Guides', url: `${SITE_URL}/guides/` },
+    { name: 'Hope Gu meaning', url: pathToUrl(canonicalPath) },
+  ]);
+
+  const bodyHtml = `
+    ${sectionCard({
+      eyebrow: 'Meaning guide',
+      title: 'What Hope Gu means in simple terms',
+      content: `${textBlocks([
+        'Hope Gu matters because it stands for motion under despair. It is not comfort, naïve optimism, or a guaranteed happy ending. It is the capacity to keep taking another step even when the surrounding world still looks brutal.',
+        'That distinction is why Hope Gu stays memorable. It feels earned through pressure rather than handed out as consolation.',
+      ])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Why readers remember it',
+      title: 'Why Hope Gu hits so hard',
+      content: `${bulletList([
+        'It appears early enough to shape the emotional lens of the whole project.',
+        'It stays connected to Predicament rather than denying it.',
+        'It fits naturally into the larger question of what makes humans endure.',
+        'It keeps echoing even when later themes become darker or more abstract.',
+      ])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Key moments',
+      title: 'Best chapters for understanding Hope Gu',
+      content: `${chapterReferenceList(['1', '2', '17', '39'])}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Related pages',
+      title: 'Read these after Hope Gu',
+      content: `${guideGrid(['hopeGu', 'renZu', 'fateFreedom', 'faq'])}`,
+    })}
+  `;
+
+  return renderPage({
+    canonicalPath,
+    title,
+    description,
+    heroEyebrow: 'Meaning guide',
+    heroTitle: 'Hope Gu meaning',
+    heroLead: 'Hope Gu is one of the clearest emotional statements in the archive: persistence without false softness.',
+    heroChips: ['Meaning', 'Key moments', 'Theme bridge'],
     bodyHtml,
     schema,
   });
@@ -900,26 +1376,20 @@ function readingOrderPage() {
 function charactersHubPage() {
   const canonicalPath = '/characters/';
   const title = pageCatalog.charactersHub.title;
-  const description = 'A starting character hub for The Legends of Ren Zu, beginning with Ren Zu and expanding as the project grows.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'CollectionPage', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Characters', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
+  const description = 'A character hub focused on the most important figures readers are likely to search for first.';
+  const schema = standardSchema(canonicalPath, title, description, 'CollectionPage', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Characters', url: pathToUrl(canonicalPath) },
+  ]);
 
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <span>Characters</span>
-      </nav>
-      <p class="small">This hub starts with the single most important character page on the site: Ren Zu. More character pages can be added later without changing the reader itself.</p>
-      ${guideGrid(['renZu'])}
-    </section>
+    ${sectionCard({
+      eyebrow: 'Character hub',
+      title: 'The most important character pages to open first',
+      content: `${textBlocks([
+        'These pages focus on the figures most likely to matter to a new reader or to appear in related searches. They are not just profile cards. Each one tries to explain symbolic role, emotional function, and where to keep reading next.',
+      ])}${guideGrid(['renZu', 'verdant', 'desolate', 'northern', 'boundless'])}`,
+    })}
   `;
 
   return renderPage({
@@ -928,55 +1398,41 @@ function charactersHubPage() {
     description,
     heroEyebrow: 'Character hub',
     heroTitle: 'Character pages for The Legends of Ren Zu',
-    heroLead: 'Start with Ren Zu, the ancestor figure whose life and choices define the entire work.',
+    heroLead: 'Start with Ren Zu, then branch outward into the children and figures who carry the work’s symbolic and emotional weight.',
+    heroChips: ['Character guides', 'Symbolic roles', 'Best chapter links'],
     bodyHtml,
     schema,
   });
 }
 
-function renZuPage() {
-  const canonicalPath = '/characters/ren-zu/';
-  const title = pageCatalog.renZu.title;
-  const description = 'Who is Ren Zu? This page explains his role as the first human, why he matters, and where to start reading his story.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'Article', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Characters', url: `${SITE_URL}/characters/` },
-      { name: 'Ren Zu', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
+function characterPage({ canonicalPath, title, description, heroTitle, chips, whoParagraphs, roleBullets, chapterNums, relatedKeys, breadcrumbName, takeaway }) {
+  const schema = standardSchema(canonicalPath, title, description, 'Article', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Characters', url: `${SITE_URL}/characters/` },
+    { name: breadcrumbName, url: pathToUrl(canonicalPath) },
+  ]);
 
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/characters/">Characters</a>
-        <span>›</span>
-        <span>Ren Zu</span>
-      </nav>
-      <div>
-        <h2 class="section-title">Who Ren Zu is</h2>
-        <p>Ren Zu is the foundational human figure in the legends: the first ancestor, the center of the book, and the lens through which the work explores suffering, courage, loneliness, desire, and rebellion. He is not just a protagonist in the ordinary sense. He functions as the symbolic ancestor whose life becomes a map of human struggle.</p>
-      </div>
-      <div>
-        <h2 class="section-title">Why he matters so much</h2>
-        <ul class="list">
-          <li>He bargains with concepts that become Gu.</li>
-          <li>He keeps losing certainty, then rebuilding purpose.</li>
-          <li>He stands at the center of the conflict between fate and freedom.</li>
-          <li>His story ties together hope, wisdom, strength, selfhood, and sacrifice.</li>
-        </ul>
-      </div>
-      <blockquote class="quote">If you only understand one figure in the legends, understand Ren Zu first. Almost every major theme bends back toward him.</blockquote>
-      <div>
-        <h2 class="section-title">Best chapters to start with for Ren Zu</h2>
-        ${chapterReferenceList(['1', '2', '21', '34', '39', '44'])}
-      </div>
-      ${guideGrid(['hopeGu', 'fateFreedom', 'wisdomStrengthSelf'])}
-    </section>
+    ${sectionCard({
+      eyebrow: 'Character overview',
+      title: 'Who this figure is',
+      content: `${textBlocks(whoParagraphs)}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Role in the work',
+      title: 'Why this character matters',
+      content: `${bulletList(roleBullets)}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Best reading route',
+      title: 'Chapters to read for this character',
+      content: `${chapterReferenceList(chapterNums)}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Related pages',
+      title: 'Themes and guides connected to this character',
+      content: `${guideGrid(relatedKeys)}<blockquote class="quote" style="margin-top:16px;">${htmlEscape(takeaway)}</blockquote>`,
+    })}
   `;
 
   return renderPage({
@@ -984,8 +1440,9 @@ function renZuPage() {
     title,
     description,
     heroEyebrow: 'Character guide',
-    heroTitle: 'Who is Ren Zu?',
-    heroLead: 'Ren Zu is the ancestor of humanity and the emotional center of the legends: a figure defined by hardship, insight, and refusal to surrender.',
+    heroTitle,
+    heroLead: description,
+    heroChips: chips,
     bodyHtml,
     schema,
   });
@@ -994,26 +1451,20 @@ function renZuPage() {
 function themesHubPage() {
   const canonicalPath = '/themes/';
   const title = pageCatalog.themesHub.title;
-  const description = 'Theme pages for The Legends of Ren Zu covering Hope Gu, Fate, Freedom, Wisdom, Strength, and Self.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'CollectionPage', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Themes', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
+  const description = 'A thematic hub for Hope Gu, Fate Gu, Freedom Gu, wisdom, strength, selfhood, and the larger struggle inside The Legends of Ren Zu.';
+  const schema = standardSchema(canonicalPath, title, description, 'CollectionPage', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Themes', url: pathToUrl(canonicalPath) },
+  ]);
 
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <span>Themes</span>
-      </nav>
-      <div class="callout">These pages are not replacements for the chapters. They are companion explainers that make the recurring ideas easier to track across the archive.</div>
-      ${guideGrid(['hopeGu', 'fateFreedom', 'wisdomStrengthSelf'])}
-    </section>
+    ${sectionCard({
+      eyebrow: 'Theme hub',
+      title: 'The ideas people search for most often',
+      content: `${textBlocks([
+        'The work stays powerful because its symbols do not stay decorative. They become repeated pressures on the same human problem: how to remain human under suffering, limitation, fate, and the cost of desire.',
+      ])}${guideGrid(['hopeGu', 'hopeMeaning', 'fateFreedom', 'fateGu', 'freedomGu', 'wisdomStrengthSelf'])}`,
+    })}
   `;
 
   return renderPage({
@@ -1022,54 +1473,41 @@ function themesHubPage() {
     description,
     heroEyebrow: 'Theme hub',
     heroTitle: 'Major themes in The Legends of Ren Zu',
-    heroLead: 'Hope, fate, freedom, wisdom, strength, and selfhood recur constantly. These pages help new readers track those patterns.',
+    heroLead: 'Hope, fate, freedom, wisdom, strength, and selfhood are not side topics here. They are the architecture of the work.',
+    heroChips: ['Themes', 'Symbols', 'Reader context'],
     bodyHtml,
     schema,
   });
 }
 
-function hopeGuPage() {
-  const canonicalPath = '/themes/hope-gu/';
-  const title = pageCatalog.hopeGu.title;
-  const description = 'Hope Gu is one of the core symbolic forces in The Legends of Ren Zu. This guide explains what it means and where it matters most.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'Article', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Themes', url: `${SITE_URL}/themes/` },
-      { name: 'Hope Gu', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
+function themePage({ canonicalPath, title, description, heroTitle, chips, paragraphs, bullets, chapterNums, relatedKeys, breadcrumbName, takeaway }) {
+  const schema = standardSchema(canonicalPath, title, description, 'Article', [
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Themes', url: `${SITE_URL}/themes/` },
+    { name: breadcrumbName, url: pathToUrl(canonicalPath) },
+  ]);
 
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/themes/">Themes</a>
-        <span>›</span>
-        <span>Hope Gu</span>
-      </nav>
-      <div>
-        <h2 class="section-title">Why Hope Gu stands out</h2>
-        <p>Hope Gu appears early, but it never really leaves the architecture of the work. It represents the thing that still moves when everything else has already failed: not certainty, not victory, but the refusal to stop.</p>
-      </div>
-      <div>
-        <h2 class="section-title">What it symbolizes</h2>
-        <ul class="list">
-          <li>Endurance under hopeless conditions.</li>
-          <li>Movement before clarity arrives.</li>
-          <li>The emotional spark that keeps humans facing Predicament.</li>
-          <li>A kind of inner light that outlives comfort.</li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="section-title">Chapters where Hope Gu matters most</h2>
-        ${chapterReferenceList(['1', '2', '17', '39'])}
-      </div>
-      ${guideGrid(['renZu', 'fateFreedom', 'faq'])}
-    </section>
+    ${sectionCard({
+      eyebrow: 'Theme overview',
+      title: 'What this theme means',
+      content: `${textBlocks(paragraphs)}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Why it matters',
+      title: 'How this theme works inside the archive',
+      content: `${bulletList(bullets)}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Best reading route',
+      title: 'Chapters that reveal this theme clearly',
+      content: `${chapterReferenceList(chapterNums)}`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Related pages',
+      title: 'Where to go after this theme page',
+      content: `${guideGrid(relatedKeys)}<blockquote class="quote" style="margin-top:16px;">${htmlEscape(takeaway)}</blockquote>`,
+    })}
   `;
 
   return renderPage({
@@ -1077,114 +1515,9 @@ function hopeGuPage() {
     title,
     description,
     heroEyebrow: 'Theme guide',
-    heroTitle: 'Hope Gu explained',
-    heroLead: 'Hope Gu is not just a plot element. It is one of the clearest statements of how the legends understand persistence under suffering.',
-    bodyHtml,
-    schema,
-  });
-}
-
-function fateFreedomPage() {
-  const canonicalPath = '/themes/fate-and-freedom/';
-  const title = pageCatalog.fateFreedom.title;
-  const description = 'This page explains the long tension between Fate Gu, human resistance, and the desire for freedom across The Legends of Ren Zu.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'Article', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Themes', url: `${SITE_URL}/themes/` },
-      { name: 'Fate and Freedom', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
-
-  const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/themes/">Themes</a>
-        <span>›</span>
-        <span>Fate and Freedom</span>
-      </nav>
-      <div>
-        <h2 class="section-title">The central conflict</h2>
-        <p>One of the strongest long-form tensions in the legends is the clash between Fate Gu and the human desire for freedom. Fate implies that structures already exist above the individual; freedom is the insistence that one can still choose, resist, or overturn those structures.</p>
-      </div>
-      <div>
-        <h2 class="section-title">Why this theme matters</h2>
-        <p>This is the axis that turns the legends from moral fable into existential struggle. The more Ren Zu resists submission, the more the story becomes a meditation on whether a human being can truly break what the world has already assigned.</p>
-      </div>
-      <div>
-        <h2 class="section-title">Chapters to read for this theme</h2>
-        ${chapterReferenceList(['12', '32', '33', '34', '35', '36'])}
-      </div>
-      ${guideGrid(['hopeGu', 'renZu', 'wisdomStrengthSelf'])}
-    </section>
-  `;
-
-  return renderPage({
-    canonicalPath,
-    title,
-    description,
-    heroEyebrow: 'Theme guide',
-    heroTitle: 'Fate and freedom',
-    heroLead: 'This theme sits near the heart of the project: whether human beings must accept the structure of fate or dare to oppose it.',
-    bodyHtml,
-    schema,
-  });
-}
-
-function wisdomStrengthSelfPage() {
-  const canonicalPath = '/themes/wisdom-strength-and-self/';
-  const title = pageCatalog.wisdomStrengthSelf.title;
-  const description = 'This theme guide explains how Strength Gu, Wisdom Gu, and Self Gu shape the ideas of capability, identity, and growth in The Legends of Ren Zu.';
-  const schema = [
-    websiteSchema(),
-    webPageSchema({ pageType: 'Article', name: title, url: pathToUrl(canonicalPath), description }),
-    breadcrumbSchema([
-      { name: 'Home', url: `${SITE_URL}/` },
-      { name: 'Themes', url: `${SITE_URL}/themes/` },
-      { name: 'Wisdom, Strength, and Self', url: pathToUrl(canonicalPath) },
-    ]),
-  ];
-
-  const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/themes/">Themes</a>
-        <span>›</span>
-        <span>Wisdom, Strength, and Self</span>
-      </nav>
-      <div>
-        <h2 class="section-title">Three different forms of power</h2>
-        <p>Strength solves immediate survival. Wisdom interprets the world. Self preserves identity when both power and understanding become unstable. Together, these ideas let the legends ask what kind of power really belongs to a human being.</p>
-      </div>
-      <div>
-        <h2 class="section-title">How to think about them</h2>
-        <ul class="list">
-          <li><strong>Strength</strong> is useful but limited when used without reflection.</li>
-          <li><strong>Wisdom</strong> expands possibility, but does not erase suffering.</li>
-          <li><strong>Self</strong> becomes crucial when borrowed power is no longer enough.</li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="section-title">Chapters to read for this theme</h2>
-        ${chapterReferenceList(['1', '2', '3', '16', '26', '43', '44'])}
-      </div>
-      ${guideGrid(['renZu', 'hopeGu', 'faq'])}
-    </section>
-  `;
-
-  return renderPage({
-    canonicalPath,
-    title,
-    description,
-    heroEyebrow: 'Theme guide',
-    heroTitle: 'Wisdom, strength, and self',
-    heroLead: 'These recurring Gu and ideas explain how the legends frame ability, insight, and identity under pressure.',
+    heroTitle,
+    heroLead: description,
+    heroChips: chips,
     bodyHtml,
     schema,
   });
@@ -1193,7 +1526,7 @@ function wisdomStrengthSelfPage() {
 function faqPage() {
   const canonicalPath = '/faq/';
   const title = pageCatalog.faq.title;
-  const description = 'Short answers to common questions about The Legends of Ren Zu, its chapter archive, Ren Zu, Hope Gu, and the reading order.';
+  const description = 'Short answers to the questions new readers and search visitors ask first about The Legends of Ren Zu.';
   const schema = [
     websiteSchema(),
     {
@@ -1211,32 +1544,28 @@ function faqPage() {
     ]),
   ];
 
-  const qaHtml = faqEntries.map((entry) => `
-    <article class="info-card">
-      <h3>${htmlEscape(entry.q)}</h3>
-      <p>${htmlEscape(entry.a)}</p>
-    </article>
-  `).join('');
-
+  const faqCards = faqEntries.map((entry) => `<article class="detail-card faq-item"><h3>${htmlEscape(entry.q)}</h3><p>${htmlEscape(entry.a)}</p></article>`).join('');
   const bodyHtml = `
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <span>FAQ</span>
-      </nav>
-      <div class="callout">This page exists for people who want answers fast, and for search engines that look for strong question-and-answer signals.</div>
-      <div class="grid">${qaHtml}</div>
-    </section>
+    ${sectionCard({
+      eyebrow: 'Fast answers',
+      title: 'The core questions people usually ask first',
+      content: `<div class="grid">${faqCards}</div>`,
+    })}
+    ${sectionCard({
+      eyebrow: 'Go deeper',
+      title: 'Pages that expand the short answers',
+      content: `${guideGrid(['legendsExplained', 'readingOrder', 'renZuSummary', 'hopeMeaning', 'renZu'])}`,
+    })}
   `;
 
   return renderPage({
     canonicalPath,
     title,
     description,
-    heroEyebrow: 'Frequently asked questions',
-    heroTitle: 'Legends of Ren Zu FAQ',
-    heroLead: 'Short answers for readers, searchers, and anyone trying to understand the site before diving into the full text.',
+    heroEyebrow: 'FAQ',
+    heroTitle: 'Fast answers for new readers',
+    heroLead: 'A high-clarity page for the questions people ask before they commit to the archive or the immersive reader.',
+    heroChips: ['Quick answers', 'Search-friendly', 'Beginner help'],
     bodyHtml,
     schema,
   });
@@ -1249,12 +1578,214 @@ for (const [index, chapter] of chapters.entries()) {
 writePage('/about/', aboutPage());
 writePage('/guides/', guidesHubPage());
 writePage('/guides/reading-order/', readingOrderPage());
+writePage('/guides/ren-zu-summary/', renZuSummaryPage());
+writePage('/guides/the-legends-of-ren-zu-explained/', legendsExplainedPage());
+writePage('/guides/best-ren-zu-chapters/', bestChaptersPage());
+writePage('/guides/hope-gu-meaning/', hopeMeaningPage());
 writePage('/characters/', charactersHubPage());
-writePage('/characters/ren-zu/', renZuPage());
+writePage('/characters/ren-zu/', characterPage({
+  canonicalPath: '/characters/ren-zu/',
+  title: pageCatalog.renZu.title,
+  description: 'A detailed character guide to Ren Zu, the first human and the emotional center of The Legends of Ren Zu.',
+  heroTitle: 'Who is Ren Zu?',
+  chips: ['Character guide', 'Core figure', 'Best chapters'],
+  whoParagraphs: [
+    'Ren Zu is the foundational human figure in the legends: the first ancestor, the center of the book, and the lens through which the work explores suffering, courage, loneliness, desire, and rebellion.',
+    'He is not just a protagonist in the ordinary sense. He functions as a symbolic ancestor whose life becomes a map of human struggle, stretching from bare survival into questions of selfhood, fate, and freedom.',
+  ],
+  roleBullets: [
+    'He anchors the work emotionally and conceptually.',
+    'His bargains and losses set the tone for the entire archive.',
+    'His relationship to his children turns personal pain into mythic structure.',
+    'His later resistance to fate pushes the legends toward their most charged philosophical territory.',
+  ],
+  chapterNums: ['1', '2', '21', '34', '39', '44'],
+  relatedKeys: ['renZuSummary', 'hopeGu', 'fateFreedom', 'wisdomStrengthSelf'],
+  breadcrumbName: 'Ren Zu',
+  takeaway: 'If you only understand one figure first, make it Ren Zu. Almost every major theme bends back toward him.',
+}));
+writePage('/characters/verdant-great-sun/', characterPage({
+  canonicalPath: '/characters/verdant-great-sun/',
+  title: pageCatalog.verdant.title,
+  description: 'A character guide to Verdant Great Sun: Ren Zu’s eldest son, his symbolism, and the chapters that define his role.',
+  heroTitle: 'Who is Verdant Great Sun?',
+  chips: ['Character guide', 'Ren Zu’s son', 'Early-symbol arc'],
+  whoParagraphs: [
+    'Verdant Great Sun is one of Ren Zu’s children and one of the clearest early examples of how the legends turn family into symbol. He is tied to brilliance, intoxication, limits, and the cost of reaching beyond measure.',
+    'His presence helps the archive shift from survival myth into a more layered meditation on desire, recognition, and the consequences of not understanding one’s limits.',
+  ],
+  roleBullets: [
+    'He expands the emotional scale of Ren Zu’s story through fatherhood and loss.',
+    'He helps introduce themes of vanity, intoxication, glory, and consequence.',
+    'He becomes part of the work’s larger meditation on aspiration without balance.',
+  ],
+  chapterNums: ['7', '8', '10 & 11', '12', '13'],
+  relatedKeys: ['renZu', 'hopeMeaning', 'bestChapters'],
+  breadcrumbName: 'Verdant Great Sun',
+  takeaway: 'Verdant Great Sun matters because the work uses him to show how brilliance and excess can become inseparable.',
+}));
+writePage('/characters/desolate-ancient-moon/', characterPage({
+  canonicalPath: '/characters/desolate-ancient-moon/',
+  title: pageCatalog.desolate.title,
+  description: 'A character guide to Desolate Ancient Moon, her rescue arc, and the emotional force of filial struggle in the legends.',
+  heroTitle: 'Who is Desolate Ancient Moon?',
+  chips: ['Character guide', 'Rescue arc', 'Sacrifice'],
+  whoParagraphs: [
+    'Desolate Ancient Moon is one of Ren Zu’s daughters and one of the strongest embodiments of sacrificial devotion in the archive. Her arc carries rescue, filial effort, and the pain of trying to restore what has already been damaged by the world.',
+    'She helps reveal how family in the legends is never decorative. It is one of the main ways the work externalizes grief, duty, loyalty, and impossible expectation.',
+  ],
+  roleBullets: [
+    'She intensifies the emotional reality of Ren Zu’s condition as a father.',
+    'She embodies effort shaped by love and obligation.',
+    'Her arc pushes the archive deeper into suffering, duty, and sacrifice.',
+  ],
+  chapterNums: ['14', '15', '16', '18'],
+  relatedKeys: ['renZu', 'hopeGu', 'wisdomStrengthSelf'],
+  breadcrumbName: 'Desolate Ancient Moon',
+  takeaway: 'Desolate Ancient Moon matters because she turns abstract devotion into action and cost.',
+}));
+writePage('/characters/northern-dark-ice-soul/', characterPage({
+  canonicalPath: '/characters/northern-dark-ice-soul/',
+  title: pageCatalog.northern.title,
+  description: 'A character guide to Northern Dark Ice Soul, including his symbolism, difficult purpose, and key chapters.',
+  heroTitle: 'Who is Northern Dark Ice Soul?',
+  chips: ['Character guide', 'Darkness and purpose', 'Key son arc'],
+  whoParagraphs: [
+    'Northern Dark Ice Soul is one of Ren Zu’s most symbolically charged children. His name alone signals distance, severity, and the cold edge of purpose. He helps the archive move toward harder questions about understanding, direction, and the limits of simple rescue.',
+    'Where some figures radiate warmth or immediacy, Northern Dark Ice Soul often feels like the difficult path itself: necessary, remote, and not easily simplified.',
+  ],
+  roleBullets: [
+    'He strengthens the archive’s movement toward purpose and complexity.',
+    'He contributes to the sense that salvation and clarity are never simple.',
+    'He helps turn familial myth into philosophical terrain.',
+  ],
+  chapterNums: ['15', '16', '17', '18'],
+  relatedKeys: ['renZu', 'wisdomStrengthSelf', 'readingOrder'],
+  breadcrumbName: 'Northern Dark Ice Soul',
+  takeaway: 'Northern Dark Ice Soul matters because he gives the legends one of their clearest forms of severe, difficult purpose.',
+}));
+writePage('/characters/boundless-forest-samsara/', characterPage({
+  canonicalPath: '/characters/boundless-forest-samsara/',
+  title: pageCatalog.boundless.title,
+  description: 'A character guide to Boundless Forest Samsara, Ordinary Abyss, perspective, scale, and limitation in The Legends of Ren Zu.',
+  heroTitle: 'Who is Boundless Forest Samsara?',
+  chips: ['Character guide', 'Ordinary Abyss', 'Perspective and scale'],
+  whoParagraphs: [
+    'Boundless Forest Samsara is one of Ren Zu’s children and one of the most useful figures for understanding how the legends play with perspective, scale, ordinary limitation, and the pain of being trapped inside a horizon that feels too small.',
+    'Her arc helps the archive shift from pure mythic motion into a study of confinement, perspective, friendship, and the strange politics of what counts as ordinary or extraordinary.',
+  ],
+  roleBullets: [
+    'She embodies a struggle with limitation rather than with simple external violence.',
+    'She is central to the emotional and philosophical force of Ordinary Abyss.',
+    'Her chapters help explain how scale itself becomes symbolic inside the legends.',
+  ],
+  chapterNums: ['21', '22', '23', '28', '29', '30', '31'],
+  relatedKeys: ['renZu', 'readingOrder', 'legendsExplained', 'bestChapters'],
+  breadcrumbName: 'Boundless Forest Samsara',
+  takeaway: 'Boundless Forest Samsara matters because the work uses her to show how confinement can reshape vision, value, and identity.',
+}));
 writePage('/themes/', themesHubPage());
-writePage('/themes/hope-gu/', hopeGuPage());
-writePage('/themes/fate-and-freedom/', fateFreedomPage());
-writePage('/themes/wisdom-strength-and-self/', wisdomStrengthSelfPage());
+writePage('/themes/hope-gu/', themePage({
+  canonicalPath: '/themes/hope-gu/',
+  title: pageCatalog.hopeGu.title,
+  description: 'Why Hope Gu matters, what it symbolizes, and where it shapes The Legends of Ren Zu most strongly.',
+  heroTitle: 'Hope Gu explained',
+  chips: ['Theme guide', 'Core symbol', 'Key moments'],
+  paragraphs: [
+    'Hope Gu stands out because it never feels like cheap optimism. It appears in a brutal world and still matters precisely because the world stays brutal.',
+    'The point is not that suffering disappears. The point is that motion becomes possible again. Hope Gu is one of the clearest ways the archive argues that human endurance is not the same thing as comfort.',
+  ],
+  bullets: [
+    'It links directly to survival under Predicament.',
+    'It establishes an emotional grammar for the rest of the archive.',
+    'It lets later struggles feel like extensions of an older human refusal to surrender.',
+    'It remains meaningful even when the work grows darker and more complex.',
+  ],
+  chapterNums: ['1', '2', '17', '39'],
+  relatedKeys: ['hopeMeaning', 'renZu', 'fateFreedom', 'faq'],
+  breadcrumbName: 'Hope Gu',
+  takeaway: 'Hope Gu is memorable because it does not promise safety. It promises motion when safety is already gone.',
+}));
+writePage('/themes/fate-and-freedom/', themePage({
+  canonicalPath: '/themes/fate-and-freedom/',
+  title: pageCatalog.fateFreedom.title,
+  description: 'A detailed guide to Fate, Freedom, and why their conflict drives the deepest parts of The Legends of Ren Zu.',
+  heroTitle: 'Fate and freedom',
+  chips: ['Theme guide', 'Central conflict', 'Philosophical core'],
+  paragraphs: [
+    'Few tensions define the legends more sharply than the conflict between fate and freedom. Fate implies that the world already has a structure that precedes the individual. Freedom is the refusal to let that structure remain unquestioned.',
+    'When this conflict intensifies, the work stops feeling like a simple myth and starts feeling like a struggle over whether human beings can truly live outside the terms already written for them.',
+  ],
+  bullets: [
+    'This theme explains why so much of the later archive feels charged and defiant.',
+    'It helps connect Ren Zu’s private suffering to a larger metaphysical struggle.',
+    'It clarifies why freedom never arrives as a light or uncomplicated reward.',
+  ],
+  chapterNums: ['12', '32', '33', '34', '35', '36'],
+  relatedKeys: ['fateGu', 'freedomGu', 'renZu', 'wisdomStrengthSelf'],
+  breadcrumbName: 'Fate and Freedom',
+  takeaway: 'The archive becomes unforgettable when fate stops feeling abstract and starts feeling like an enemy structure pressing directly on human possibility.',
+}));
+writePage('/themes/wisdom-strength-and-self/', themePage({
+  canonicalPath: '/themes/wisdom-strength-and-self/',
+  title: pageCatalog.wisdomStrengthSelf.title,
+  description: 'A guide to how Wisdom, Strength, and Self shape identity, growth, and human capability in The Legends of Ren Zu.',
+  heroTitle: 'Wisdom, strength, and self',
+  chips: ['Theme guide', 'Identity', 'Capability'],
+  paragraphs: [
+    'Strength solves immediate survival, but it reaches limits. Wisdom expands understanding, but it does not erase suffering. Self becomes critical when borrowed or external forms of power stop being enough.',
+    'Taken together, these ideas let the legends explore a question that feels human at every scale: what kind of power actually belongs to a person, and what kind merely passes through them for a time?',
+  ],
+  bullets: [
+    'Strength shows the urgency of survival but not the whole shape of life.',
+    'Wisdom reveals patterns but cannot remove pain by itself.',
+    'Self becomes decisive when identity, truth, and direction all become unstable.',
+  ],
+  chapterNums: ['1', '2', '3', '16', '26', '43', '44'],
+  relatedKeys: ['renZu', 'hopeGu', 'fateFreedom', 'faq'],
+  breadcrumbName: 'Wisdom, Strength, and Self',
+  takeaway: 'These themes matter because the legends refuse to reduce human power to one simple form.',
+}));
+writePage('/themes/fate-gu/', themePage({
+  canonicalPath: '/themes/fate-gu/',
+  title: pageCatalog.fateGu.title,
+  description: 'A focused guide to Fate Gu: what it represents, why it feels overwhelming, and how it shapes the deepest conflicts in the archive.',
+  heroTitle: 'Fate Gu explained',
+  chips: ['Theme guide', 'Structural force', 'Major symbol'],
+  paragraphs: [
+    'Fate Gu is not just another named force in the archive. It is one of the clearest symbols of structure over the individual: the weight of order, inevitability, and a design larger than human desire.',
+    'Whenever Fate Gu becomes central, the archive sharpens its challenge. It asks whether effort alone is enough, whether resistance can matter, and what freedom really means when the world already seems arranged in advance.',
+  ],
+  bullets: [
+    'It helps explain why rebellion in the archive feels existential rather than merely emotional.',
+    'It turns the conflict from personal hardship into something metaphysical.',
+    'It gives later freedom-focused chapters their full pressure and scale.',
+  ],
+  chapterNums: ['12', '32', '33', '34', '37'],
+  relatedKeys: ['fateFreedom', 'freedomGu', 'renZu', 'bestChapters'],
+  breadcrumbName: 'Fate Gu',
+  takeaway: 'Fate Gu matters because it makes the struggle bigger than any one pain: it turns suffering into structure.',
+}));
+writePage('/themes/freedom-gu/', themePage({
+  canonicalPath: '/themes/freedom-gu/',
+  title: pageCatalog.freedomGu.title,
+  description: 'A guide to Freedom Gu: what it means, why it is heavy rather than simple, and how it changes the tone of the later archive.',
+  heroTitle: 'Freedom Gu explained',
+  chips: ['Theme guide', 'Costly freedom', 'Later-arc pressure'],
+  paragraphs: [
+    'Freedom Gu matters because the archive refuses to treat freedom as pure lightness. Once freedom begins to appear directly, the work also shows its burden, instability, and cost. To desire freedom is one thing; to hold it, bear it, and live its consequences is another.',
+    'That is why Freedom Gu deepens the archive rather than merely rewarding it. It reveals that liberation itself can become a trial.',
+  ],
+  bullets: [
+    'Freedom in the archive is emotional, existential, and structural at once.',
+    'Freedom Gu gains force because it appears beside Fate Gu rather than apart from it.',
+    'The weight of freedom is part of what makes the later chapters memorable.',
+  ],
+  chapterNums: ['33', '34', '35', '36', '39'],
+  relatedKeys: ['fateFreedom', 'fateGu', 'renZu', 'hopeMeaning'],
+  breadcrumbName: 'Freedom Gu',
+  takeaway: 'Freedom Gu matters because the legends insist that true freedom is never shallow and never costless.',
+}));
 writePage('/faq/', faqPage());
 
 const sitemapUrls = [
@@ -1262,12 +1793,22 @@ const sitemapUrls = [
   `${SITE_URL}/about/`,
   `${SITE_URL}/guides/`,
   `${SITE_URL}/guides/reading-order/`,
+  `${SITE_URL}/guides/ren-zu-summary/`,
+  `${SITE_URL}/guides/the-legends-of-ren-zu-explained/`,
+  `${SITE_URL}/guides/best-ren-zu-chapters/`,
+  `${SITE_URL}/guides/hope-gu-meaning/`,
   `${SITE_URL}/characters/`,
   `${SITE_URL}/characters/ren-zu/`,
+  `${SITE_URL}/characters/verdant-great-sun/`,
+  `${SITE_URL}/characters/desolate-ancient-moon/`,
+  `${SITE_URL}/characters/northern-dark-ice-soul/`,
+  `${SITE_URL}/characters/boundless-forest-samsara/`,
   `${SITE_URL}/themes/`,
   `${SITE_URL}/themes/hope-gu/`,
   `${SITE_URL}/themes/fate-and-freedom/`,
   `${SITE_URL}/themes/wisdom-strength-and-self/`,
+  `${SITE_URL}/themes/fate-gu/`,
+  `${SITE_URL}/themes/freedom-gu/`,
   `${SITE_URL}/faq/`,
   `${SITE_URL}/chapters/`,
   ...chapters.map((chapter) => `${SITE_URL}/chapters/${chapter.slug}/`),
@@ -1287,4 +1828,4 @@ Sitemap: ${SITE_URL}/sitemap.xml
 `;
 fs.writeFileSync(path.join(ROOT, 'robots.txt'), robots);
 
-console.log(`Generated ${chapters.length} chapter pages plus Stage 2 guide pages, sitemap.xml, and robots.txt.`);
+console.log(`Generated ${chapters.length} chapter pages plus Stage 3 guide pages, sitemap.xml, and robots.txt.`);

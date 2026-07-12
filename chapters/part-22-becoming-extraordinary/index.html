@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Part 22: Becoming Extraordinary | The Legends of Ren Zu</title>
-    <meta name="description" content="Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he want…" />
+    <meta name="description" content="Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he wanted to get…" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-22-becoming-extraordinary/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Part 22: Becoming Extraordinary | The Legends of Ren Zu" />
-    <meta property="og:description" content="Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he want…" />
+    <meta property="og:description" content="Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he wanted to get…" />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-22-becoming-extraordinary/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Part 22: Becoming Extraordinary | The Legends of Ren Zu" />
-    <meta name="twitter:description" content="Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he want…" />
+    <meta name="twitter:description" content="Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he wanted to get…" />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 22: Becoming Extraordinary","headline":"Part 22: Becoming Extraordinary","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-22-becoming-extraordinary/","description":"Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he want…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 22: Becoming Extraordinary","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-22-becoming-extraordinary/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 22: Becoming Extraordinary","headline":"Part 22: Becoming Extraordinary","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-22-becoming-extraordinary/","description":"Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he wanted to get…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 22: Becoming Extraordinary","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-22-becoming-extraordinary/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">The Legends of Ren Zu</div>
       <h1>Part 22: Becoming Extraordinary</h1>
-      <p class="lead">Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he want…</p>
+      <p class="lead">Read Part 22: Becoming Extraordinary from The Legends of Ren Zu. He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he wanted to get…</p>
+      <div class="chip-row"><span class="chip">Direct chapter URL</span><span class="chip">Guide-linked</span><span class="chip">Search-indexable</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,71 +324,92 @@
   </header>
   <main class="wrap stack">
     
+    <div class="two-col">
+      <div class="stack">
+        
     <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>Part 22: Becoming Extraordinary</span>
-      </nav>
-      <div class="meta">
-        <span>Part 22</span>
-        <span>Gu Zhen Ren</span>
-        <span>The Omniarch reader companion</span>
-      </div>
-      <div class="chapter-body">
-        <p>He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he wanted to get out of Ordinary Abyss, he could not find the exit. In his anguish, Cognition Gu gave him pointers: “Human, oh human, you walked in the footsteps of other existences, although this road is simple and safe, if you want to become extraordinary, and walk out of Ordinary Abyss, there is little hope if you follow other people’s trails. Since you walked on your own road of life, all the difficulties need to be challenged by you personally, you need to innovate and carve out your own footprints.” After Ren Zu received this advice, he came to a realization, he was overjoyed as he followed Cognition Gu’s instructions. He walked out of the footsteps that already existed, he started to step on the ground that was not too firm. The ground of Ordinary Abyss was not easy to walk on. Some places were swampy, it was easy to get stuck in the mud, and the stench was foul. Some places were full of thorns, sharp pointy tips were everywhere, Ren Zu was full of injuries. In some parts of the ground, there were also blade Gu. When Ren Zu stepped on the ground, his soles were injured by the sharp blades, his injuries became larger as blood flowed, when he walked, the pain could be felt striking deep within himself. The injuries on his feet caused huge pain, Ren Zu decided to walk softly. But as he walked, Ren Zu lost his way in Ordinary Abyss, many times, he would end up on the same route, and waste extra effort traversing the same path. Ren Zu gradually found out this problem, he was perplexed. How could he not lose his way in the abyss? Cognition Gu told him: “Ren Zu, if you do not want to lose your way, that is entirely up to you. You were afraid of pain, thus you walked softly, the footprints you created were too shallow. When ordinary winds blow in this Ordinary Abyss, mortal dust will be blown out, and when the dust settles, your footprints will be covered up. If you do not want to lose your way, you have to leave behind deep footprints, do you understand what I am saying?”</p>
-<p>Ren Zu nodded, he understood. Thus, he started to walk using heavy steps, each time, he stepped hard onto the ground, creating a deep footprint. This way, every step he walked would have a deep and clear marking left by him. As long as Ren Zu saw these markings, he would know that these routes were already explored, and that there was no exit out of Ordinary Abyss there. But good things did not last, after a while, even the deepest footprints would be covered up by the dust. Ren Zu was extremely troubled, he asked Cognition Gu. Cognition Gu gave him another suggestion: “Oh human, even though you left deep footprints, you purposely avoided those thorns and blades. Every time you saw them, you would take a detour, this will not do. You cannot ask to be extraordinary while leading a comfortable life.” Ren Zu got the hint and gritted his teeth, he purposely walked on the paths filled with thorns and blades. Every time he took a step, he would leave a deep footprint behind, no matter how painful it was, no matter how deep the scar was. His sweat and blood seeped into the ordinary soil as he stepped heavily into it. When he left his foot and moved forward, on his footprint, there would be a small stem of grass. The name of this grass was — Accomplishment. In each of his footprints, there would be a small stem of grass. The stems of grass did not fall when the wind blew, they could not be buried under dust, they grow stubbornly and could be preserved for much longer than the footprints.</p>
-<p>“This way, I would not need to be afraid of losing my way.” Ren Zu was overjoyed, he gritted his teeth and endured the pain, he tenaciously walked on a road filled with thorns and blades, he was not afraid of bleed or perspiring. He walked further and further, he no longer lost his way, he no longer walked in circles, he went into uncharted territories. He used his blood and sweat to nourish the grass under him, they started growing with more vitality and became taller. Gradually, it was no longer grass that grew from his footprints, they had turned into Accomplishment trees. As time passed, the small trees grew into larger trees, the leaves were lush and green, they were even bearing fruits. Ren Zu was tired from walking, he leaned on a tree for rest, he ate the sweet and juicy fruits to recover his stamina. As time passed, he had almost walked in every corner of Ordinary Abyss, he created a huge forest spanning everywhere he had traveled. Ren Zu looked at the forest behind him and felt bliss and joy, but even when the forest covered the entirety of Ordinary Abyss, he did not find the way out of it. He felt anxious and disappointed. He plucked one fruit and put it in his mouth, the fruit no longer tasted sweet, instead, it was bitter and hard to swallow. Ren Zu felt strange, he tried to find the reason and realized: Unknowingly, there had been a second heart growing in his body. This was the Heart of Discontent. With this, anything that he ate would not taste sweet. Ren Zu ate the bitter fruit as he looked at the boundless forest, he no longer felt joy or bliss. At this time, his original heart, the Heart of Loneliness, spoke in Self Gu's voice: “Oh, human, I have thought about a way to leave the abyss. You can plant a tall and grand Accomplishment tree. As long as this tree is taller than Ordinary Abyss, you will be able to leave this place by climbing onto this tree.” Ren Zu thought about it and his eyes shined: “That's right, that is a good idea.” But he was troubled again: “But how can I plant a tree that is so grand, taller than Ordinary Abyss?” Self Gu said: “You used the blood from your feet to plant this forest, these are all ordinary trees. If you use the blood from your heart, you should be able to plant a great Accomplishment tree. Buried under the ground of Ordinary Abyss are many blades, why don't you use these blades to stab into your heart? The heart blood that</p>
-<p>flows out can be used to water the trees.” Ren Zu tried the method that Self Gu said. The blade stabbed into his heart, causing immense pain. This pain was hundreds and thousands of times greater than the ones in his body. Eventually, the trees that were watered grew tall and large, much larger than the original trees. Ren Zu felt pain but also joy. He continued to stab more blades into his heart, causing more heart blood to flow out. The more blades he stabbed, the more heart blood flowed out, and the larger the trees he planted. But even the tallest Accomplishment tree was only half the height of Ordinary Abyss. Ren Zu continued to persevere, as Hope Gu accompanied him. When the crown of the tree he planted reached the same height as Ordinary Abyss, the trunk of the tree cracked open, and inside, a girl came out. “Father, father!” The girl went into Ren Zu's embrace; she was very adorable. This was Ren Zu's fourth child, called Boundless Forest Samsara. Ren Zu was also overjoyed; he played around with his daughter. When Boundless Forest Samsara was hungry, he would get her fruits to eat. “So sweet, so sweet.” Boundless Forest Samsara loved to eat fruits; she became healthy and well-fed. She played in the forest every day, feeling immense joy. Ren Zu still wanted to walk out of the Ordinary Abyss. Boundless Forest Samsara urged him many times: “Father, why must you exhaust yourself? Isn't staying here great? There are trees to shelter us, fruits to feed us; we can play here forever. Life will be peaceful until we die of old age.” Ren Zu shook his head; his attitude was firm. He planted an even greater tree, and the branches of the trees left Ordinary Abyss completely. Boundless Forest Samsara cried; she held onto Ren Zu's hands as she pleaded: “Father, don't abandon me. I cannot climb trees; if you go, I will be left here alone. I do not know how to plant trees; there are limited fruits. One day, I will die of hunger.” Ren Zu said: “Why would I abandon you? You are my daughter; I will carry you and leave this place.” Thus, the father and daughter climbed the tree. The higher they went, the more exhausted Ren Zu felt. Boundless Forest Samsara was a heavy burden; even without her, climbing the tree alone was very dangerous, not to mention carrying a person who could not climb the tree at all. The bigger problem was the tree started wavering and making cracking noises.</p>
-<p>Cognition Gu told Ren Zu: “Oh no, Ren Zu, you are carrying your daughter; it is impossible to get out of Ordinary Abyss. This is your Accomplishment tree; it cannot help others become extraordinary, even your daughter is no exception.” Ren Zu shook his head: “I do not want to give up.” Hope Gu also urged him: “Put her down; otherwise, you cannot leave this place. Even though you have the Heart of Loneliness and Heart of Discontent, after planting so many trees, your heart blood is already dry. This is your last hope! Look, the tree is about to collapse.” Ren Zu waved his hand: “I still want to try.” Self Gu saw that Ren Zu was stubborn from his actions and seeing that the other Gu Worms failed to convince him, it flew out. “Ah, this is killing me!” Self Gu did not discuss with Ren Zu; it bit on Boundless Forest Samsara's hand. Boundless Forest Samsara shouted in pain; she was furious and wanted to kill Self Gu. But this way, she let go of her hands, with the shaking tree, she fell off Ren Zu's back, crashing and tumbling. After breaking her fall from many branches, she landed on the ground, in great pain, as she started crying. “Daughter!” Ren Zu shouted, wanting to go down. “It's too late; the tree is going to fall!” Self Gu pushed Ren Zu; he took a huge step forward subconsciously, leaving Ordinary Abyss. The tree fell. Ren Zu was at the edge of the cliff; he lost the way back. He shouted helplessly: “Daughter, I will return to save you.” Boundless Forest Samsara cried, saying with much sadness and helplessness: “Father, how could you be so cruel to leave me behind to live here alone? I am so scared.” Ren Zu heard her cries and felt extremely anguished. He checked around Ordinary Abyss but could not find a way in. “It is no use,” Self Gu said. “Your Accomplishment tree, even if it has fallen, is proof of your grandeur. A grand person is extraordinary; how can a person who is not ordinary enter Ordinary Abyss?”</p>
-      </div>
-      <div class="pager">
-        <div>
-          <div class="small">Previous</div><a href="/chapters/part-21-stepping-into-ordinary-abyss/">Part 21: Stepping into Ordinary Abyss</a>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Next</div><a href="/chapters/part-23-learning-through-failure/">Part 23: Learning through failure</a>
-        </div>
-      </div>
+      <div class="eyebrow">Chapter text</div>
+      <h2 class="section-title">Part 22: Becoming Extraordinary</h2>
+      
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>Part 22: Becoming Extraordinary</span>
+            </nav>
+            <div class="meta">
+              <span>Part 22</span>
+              <span>Gu Zhen Ren</span>
+              <span>The Omniarch reader companion</span>
+            </div>
+            <div class="chapter-body"><p>He walked around in the bottom of the abyss, moving forward aimlessly, after a long time, even though he wanted to get out of Ordinary Abyss, he could not find the exit. In his anguish, Cognition Gu gave him pointers: “Human, oh human, you walked in the footsteps of other existences, although this road is simple and safe, if you want to become extraordinary, and walk out of Ordinary Abyss, there is little hope if you follow other people’s trails. Since you walked on your own road of life, all the difficulties need to be challenged by you personally, you need to innovate and carve out your own footprints.” After Ren Zu received this advice, he came to a realization, he was overjoyed as he followed Cognition Gu’s instructions. He walked out of the footsteps that already existed, he started to step on the ground that was not too firm. The ground of Ordinary Abyss was not easy to walk on. Some places were swampy, it was easy to get stuck in the mud, and the stench was foul. Some places were full of thorns, sharp pointy tips were everywhere, Ren Zu was full of injuries. In some parts of the ground, there were also blade Gu. When Ren Zu stepped on the ground, his soles were injured by the sharp blades, his injuries became larger as blood flowed, when he walked, the pain could be felt striking deep within himself. The injuries on his feet caused huge pain, Ren Zu decided to walk softly. But as he walked, Ren Zu lost his way in Ordinary Abyss, many times, he would end up on the same route, and waste extra effort traversing the same path. Ren Zu gradually found out this problem, he was perplexed. How could he not lose his way in the abyss? Cognition Gu told him: “Ren Zu, if you do not want to lose your way, that is entirely up to you. You were afraid of pain, thus you walked softly, the footprints you created were too shallow. When ordinary winds blow in this Ordinary Abyss, mortal dust will be blown out, and when the dust settles, your footprints will be covered up. If you do not want to lose your way, you have to leave behind deep footprints, do you understand what I am saying?”</p><p>Ren Zu nodded, he understood. Thus, he started to walk using heavy steps, each time, he stepped hard onto the ground, creating a deep footprint. This way, every step he walked would have a deep and clear marking left by him. As long as Ren Zu saw these markings, he would know that these routes were already explored, and that there was no exit out of Ordinary Abyss there. But good things did not last, after a while, even the deepest footprints would be covered up by the dust. Ren Zu was extremely troubled, he asked Cognition Gu. Cognition Gu gave him another suggestion: “Oh human, even though you left deep footprints, you purposely avoided those thorns and blades. Every time you saw them, you would take a detour, this will not do. You cannot ask to be extraordinary while leading a comfortable life.” Ren Zu got the hint and gritted his teeth, he purposely walked on the paths filled with thorns and blades. Every time he took a step, he would leave a deep footprint behind, no matter how painful it was, no matter how deep the scar was. His sweat and blood seeped into the ordinary soil as he stepped heavily into it. When he left his foot and moved forward, on his footprint, there would be a small stem of grass. The name of this grass was — Accomplishment. In each of his footprints, there would be a small stem of grass. The stems of grass did not fall when the wind blew, they could not be buried under dust, they grow stubbornly and could be preserved for much longer than the footprints.</p><p>“This way, I would not need to be afraid of losing my way.” Ren Zu was overjoyed, he gritted his teeth and endured the pain, he tenaciously walked on a road filled with thorns and blades, he was not afraid of bleed or perspiring. He walked further and further, he no longer lost his way, he no longer walked in circles, he went into uncharted territories. He used his blood and sweat to nourish the grass under him, they started growing with more vitality and became taller. Gradually, it was no longer grass that grew from his footprints, they had turned into Accomplishment trees. As time passed, the small trees grew into larger trees, the leaves were lush and green, they were even bearing fruits. Ren Zu was tired from walking, he leaned on a tree for rest, he ate the sweet and juicy fruits to recover his stamina. As time passed, he had almost walked in every corner of Ordinary Abyss, he created a huge forest spanning everywhere he had traveled. Ren Zu looked at the forest behind him and felt bliss and joy, but even when the forest covered the entirety of Ordinary Abyss, he did not find the way out of it. He felt anxious and disappointed. He plucked one fruit and put it in his mouth, the fruit no longer tasted sweet, instead, it was bitter and hard to swallow. Ren Zu felt strange, he tried to find the reason and realized: Unknowingly, there had been a second heart growing in his body. This was the Heart of Discontent. With this, anything that he ate would not taste sweet. Ren Zu ate the bitter fruit as he looked at the boundless forest, he no longer felt joy or bliss. At this time, his original heart, the Heart of Loneliness, spoke in Self Gu's voice: “Oh, human, I have thought about a way to leave the abyss. You can plant a tall and grand Accomplishment tree. As long as this tree is taller than Ordinary Abyss, you will be able to leave this place by climbing onto this tree.” Ren Zu thought about it and his eyes shined: “That's right, that is a good idea.” But he was troubled again: “But how can I plant a tree that is so grand, taller than Ordinary Abyss?” Self Gu said: “You used the blood from your feet to plant this forest, these are all ordinary trees. If you use the blood from your heart, you should be able to plant a great Accomplishment tree. Buried under the ground of Ordinary Abyss are many blades, why don't you use these blades to stab into your heart? The heart blood that</p><p>flows out can be used to water the trees.” Ren Zu tried the method that Self Gu said. The blade stabbed into his heart, causing immense pain. This pain was hundreds and thousands of times greater than the ones in his body. Eventually, the trees that were watered grew tall and large, much larger than the original trees. Ren Zu felt pain but also joy. He continued to stab more blades into his heart, causing more heart blood to flow out. The more blades he stabbed, the more heart blood flowed out, and the larger the trees he planted. But even the tallest Accomplishment tree was only half the height of Ordinary Abyss. Ren Zu continued to persevere, as Hope Gu accompanied him. When the crown of the tree he planted reached the same height as Ordinary Abyss, the trunk of the tree cracked open, and inside, a girl came out. “Father, father!” The girl went into Ren Zu's embrace; she was very adorable. This was Ren Zu's fourth child, called Boundless Forest Samsara. Ren Zu was also overjoyed; he played around with his daughter. When Boundless Forest Samsara was hungry, he would get her fruits to eat. “So sweet, so sweet.” Boundless Forest Samsara loved to eat fruits; she became healthy and well-fed. She played in the forest every day, feeling immense joy. Ren Zu still wanted to walk out of the Ordinary Abyss. Boundless Forest Samsara urged him many times: “Father, why must you exhaust yourself? Isn't staying here great? There are trees to shelter us, fruits to feed us; we can play here forever. Life will be peaceful until we die of old age.” Ren Zu shook his head; his attitude was firm. He planted an even greater tree, and the branches of the trees left Ordinary Abyss completely. Boundless Forest Samsara cried; she held onto Ren Zu's hands as she pleaded: “Father, don't abandon me. I cannot climb trees; if you go, I will be left here alone. I do not know how to plant trees; there are limited fruits. One day, I will die of hunger.” Ren Zu said: “Why would I abandon you? You are my daughter; I will carry you and leave this place.” Thus, the father and daughter climbed the tree. The higher they went, the more exhausted Ren Zu felt. Boundless Forest Samsara was a heavy burden; even without her, climbing the tree alone was very dangerous, not to mention carrying a person who could not climb the tree at all. The bigger problem was the tree started wavering and making cracking noises.</p><p>Cognition Gu told Ren Zu: “Oh no, Ren Zu, you are carrying your daughter; it is impossible to get out of Ordinary Abyss. This is your Accomplishment tree; it cannot help others become extraordinary, even your daughter is no exception.” Ren Zu shook his head: “I do not want to give up.” Hope Gu also urged him: “Put her down; otherwise, you cannot leave this place. Even though you have the Heart of Loneliness and Heart of Discontent, after planting so many trees, your heart blood is already dry. This is your last hope! Look, the tree is about to collapse.” Ren Zu waved his hand: “I still want to try.” Self Gu saw that Ren Zu was stubborn from his actions and seeing that the other Gu Worms failed to convince him, it flew out. “Ah, this is killing me!” Self Gu did not discuss with Ren Zu; it bit on Boundless Forest Samsara's hand. Boundless Forest Samsara shouted in pain; she was furious and wanted to kill Self Gu. But this way, she let go of her hands, with the shaking tree, she fell off Ren Zu's back, crashing and tumbling. After breaking her fall from many branches, she landed on the ground, in great pain, as she started crying. “Daughter!” Ren Zu shouted, wanting to go down. “It's too late; the tree is going to fall!” Self Gu pushed Ren Zu; he took a huge step forward subconsciously, leaving Ordinary Abyss. The tree fell. Ren Zu was at the edge of the cliff; he lost the way back. He shouted helplessly: “Daughter, I will return to save you.” Boundless Forest Samsara cried, saying with much sadness and helplessness: “Father, how could you be so cruel to leave me behind to live here alone? I am so scared.” Ren Zu heard her cries and felt extremely anguished. He checked around Ordinary Abyss but could not find a way in. “It is no use,” Self Gu said. “Your Accomplishment tree, even if it has fallen, is proof of your grandeur. A grand person is extraordinary; how can a person who is not ordinary enter Ordinary Abyss?”</p></div>
+            <div class="pager">
+              <div><div class="small">Previous</div><a href="/chapters/part-21-stepping-into-ordinary-abyss/">Part 21: Stepping into Ordinary Abyss</a></div>
+              <div style="text-align:right"><div class="small">Next</div><a href="/chapters/part-23-learning-through-failure/">Part 23: Learning through failure</a></div>
+            </div>
+          
     </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
+  
       </div>
+      <div class="stack">
+        
+    <section class="card">
+      <div class="eyebrow">At a glance</div>
+      <h2 class="section-title">Why this page matters</h2>
+      
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            <div class="stats"><div class="stat"><strong>Part 22</strong><span class="small">Archive label</span></div><div class="stat"><strong>5</strong><span class="small">Reading blocks</span></div><div class="stat"><strong>6</strong><span class="small">Related guide links</span></div></div>
+          
+    </section>
+  
+        
+    <section class="card">
+      <div class="eyebrow">Related guides</div>
+      <h2 class="section-title">Explore the ideas around this chapter</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Hope Gu</div>
       <h3><a href="/themes/hope-gu/">Hope Gu Explained Theme Guide</a></h3>
-      <p>Why Hope Gu matters, what it represents, and where it shapes the story most strongly.</p>
+      <p>Why Hope Gu matters, what it symbolizes, and where it shapes the story most strongly.</p>
       <a href="/themes/hope-gu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Hope Gu meaning</div>
+      <h3><a href="/guides/hope-gu-meaning/">Hope Gu Meaning | Key Moments and Theme Guide</a></h3>
+      <p>An original guide to what Hope Gu means and why readers remember it so strongly.</p>
+      <a href="/guides/hope-gu-meaning/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Wisdom, Strength, and Self</div>
       <h3><a href="/themes/wisdom-strength-and-self/">Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.</p>
       <a href="/themes/wisdom-strength-and-self/">Open page</a>
     </article>
   
-    <article class="info-card">
-      <div class="eyebrow">Guides</div>
-      <h3><a href="/guides/">Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order</a></h3>
-      <p>A hub for beginner-friendly guides, reading order, character context, and theme explainers.</p>
+    <article class="guide-card">
+      <div class="eyebrow">Boundless Forest Samsara</div>
+      <h3><a href="/characters/boundless-forest-samsara/">Who Is Boundless Forest Samsara? | Character Guide</a></h3>
+      <p>A guide to Boundless Forest Samsara, Ordinary Abyss, scale, horizon, and the politics of limitation.</p>
+      <a href="/characters/boundless-forest-samsara/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
+      <div class="eyebrow">Guide hub</div>
+      <h3><a href="/guides/">Legends of Ren Zu Guides | Reader Guides, Explainers, and Summaries</a></h3>
+      <p>A hub for reading order, summaries, explainers, and beginner-friendly entry points.</p>
       <a href="/guides/">Open page</a>
     </article>
   </div>
     </section>
+  
+      </div>
+    </div>
   
   </main>
   

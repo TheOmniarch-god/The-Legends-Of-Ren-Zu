@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Part 25: Fear is scarier than death | The Legends of Ren Zu</title>
-    <meta name="description" content="Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation app…" />
+    <meta name="description" content="Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation applied to hi…" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-25-fear-is-scarier-than-death/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Part 25: Fear is scarier than death | The Legends of Ren Zu" />
-    <meta property="og:description" content="Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation app…" />
+    <meta property="og:description" content="Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation applied to hi…" />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-25-fear-is-scarier-than-death/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Part 25: Fear is scarier than death | The Legends of Ren Zu" />
-    <meta name="twitter:description" content="Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation app…" />
+    <meta name="twitter:description" content="Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation applied to hi…" />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 25: Fear is scarier than death","headline":"Part 25: Fear is scarier than death","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-25-fear-is-scarier-than-death/","description":"Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation app…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 25: Fear is scarier than death","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-25-fear-is-scarier-than-death/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 25: Fear is scarier than death","headline":"Part 25: Fear is scarier than death","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-25-fear-is-scarier-than-death/","description":"Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation applied to hi…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 25: Fear is scarier than death","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-25-fear-is-scarier-than-death/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">The Legends of Ren Zu</div>
       <h1>Part 25: Fear is scarier than death</h1>
-      <p class="lead">Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation app…</p>
+      <p class="lead">Read Part 25: Fear is scarier than death from The Legends of Ren Zu. Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation applied to hi…</p>
+      <div class="chip-row"><span class="chip">Direct chapter URL</span><span class="chip">Guide-linked</span><span class="chip">Search-indexable</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,69 +324,92 @@
   </header>
   <main class="wrap stack">
     
+    <div class="two-col">
+      <div class="stack">
+        
     <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>Part 25: Fear is scarier than death</span>
-      </nav>
-      <div class="meta">
-        <span>Part 25</span>
-        <span>Gu Zhen Ren</span>
-        <span>The Omniarch reader companion</span>
-      </div>
-      <div class="chapter-body">
-        <p>Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation applied to his eldest son, Verdant Great Sun, and also his daughter, Boundless Forest Samsara. At this time, Self Gu spoke in Ren Zu’s heart: “Oh human, you want to save your son, Verdant Great Sun, I have a method.” Ren Zu thought that he had to save at least one of them; he quickly asked: “Oh? What method?” Self Gu laughed: “All living beings in this world will die; this is because Fate Gu entered the Door of Life and Death and left a trace behind when searching for Fairness Gu. Oh human, you can enter the Door of Life and Death and walk on the Road of Life and Road of Death; as long as you do not walk on the traces of fate, you will step on a road that belongs to you solely. When you walk into the Door of Life and Death and leave again, you will form a brand new road; that would be partway to success. Next, as long as you bring Verdant Great Sun onto the path that you walked on and leave the Door of Life and Death, you will be able to return to the human world where the sun shines. Your son, Verdant Great Sun, will be able to escape death and revive.” Ren Zu heard the method of Self Gu and was very hesitant, but there was no better solution available. Thus, he decided to let Boundless Forest Samsara stay inside Ordinary Abyss for a while longer, while he used the method taught by Self Gu to save his eldest son, Verdant Great Sun. Ren Zu set off towards the Door of Life and Death; as he walked, one day, he met with a Beastman.</p>
-<p>This Beastman was very muscular; his muscles were like rocks, the fangs in his mouth were sharper than blades. He took huge steps, sprinting in the wilderness as he shouted: “Don’t get any closer, don’t come here! I am afraid.” Ren Zu was very curious; he asked: “Oh Beastman, what are you afraid of?” The Beastman said: “I am afraid of my own shadow; it keeps following me, I cannot get rid of it. I am so afraid that I can only run around in all directions; I am tired, hungry, and thirsty, I am going to die.” Ren Zu felt that this was funny: “Oh Beastman, you have such a powerful body, yet you are afraid of a harmless shadow, do you have a cowardly heart? What is there to be afraid of?” At this time, a Gu Worm came out of the Beastman’s heart; it laughed at Ren Zu: “Oh human, do not speak so shamelessly. You do not feel afraid because you have not encountered me, Fear Gu. Hehehehehe.” “Fear Gu?” Ren Zu took a step back; his expression changed. Once Fear Gu appeared, fear started to well up in Ren Zu’s heart. He was afraid. Fear Gu laughed even more arrogantly now; it said to the Beastman: “I will let you off now, little Beastman, you pitiful worm.” The Beastman was free now; it fell to the ground, weeping in extreme joy. Fear Gu turned around, facing Ren Zu: “Oh human, you dared to look down on me, Fear Gu; now I will torture you with endless fear.” Saying this, Fear Gu flew into Ren Zu’s heart with a whooshing sound. Ren Zu felt immense fear. He was afraid of this, and afraid of that. Fear Gu made him scared of the wind; every time the wind blew, Ren Zu screamed in horror. Fear Gu made him afraid of sunlight; Ren Zu could only travel at night and often lost his way. During the daytime, he would enter caves or hide inside thick bushes. Fear Gu also made Ren Zu afraid of tree leaves; thus Ren Zu ran away from the forests; every tree he saw made him shriek. Fear Gu made Ren Zu afraid of snakes; in the end, Ren Zu even stopped using the grass ropes that he made himself. After that, Fear Gu made Ren Zu scared of rain. Whenever it rained, Ren Zu would shrivel up and look at the sky that was raining continuously, feeling extreme fear. Ren Zu wanted to go to the Door of Life and Death, but after being struck by</p>
-<p>Fear Gu, he could not move much; he could not make any progress. When Fear Gu understood Ren Zu’s motive, it made Ren Zu scared of death. Ren Zu no longer dared to walk towards the Door of Life and Death because once he entered the Door of Life and Death, he would be walking from life towards death. Ren Zu was afraid that he would die; he could only stay in place. Self Gu sighed: “Oh human, actually death is not scary; the real scary thing is the fear in your heart.” “That is right!” Fear Gu heard this and said proudly: “The only thing worth being afraid of is fear.”</p>
-      </div>
-      <div class="pager">
-        <div>
-          <div class="small">Previous</div><a href="/chapters/part-24-freedom-in-death/">Part 24: Freedom in death</a>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Next</div><a href="/chapters/part-26-betrayal-and-loyalty-to-oneself/">Part 26: Betrayal and Loyalty to oneself</a>
-        </div>
-      </div>
+      <div class="eyebrow">Chapter text</div>
+      <h2 class="section-title">Part 25: Fear is scarier than death</h2>
+      
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>Part 25: Fear is scarier than death</span>
+            </nav>
+            <div class="meta">
+              <span>Part 25</span>
+              <span>Gu Zhen Ren</span>
+              <span>The Omniarch reader companion</span>
+            </div>
+            <div class="chapter-body"><p>Ren Zu fell into deep perplexity. He could not find a better way to save his children. The same situation applied to his eldest son, Verdant Great Sun, and also his daughter, Boundless Forest Samsara. At this time, Self Gu spoke in Ren Zu’s heart: “Oh human, you want to save your son, Verdant Great Sun, I have a method.” Ren Zu thought that he had to save at least one of them; he quickly asked: “Oh? What method?” Self Gu laughed: “All living beings in this world will die; this is because Fate Gu entered the Door of Life and Death and left a trace behind when searching for Fairness Gu. Oh human, you can enter the Door of Life and Death and walk on the Road of Life and Road of Death; as long as you do not walk on the traces of fate, you will step on a road that belongs to you solely. When you walk into the Door of Life and Death and leave again, you will form a brand new road; that would be partway to success. Next, as long as you bring Verdant Great Sun onto the path that you walked on and leave the Door of Life and Death, you will be able to return to the human world where the sun shines. Your son, Verdant Great Sun, will be able to escape death and revive.” Ren Zu heard the method of Self Gu and was very hesitant, but there was no better solution available. Thus, he decided to let Boundless Forest Samsara stay inside Ordinary Abyss for a while longer, while he used the method taught by Self Gu to save his eldest son, Verdant Great Sun. Ren Zu set off towards the Door of Life and Death; as he walked, one day, he met with a Beastman.</p><p>This Beastman was very muscular; his muscles were like rocks, the fangs in his mouth were sharper than blades. He took huge steps, sprinting in the wilderness as he shouted: “Don’t get any closer, don’t come here! I am afraid.” Ren Zu was very curious; he asked: “Oh Beastman, what are you afraid of?” The Beastman said: “I am afraid of my own shadow; it keeps following me, I cannot get rid of it. I am so afraid that I can only run around in all directions; I am tired, hungry, and thirsty, I am going to die.” Ren Zu felt that this was funny: “Oh Beastman, you have such a powerful body, yet you are afraid of a harmless shadow, do you have a cowardly heart? What is there to be afraid of?” At this time, a Gu Worm came out of the Beastman’s heart; it laughed at Ren Zu: “Oh human, do not speak so shamelessly. You do not feel afraid because you have not encountered me, Fear Gu. Hehehehehe.” “Fear Gu?” Ren Zu took a step back; his expression changed. Once Fear Gu appeared, fear started to well up in Ren Zu’s heart. He was afraid. Fear Gu laughed even more arrogantly now; it said to the Beastman: “I will let you off now, little Beastman, you pitiful worm.” The Beastman was free now; it fell to the ground, weeping in extreme joy. Fear Gu turned around, facing Ren Zu: “Oh human, you dared to look down on me, Fear Gu; now I will torture you with endless fear.” Saying this, Fear Gu flew into Ren Zu’s heart with a whooshing sound. Ren Zu felt immense fear. He was afraid of this, and afraid of that. Fear Gu made him scared of the wind; every time the wind blew, Ren Zu screamed in horror. Fear Gu made him afraid of sunlight; Ren Zu could only travel at night and often lost his way. During the daytime, he would enter caves or hide inside thick bushes. Fear Gu also made Ren Zu afraid of tree leaves; thus Ren Zu ran away from the forests; every tree he saw made him shriek. Fear Gu made Ren Zu afraid of snakes; in the end, Ren Zu even stopped using the grass ropes that he made himself. After that, Fear Gu made Ren Zu scared of rain. Whenever it rained, Ren Zu would shrivel up and look at the sky that was raining continuously, feeling extreme fear. Ren Zu wanted to go to the Door of Life and Death, but after being struck by</p><p>Fear Gu, he could not move much; he could not make any progress. When Fear Gu understood Ren Zu’s motive, it made Ren Zu scared of death. Ren Zu no longer dared to walk towards the Door of Life and Death because once he entered the Door of Life and Death, he would be walking from life towards death. Ren Zu was afraid that he would die; he could only stay in place. Self Gu sighed: “Oh human, actually death is not scary; the real scary thing is the fear in your heart.” “That is right!” Fear Gu heard this and said proudly: “The only thing worth being afraid of is fear.”</p></div>
+            <div class="pager">
+              <div><div class="small">Previous</div><a href="/chapters/part-24-freedom-in-death/">Part 24: Freedom in death</a></div>
+              <div style="text-align:right"><div class="small">Next</div><a href="/chapters/part-26-betrayal-and-loyalty-to-oneself/">Part 26: Betrayal and Loyalty to oneself</a></div>
+            </div>
+          
     </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
+  
       </div>
+      <div class="stack">
+        
+    <section class="card">
+      <div class="eyebrow">At a glance</div>
+      <h2 class="section-title">Why this page matters</h2>
+      
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            <div class="stats"><div class="stat"><strong>Part 25</strong><span class="small">Archive label</span></div><div class="stat"><strong>3</strong><span class="small">Reading blocks</span></div><div class="stat"><strong>6</strong><span class="small">Related guide links</span></div></div>
+          
+    </section>
+  
+        
+    <section class="card">
+      <div class="eyebrow">Related guides</div>
+      <h2 class="section-title">Explore the ideas around this chapter</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Fate Gu</div>
+      <h3><a href="/themes/fate-gu/">Fate Gu Explained Theme Guide</a></h3>
+      <p>A focused guide to Fate Gu itself: what it represents and why it towers over the work.</p>
+      <a href="/themes/fate-gu/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Fate and Freedom</div>
       <h3><a href="/themes/fate-and-freedom/">Fate and Freedom in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>A guide to Fate Gu, rebellion, and the long struggle for freedom.</p>
       <a href="/themes/fate-and-freedom/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Wisdom, Strength, and Self</div>
       <h3><a href="/themes/wisdom-strength-and-self/">Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.</p>
       <a href="/themes/wisdom-strength-and-self/">Open page</a>
     </article>
   
-    <article class="info-card">
-      <div class="eyebrow">Guides</div>
-      <h3><a href="/guides/">Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order</a></h3>
-      <p>A hub for beginner-friendly guides, reading order, character context, and theme explainers.</p>
-      <a href="/guides/">Open page</a>
+    <article class="guide-card">
+      <div class="eyebrow">Verdant Great Sun</div>
+      <h3><a href="/characters/verdant-great-sun/">Who Is Verdant Great Sun? | Character Guide</a></h3>
+      <p>A guide to Ren Zu’s eldest son, his symbolism, and why his arc matters to the work’s early worldview.</p>
+      <a href="/characters/verdant-great-sun/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
+      <div class="eyebrow">Boundless Forest Samsara</div>
+      <h3><a href="/characters/boundless-forest-samsara/">Who Is Boundless Forest Samsara? | Character Guide</a></h3>
+      <p>A guide to Boundless Forest Samsara, Ordinary Abyss, scale, horizon, and the politics of limitation.</p>
+      <a href="/characters/boundless-forest-samsara/">Open page</a>
     </article>
   </div>
     </section>
+  
+      </div>
+    </div>
   
   </main>
   

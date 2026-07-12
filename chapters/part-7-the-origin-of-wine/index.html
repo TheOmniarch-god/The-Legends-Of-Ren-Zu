@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Part 7: The Origin of Wine | The Legends of Ren Zu</title>
-    <meta name="description" content="Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came fro…" />
+    <meta name="description" content="Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came from The Lege…" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-7-the-origin-of-wine/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Part 7: The Origin of Wine | The Legends of Ren Zu" />
-    <meta property="og:description" content="Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came fro…" />
+    <meta property="og:description" content="Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came from The Lege…" />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-7-the-origin-of-wine/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Part 7: The Origin of Wine | The Legends of Ren Zu" />
-    <meta name="twitter:description" content="Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came fro…" />
+    <meta name="twitter:description" content="Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came from The Lege…" />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 7: The Origin of Wine","headline":"Part 7: The Origin of Wine","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-7-the-origin-of-wine/","description":"Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came fro…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 7: The Origin of Wine","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-7-the-origin-of-wine/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 7: The Origin of Wine","headline":"Part 7: The Origin of Wine","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-7-the-origin-of-wine/","description":"Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came from The Lege…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 7: The Origin of Wine","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-7-the-origin-of-wine/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">The Legends of Ren Zu</div>
       <h1>Part 7: The Origin of Wine</h1>
-      <p class="lead">Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came fro…</p>
+      <p class="lead">Read Part 7: The Origin of Wine from The Legends of Ren Zu. In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came from The Lege…</p>
+      <div class="chip-row"><span class="chip">Direct chapter URL</span><span class="chip">Guide-linked</span><span class="chip">Search-indexable</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,61 +324,85 @@
   </header>
   <main class="wrap stack">
     
+    <div class="two-col">
+      <div class="stack">
+        
     <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>Part 7: The Origin of Wine</span>
-      </nav>
-      <div class="meta">
-        <span>Part 7</span>
-        <span>Gu Zhen Ren</span>
-        <span>The Omniarch reader companion</span>
-      </div>
-      <div class="chapter-body">
-        <p>In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came from The Legends of Ren Zu. Ren Zu's two eyes turned into his eldest son Verdant Great Sun and daughter Desolate Ancient Moon. Verdant Great Sun was always with Desolate Ancient Moon, and this close association created feelings towards his own sister. However, Desolate Ancient Moon refused his wooing. Verdant Great Sun was annoyed because of this and knew he needed some help, thus he asked the Wisdom Gu. At first, the Wisdom Gu ignored him and avoided him as much as it could. But Verdant Great Sun kept on persevering, and the Wisdom Gu couldn't endure this annoyance anymore, so it told him a way — “In the east dwells a group of Honey Peach Monkeys. Drink the wine brewed by them and come find me.” Thus, Verdant Great Sun went to the east and drank the wine. The wine brewed by the Honey Peach Monkeys was fruit wine. And ever since Verdant Great Sun drank the wine and returned, his face had a rosy flush. He smacked his lips as he recalled the taste: “So, wine is sweet.” The Wisdom Gu smiled and said: “In the west lies a group of Psychic Monkeys. Go taste the wine brewed by them.” The wine brewed by Psychic Monkeys was bitter wine. Verdant Great Sun went to the west and drank the wine; since then, his tongue had a yellowish-brown hue to it. He recalled the taste with a bitter expression. “So, wine can also be bitter.” Wisdom Gu said to him again: “Wine is both bitter and sweet, love is the same, and human lives are even more so. At the north dwells a group of Vajra Monkeys. They also brew wine, go taste it.” The Vajra Monkeys brewed strong wine. Verdant Great Sun enjoyed this wine very much and drank till he was dead drunk. He felt this wine was really to his taste and wanted to drink even more after getting drunk. He drank from the bowl at first before trying to drink it directly from the wine jar.</p>
-<p>Finally, he started throwing up. The wine started showing its effects, making him feel an unbearable pain. He felt the insides of his body were on fire, as if lava was flowing through them. “It's too hot!” He screamed. All the fire flowed in reverse towards his head, and his hair started burning. From then on, his hair burned endlessly like fire. When Verdant Great Sun woke up, he saw the Wisdom Gu looking at him. “What did you think of the strong wine?” The Wisdom Gu asked. Verdant Great Sun heaved a sigh “I understand now, no matter how good the wine is, you will vomit it out if you drink too much; everything should be taken with moderation.” The Wisdom Gu laughed out loudly: “In the north dwells a group of Skywater Monkeys. Their wine is also quite good; go taste it.” Skywater Monkeys' wine was clear wine and was completely opposite of the strong wine. Verdant Great Sun lightly tasted the wine, and the moment he did so, he completely forgot all his worries and felt like he was floating in the air, with a hazy and intoxicated look in his eyes. The Wisdom Gu again asked him about his experience. He lightly waved his hands: “Having known the joys of wine, I will not pass it on to those who are sober.” The Wisdom Gu chuckled and left quietly. Thus, humans weren't the first species to brew wine; rather, it was the monkeys who were ahead of the humans. Ordinary monkey groups all knew how to brew wine. The wines were different from one monkey group to another, with all kinds of taste. However, humans collectively called the wine brewed by the monkey’s Monkey Wine.</p>
-      </div>
-      <div class="pager">
-        <div>
-          <div class="small">Previous</div><a href="/chapters/part-6-light-of-faith/">Part 6: Light of Faith</a>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Next</div><a href="/chapters/part-8-reputation-gu/">Part 8: Reputation Gu</a>
-        </div>
-      </div>
+      <div class="eyebrow">Chapter text</div>
+      <h2 class="section-title">Part 7: The Origin of Wine</h2>
+      
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>Part 7: The Origin of Wine</span>
+            </nav>
+            <div class="meta">
+              <span>Part 7</span>
+              <span>Gu Zhen Ren</span>
+              <span>The Omniarch reader companion</span>
+            </div>
+            <div class="chapter-body"><p>In this world, humans weren't the only ones who knew how to brew wines. The earliest records of wine came from The Legends of Ren Zu. Ren Zu's two eyes turned into his eldest son Verdant Great Sun and daughter Desolate Ancient Moon. Verdant Great Sun was always with Desolate Ancient Moon, and this close association created feelings towards his own sister. However, Desolate Ancient Moon refused his wooing. Verdant Great Sun was annoyed because of this and knew he needed some help, thus he asked the Wisdom Gu. At first, the Wisdom Gu ignored him and avoided him as much as it could. But Verdant Great Sun kept on persevering, and the Wisdom Gu couldn't endure this annoyance anymore, so it told him a way — “In the east dwells a group of Honey Peach Monkeys. Drink the wine brewed by them and come find me.” Thus, Verdant Great Sun went to the east and drank the wine. The wine brewed by the Honey Peach Monkeys was fruit wine. And ever since Verdant Great Sun drank the wine and returned, his face had a rosy flush. He smacked his lips as he recalled the taste: “So, wine is sweet.” The Wisdom Gu smiled and said: “In the west lies a group of Psychic Monkeys. Go taste the wine brewed by them.” The wine brewed by Psychic Monkeys was bitter wine. Verdant Great Sun went to the west and drank the wine; since then, his tongue had a yellowish-brown hue to it. He recalled the taste with a bitter expression. “So, wine can also be bitter.” Wisdom Gu said to him again: “Wine is both bitter and sweet, love is the same, and human lives are even more so. At the north dwells a group of Vajra Monkeys. They also brew wine, go taste it.” The Vajra Monkeys brewed strong wine. Verdant Great Sun enjoyed this wine very much and drank till he was dead drunk. He felt this wine was really to his taste and wanted to drink even more after getting drunk. He drank from the bowl at first before trying to drink it directly from the wine jar.</p><p>Finally, he started throwing up. The wine started showing its effects, making him feel an unbearable pain. He felt the insides of his body were on fire, as if lava was flowing through them. “It's too hot!” He screamed. All the fire flowed in reverse towards his head, and his hair started burning. From then on, his hair burned endlessly like fire. When Verdant Great Sun woke up, he saw the Wisdom Gu looking at him. “What did you think of the strong wine?” The Wisdom Gu asked. Verdant Great Sun heaved a sigh “I understand now, no matter how good the wine is, you will vomit it out if you drink too much; everything should be taken with moderation.” The Wisdom Gu laughed out loudly: “In the north dwells a group of Skywater Monkeys. Their wine is also quite good; go taste it.” Skywater Monkeys' wine was clear wine and was completely opposite of the strong wine. Verdant Great Sun lightly tasted the wine, and the moment he did so, he completely forgot all his worries and felt like he was floating in the air, with a hazy and intoxicated look in his eyes. The Wisdom Gu again asked him about his experience. He lightly waved his hands: “Having known the joys of wine, I will not pass it on to those who are sober.” The Wisdom Gu chuckled and left quietly. Thus, humans weren't the first species to brew wine; rather, it was the monkeys who were ahead of the humans. Ordinary monkey groups all knew how to brew wine. The wines were different from one monkey group to another, with all kinds of taste. However, humans collectively called the wine brewed by the monkey’s Monkey Wine.</p></div>
+            <div class="pager">
+              <div><div class="small">Previous</div><a href="/chapters/part-6-light-of-faith/">Part 6: Light of Faith</a></div>
+              <div style="text-align:right"><div class="small">Next</div><a href="/chapters/part-8-reputation-gu/">Part 8: Reputation Gu</a></div>
+            </div>
+          
     </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
+  
       </div>
+      <div class="stack">
+        
+    <section class="card">
+      <div class="eyebrow">At a glance</div>
+      <h2 class="section-title">Why this page matters</h2>
+      
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            <div class="stats"><div class="stat"><strong>Part 7</strong><span class="small">Archive label</span></div><div class="stat"><strong>2</strong><span class="small">Reading blocks</span></div><div class="stat"><strong>5</strong><span class="small">Related guide links</span></div></div>
+          
+    </section>
+  
+        
+    <section class="card">
+      <div class="eyebrow">Related guides</div>
+      <h2 class="section-title">Explore the ideas around this chapter</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Wisdom, Strength, and Self</div>
       <h3><a href="/themes/wisdom-strength-and-self/">Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.</p>
       <a href="/themes/wisdom-strength-and-self/">Open page</a>
     </article>
   
-    <article class="info-card">
-      <div class="eyebrow">Guides</div>
-      <h3><a href="/guides/">Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order</a></h3>
-      <p>A hub for beginner-friendly guides, reading order, character context, and theme explainers.</p>
+    <article class="guide-card">
+      <div class="eyebrow">Verdant Great Sun</div>
+      <h3><a href="/characters/verdant-great-sun/">Who Is Verdant Great Sun? | Character Guide</a></h3>
+      <p>A guide to Ren Zu’s eldest son, his symbolism, and why his arc matters to the work’s early worldview.</p>
+      <a href="/characters/verdant-great-sun/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
+      <div class="eyebrow">Desolate Ancient Moon</div>
+      <h3><a href="/characters/desolate-ancient-moon/">Who Is Desolate Ancient Moon? | Character Guide</a></h3>
+      <p>A guide to Ren Zu’s daughter, sacrifice, rescue, and the emotional force of filial struggle.</p>
+      <a href="/characters/desolate-ancient-moon/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
+      <div class="eyebrow">Guide hub</div>
+      <h3><a href="/guides/">Legends of Ren Zu Guides | Reader Guides, Explainers, and Summaries</a></h3>
+      <p>A hub for reading order, summaries, explainers, and beginner-friendly entry points.</p>
       <a href="/guides/">Open page</a>
     </article>
   </div>
     </section>
+  
+      </div>
+    </div>
   
   </main>
   

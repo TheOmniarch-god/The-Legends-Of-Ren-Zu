@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hope Gu Explained | The Legends of Ren Zu Theme Guide</title>
-    <meta name="description" content="Hope Gu is one of the core symbolic forces in The Legends of Ren Zu. This guide explains what it means and where it matters most." />
+    <meta name="description" content="Why Hope Gu matters, what it symbolizes, and where it shapes The Legends of Ren Zu most strongly." />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/themes/hope-gu/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Hope Gu Explained | The Legends of Ren Zu Theme Guide" />
-    <meta property="og:description" content="Hope Gu is one of the core symbolic forces in The Legends of Ren Zu. This guide explains what it means and where it matters most." />
+    <meta property="og:description" content="Why Hope Gu matters, what it symbolizes, and where it shapes The Legends of Ren Zu most strongly." />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/themes/hope-gu/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Hope Gu Explained | The Legends of Ren Zu Theme Guide" />
-    <meta name="twitter:description" content="Hope Gu is one of the core symbolic forces in The Legends of Ren Zu. This guide explains what it means and where it matters most." />
+    <meta name="twitter:description" content="Why Hope Gu matters, what it symbolizes, and where it shapes The Legends of Ren Zu most strongly." />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Article","name":"Hope Gu Explained | The Legends of Ren Zu Theme Guide","url":"https://thelegendsofrenzu.theomniarch.com.ng/themes/hope-gu/","description":"Hope Gu is one of the core symbolic forces in The Legends of Ren Zu. This guide explains what it means and where it matters most.","isPartOf":{"@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Themes","item":"https://thelegendsofrenzu.theomniarch.com.ng/themes/"},{"@type":"ListItem","position":3,"name":"Hope Gu","item":"https://thelegendsofrenzu.theomniarch.com.ng/themes/hope-gu/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Article","name":"Hope Gu Explained | The Legends of Ren Zu Theme Guide","url":"https://thelegendsofrenzu.theomniarch.com.ng/themes/hope-gu/","description":"Why Hope Gu matters, what it symbolizes, and where it shapes The Legends of Ren Zu most strongly.","isPartOf":{"@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Themes","item":"https://thelegendsofrenzu.theomniarch.com.ng/themes/"},{"@type":"ListItem","position":3,"name":"Hope Gu","item":"https://thelegendsofrenzu.theomniarch.com.ng/themes/hope-gu/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">Theme guide</div>
       <h1>Hope Gu explained</h1>
-      <p class="lead">Hope Gu is not just a plot element. It is one of the clearest statements of how the legends understand persistence under suffering.</p>
+      <p class="lead">Why Hope Gu matters, what it symbolizes, and where it shapes The Legends of Ren Zu most strongly.</p>
+      <div class="chip-row"><span class="chip">Theme guide</span><span class="chip">Core symbol</span><span class="chip">Key moments</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,54 +324,62 @@
   </header>
   <main class="wrap stack">
     
-    <section class="card stack">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/themes/">Themes</a>
-        <span>›</span>
-        <span>Hope Gu</span>
-      </nav>
-      <div>
-        <h2 class="section-title">Why Hope Gu stands out</h2>
-        <p>Hope Gu appears early, but it never really leaves the architecture of the work. It represents the thing that still moves when everything else has already failed: not certainty, not victory, but the refusal to stop.</p>
-      </div>
-      <div>
-        <h2 class="section-title">What it symbolizes</h2>
-        <ul class="list">
-          <li>Endurance under hopeless conditions.</li>
-          <li>Movement before clarity arrives.</li>
-          <li>The emotional spark that keeps humans facing Predicament.</li>
-          <li>A kind of inner light that outlives comfort.</li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="section-title">Chapters where Hope Gu matters most</h2>
-        <ul class="link-list"><li><a href="/chapters/part-1-strength-wisdom-and-hope/">Part 1: Strength, Wisdom and Hope</a></li><li><a href="/chapters/part-2-rules-and-regulations/">Part 2: Rules &amp; Regulations</a></li><li><a href="/chapters/part-17-taking-the-first-step/">Part 17: Taking the first step</a></li><li><a href="/chapters/part-39-hope-triumphs-again/">Part 39: Hope triumphs again</a></li></ul>
-      </div>
+    
+    <section class="card">
+      <div class="eyebrow">Theme overview</div>
+      <h2 class="section-title">What this theme means</h2>
+      <p>Hope Gu stands out because it never feels like cheap optimism. It appears in a brutal world and still matters precisely because the world stays brutal.</p><p>The point is not that suffering disappears. The point is that motion becomes possible again. Hope Gu is one of the clearest ways the archive argues that human endurance is not the same thing as comfort.</p>
+    </section>
+  
+    
+    <section class="card">
+      <div class="eyebrow">Why it matters</div>
+      <h2 class="section-title">How this theme works inside the archive</h2>
+      <ul><li>It links directly to survival under Predicament.</li><li>It establishes an emotional grammar for the rest of the archive.</li><li>It lets later struggles feel like extensions of an older human refusal to surrender.</li><li>It remains meaningful even when the work grows darker and more complex.</li></ul>
+    </section>
+  
+    
+    <section class="card">
+      <div class="eyebrow">Best reading route</div>
+      <h2 class="section-title">Chapters that reveal this theme clearly</h2>
+      <ul><li><a href="/chapters/part-1-strength-wisdom-and-hope/">Part 1: Strength, Wisdom and Hope</a></li><li><a href="/chapters/part-2-rules-and-regulations/">Part 2: Rules &amp; Regulations</a></li><li><a href="/chapters/part-17-taking-the-first-step/">Part 17: Taking the first step</a></li><li><a href="/chapters/part-39-hope-triumphs-again/">Part 39: Hope triumphs again</a></li></ul>
+    </section>
+  
+    
+    <section class="card">
+      <div class="eyebrow">Related pages</div>
+      <h2 class="section-title">Where to go after this theme page</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Hope Gu meaning</div>
+      <h3><a href="/guides/hope-gu-meaning/">Hope Gu Meaning | Key Moments and Theme Guide</a></h3>
+      <p>An original guide to what Hope Gu means and why readers remember it so strongly.</p>
+      <a href="/guides/hope-gu-meaning/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Fate and Freedom</div>
       <h3><a href="/themes/fate-and-freedom/">Fate and Freedom in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>A guide to Fate Gu, rebellion, and the long struggle for freedom.</p>
       <a href="/themes/fate-and-freedom/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">FAQ</div>
       <h3><a href="/faq/">Legends of Ren Zu FAQ | Chapters, Ren Zu, Hope Gu, and Reading Guide</a></h3>
-      <p>Short answers to the questions new readers and searchers usually ask first.</p>
+      <p>Fast answers to the questions new readers and search visitors ask first.</p>
       <a href="/faq/">Open page</a>
     </article>
-  </div>
+  </div><blockquote class="quote" style="margin-top:16px;">Hope Gu is memorable because it does not promise safety. It promises motion when safety is already gone.</blockquote>
     </section>
+  
   
   </main>
   

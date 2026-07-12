@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Part 43: Betraying one’s self | The Legends of Ren Zu</title>
-    <meta name="description" content="Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu:…" />
+    <meta name="description" content="Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu: “No matter…" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-43-betraying-ones-self/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Part 43: Betraying one’s self | The Legends of Ren Zu" />
-    <meta property="og:description" content="Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu:…" />
+    <meta property="og:description" content="Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu: “No matter…" />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-43-betraying-ones-self/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Part 43: Betraying one’s self | The Legends of Ren Zu" />
-    <meta name="twitter:description" content="Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu:…" />
+    <meta name="twitter:description" content="Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu: “No matter…" />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 43: Betraying one’s self","headline":"Part 43: Betraying one’s self","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-43-betraying-ones-self/","description":"Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu:…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 43: Betraying one’s self","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-43-betraying-ones-self/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 43: Betraying one’s self","headline":"Part 43: Betraying one’s self","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-43-betraying-ones-self/","description":"Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu: “No matter…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 43: Betraying one’s self","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-43-betraying-ones-self/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">The Legends of Ren Zu</div>
       <h1>Part 43: Betraying one’s self</h1>
-      <p class="lead">Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu:…</p>
+      <p class="lead">Read Part 43: Betraying one’s self from The Legends of Ren Zu. Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu: “No matter…</p>
+      <div class="chip-row"><span class="chip">Direct chapter URL</span><span class="chip">Guide-linked</span><span class="chip">Search-indexable</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,70 +324,92 @@
   </header>
   <main class="wrap stack">
     
+    <div class="two-col">
+      <div class="stack">
+        
     <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>Part 43: Betraying one’s self</span>
-      </nav>
-      <div class="meta">
-        <span>Part 43</span>
-        <span>Gu Zhen Ren</span>
-        <span>The Omniarch reader companion</span>
-      </div>
-      <div class="chapter-body">
-        <p>Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu: “No matter what I say, my words are filled with wisdom; they will advise and help others. This won't do, so I came to you for help.” Lie Gu asked, “How do you want me to help you?” Wisdom Gu said, “This is easy and simple. Ren Zu and his children are in Primordial Domain now. In front of Primordial Domain is Xi Land, while behind it is Hu Land. Go to Primordial Domain and deceive Ren Zu; tell him Hu Land is in front while Xi Land is behind.” Lie Gu was puzzled, “That can help you take revenge?” Wisdom Gu laughed loudly, “Humans need to breathe in first before they can breathe out. Meanwhile, Xi Land and Hu Land are the breathing of heaven and earth. Just follow my instructions.” Lie Gu followed Wisdom Gu's arrangements and went to Primordial Domain. It told Ren Zu, “Human, you need to be careful. You are in a mystical place; you will reach Hu Land if you go forward and Xi Land if you move back.” Ren Zu had been thinking of leaving Primordial Domain; he thought, “The Beastmen once advised me not to go to Hu Land. In that case, I shall head towards the back and go to Xi Land.” Ren Zu moved towards the back of Primordial Domain with his children Great Strength True Martial and Carefree Wisdom Heart. Thus, they arrived at Hu Land. “This is not Xi Land!” Carefree Wisdom Heart knew they had been deceived. Ren Zu patted his chest, “Fortunately, I died once, and Betrayal Gu has already left me. Otherwise, if I care, Betrayal Gu will harm me.” But Great Strength True Martial suddenly realized something and shouted, “This is bad!” “What's wrong?” Ren Zu was about to ask when Self Gu flew out of his body. Self Gu left Ren Zu, leaving behind a sentence, “Oh human, after you put Attitude Gu on me, you deceived even yourself, so don't blame me for leaving you.” Back then, Ren Zu protected Weak Gu. Weak Gu urged Ren Zu to put Attitude Gu on Self Gu to deceive himself, creating the perfect deception that managed to</p>
-<p>even deceive the Predicament. If humans deceived themselves, their sense of self would leave, and the person would lose themselves. Ren Zu was angry and anxious, “What to do, Self Gu left me. How can I obtain freedom without it? How can I break free of the restraints of fate?” “Self Gu once took a bite of Betrayal Gu, so it gained the inclination to betray. I was already dissatisfied with it.” Great Strength True Martial's Ability Gu shouted. The skilled were naturally dissatisfied with themselves. “Self Gu will be out of our sight soon; we need to give chase!” Carefree Wisdom Heart reminded. The three immediately chased after Self Gu. Self Gu left very fast and dove into a river. The river's surface was calm with ice of all sizes floating on it. “This is the River of Time, the ice floating on the river is called Truthful Floating Ice.” Ren Zu's group recognized it immediately; they had gained this knowledge in the Qian Kun Crystal Wall. Ren Zu looked afar and said, “I think Self Gu is hiding in the center of the floating ice; let's quickly go and catch it!” Ren Zu's group sized up the situation by the riverside. Every piece of floating ice in the River of Time was a piece of truth. Ren Zu observed for a long while before pointing towards a floating ice: “This floating ice is neither big nor small and has a smooth surface; let’s step on this.” But Great Strength True Martial said, “This floating ice is clearly too small; it is not enough for us three.” Carefree Wisdom Heart shook her head, “This floating ice is quite big, but there are many spikes on it; they will pierce our feet.” Even when looking at the same truth, from the perspectives of different people, they could be big or small, minor, or severe, difficult, or easy. Some could accept it, but some could not. Ren Zu's group discussed for a long while before they chose a floating ice and stepped on it. When Ren Zu stepped on this ice, he immediately cried and snivelled. Great Strength True Martial shouted in anger, while Carefree Wisdom Heart laughedhappily. When looking at the same truth, different people would have different feelings and emotions regarding it. Ren Zu and his children could only endure this.</p>
-<p>“Every piece of floating ice in the River of Time is a cold and silent truth.But we humans have hearts; we feel emotions when we come across truths, and when truths and emotions mix, they create different situations for everyone.” Carefree Wisdom Heart recalled the knowledge in her mind. The floating ice carried the group and drifted for a while before it started shrinking and submerging. “Let's jump to that floating ice.” Ren Zu pointed towards the left, at his front. Before the floating ice under them submerged, the three jumped to the second floating ice. This piece of truth created different emotions in Ren Zu's group. The longer they stood on the floating ice, the more these emotions accumulated. As the floating ice continued to sink, the emotions they felt also changed. Some went from angry to happy, while others went from happy to depressed. “I can't endure this anymore; I feel horrible.” After persisting for a while, Ren Zu said while grasping his heart, “Let's jump to that floating ice.” The three jumped over, but shortly afterward, Carefree Wisdom Heart said, “I cannot stand this situation; I am also feeling extremely down. I even want to die.” Ren Zu's group of three quickly changed to another floating ice. No matter what truth they came upon, in reality, they could be endured by gritting one's teeth. The most dreadful thing was the suffering of the heart. If the heart could not endure it, the person would be unable to continue moving forward. After changing several pieces of floating ice, Great Strength True Martial felt the least amount of discomfort: “I am still fine.” Strong Gu shouted proudly in his heart: “There are too many situations in the world, but it has always been the weak who suffer more than the strong.” Fortitude Gu called out: “The credit here goes to me because I have been helping you since the start.” Fortitude Gu could suppress emotions. Suddenly, two Gu worms grew on Carefree Wisdom Heart's palms. The Gu on the left palm was called Good. The Gu on the right palm was called Bad. “Humans, we can help you distinguish which situation is good and which is bad.” Good Gu and Bad Gu said together in a soft voice. Thus, with the help of Good Gu and Bad Gu, Ren Zu's group was able to choose a piece of floating ice that had a good situation.</p>
-<p>All three of them felt happy when standing on this floating ice. When the floating ice started to submerge and good situations turned bad, the three jumped away. Like this, the three gradually turned happy, then ecstatic, before finally becoming euphoric. They could not move forward anymore as they drowned in emotions of endless joy. The three forgot about their situation; the truthful floating ice they were standing on submerged completely, and they fell into the river one after the other.</p>
-      </div>
-      <div class="pager">
-        <div>
-          <div class="small">Previous</div><a href="/chapters/part-42-finding-wisdom/">Part 42: Finding Wisdom</a>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Next</div><a href="/chapters/part-44-finding-self/">Part 44: Finding self</a>
-        </div>
-      </div>
+      <div class="eyebrow">Chapter text</div>
+      <h2 class="section-title">Part 43: Betraying one’s self</h2>
+      
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>Part 43: Betraying one’s self</span>
+            </nav>
+            <div class="meta">
+              <span>Part 43</span>
+              <span>Gu Zhen Ren</span>
+              <span>The Omniarch reader companion</span>
+            </div>
+            <div class="chapter-body"><p>Wisdom Gu was bitten by Self Gu, and it felt very angry and decided to take revenge. Wisdom Gu found Lie Gu: “No matter what I say, my words are filled with wisdom; they will advise and help others. This won't do, so I came to you for help.” Lie Gu asked, “How do you want me to help you?” Wisdom Gu said, “This is easy and simple. Ren Zu and his children are in Primordial Domain now. In front of Primordial Domain is Xi Land, while behind it is Hu Land. Go to Primordial Domain and deceive Ren Zu; tell him Hu Land is in front while Xi Land is behind.” Lie Gu was puzzled, “That can help you take revenge?” Wisdom Gu laughed loudly, “Humans need to breathe in first before they can breathe out. Meanwhile, Xi Land and Hu Land are the breathing of heaven and earth. Just follow my instructions.” Lie Gu followed Wisdom Gu's arrangements and went to Primordial Domain. It told Ren Zu, “Human, you need to be careful. You are in a mystical place; you will reach Hu Land if you go forward and Xi Land if you move back.” Ren Zu had been thinking of leaving Primordial Domain; he thought, “The Beastmen once advised me not to go to Hu Land. In that case, I shall head towards the back and go to Xi Land.” Ren Zu moved towards the back of Primordial Domain with his children Great Strength True Martial and Carefree Wisdom Heart. Thus, they arrived at Hu Land. “This is not Xi Land!” Carefree Wisdom Heart knew they had been deceived. Ren Zu patted his chest, “Fortunately, I died once, and Betrayal Gu has already left me. Otherwise, if I care, Betrayal Gu will harm me.” But Great Strength True Martial suddenly realized something and shouted, “This is bad!” “What's wrong?” Ren Zu was about to ask when Self Gu flew out of his body. Self Gu left Ren Zu, leaving behind a sentence, “Oh human, after you put Attitude Gu on me, you deceived even yourself, so don't blame me for leaving you.” Back then, Ren Zu protected Weak Gu. Weak Gu urged Ren Zu to put Attitude Gu on Self Gu to deceive himself, creating the perfect deception that managed to</p><p>even deceive the Predicament. If humans deceived themselves, their sense of self would leave, and the person would lose themselves. Ren Zu was angry and anxious, “What to do, Self Gu left me. How can I obtain freedom without it? How can I break free of the restraints of fate?” “Self Gu once took a bite of Betrayal Gu, so it gained the inclination to betray. I was already dissatisfied with it.” Great Strength True Martial's Ability Gu shouted. The skilled were naturally dissatisfied with themselves. “Self Gu will be out of our sight soon; we need to give chase!” Carefree Wisdom Heart reminded. The three immediately chased after Self Gu. Self Gu left very fast and dove into a river. The river's surface was calm with ice of all sizes floating on it. “This is the River of Time, the ice floating on the river is called Truthful Floating Ice.” Ren Zu's group recognized it immediately; they had gained this knowledge in the Qian Kun Crystal Wall. Ren Zu looked afar and said, “I think Self Gu is hiding in the center of the floating ice; let's quickly go and catch it!” Ren Zu's group sized up the situation by the riverside. Every piece of floating ice in the River of Time was a piece of truth. Ren Zu observed for a long while before pointing towards a floating ice: “This floating ice is neither big nor small and has a smooth surface; let’s step on this.” But Great Strength True Martial said, “This floating ice is clearly too small; it is not enough for us three.” Carefree Wisdom Heart shook her head, “This floating ice is quite big, but there are many spikes on it; they will pierce our feet.” Even when looking at the same truth, from the perspectives of different people, they could be big or small, minor, or severe, difficult, or easy. Some could accept it, but some could not. Ren Zu's group discussed for a long while before they chose a floating ice and stepped on it. When Ren Zu stepped on this ice, he immediately cried and snivelled. Great Strength True Martial shouted in anger, while Carefree Wisdom Heart laughedhappily. When looking at the same truth, different people would have different feelings and emotions regarding it. Ren Zu and his children could only endure this.</p><p>“Every piece of floating ice in the River of Time is a cold and silent truth.But we humans have hearts; we feel emotions when we come across truths, and when truths and emotions mix, they create different situations for everyone.” Carefree Wisdom Heart recalled the knowledge in her mind. The floating ice carried the group and drifted for a while before it started shrinking and submerging. “Let's jump to that floating ice.” Ren Zu pointed towards the left, at his front. Before the floating ice under them submerged, the three jumped to the second floating ice. This piece of truth created different emotions in Ren Zu's group. The longer they stood on the floating ice, the more these emotions accumulated. As the floating ice continued to sink, the emotions they felt also changed. Some went from angry to happy, while others went from happy to depressed. “I can't endure this anymore; I feel horrible.” After persisting for a while, Ren Zu said while grasping his heart, “Let's jump to that floating ice.” The three jumped over, but shortly afterward, Carefree Wisdom Heart said, “I cannot stand this situation; I am also feeling extremely down. I even want to die.” Ren Zu's group of three quickly changed to another floating ice. No matter what truth they came upon, in reality, they could be endured by gritting one's teeth. The most dreadful thing was the suffering of the heart. If the heart could not endure it, the person would be unable to continue moving forward. After changing several pieces of floating ice, Great Strength True Martial felt the least amount of discomfort: “I am still fine.” Strong Gu shouted proudly in his heart: “There are too many situations in the world, but it has always been the weak who suffer more than the strong.” Fortitude Gu called out: “The credit here goes to me because I have been helping you since the start.” Fortitude Gu could suppress emotions. Suddenly, two Gu worms grew on Carefree Wisdom Heart's palms. The Gu on the left palm was called Good. The Gu on the right palm was called Bad. “Humans, we can help you distinguish which situation is good and which is bad.” Good Gu and Bad Gu said together in a soft voice. Thus, with the help of Good Gu and Bad Gu, Ren Zu's group was able to choose a piece of floating ice that had a good situation.</p><p>All three of them felt happy when standing on this floating ice. When the floating ice started to submerge and good situations turned bad, the three jumped away. Like this, the three gradually turned happy, then ecstatic, before finally becoming euphoric. They could not move forward anymore as they drowned in emotions of endless joy. The three forgot about their situation; the truthful floating ice they were standing on submerged completely, and they fell into the river one after the other.</p></div>
+            <div class="pager">
+              <div><div class="small">Previous</div><a href="/chapters/part-42-finding-wisdom/">Part 42: Finding Wisdom</a></div>
+              <div style="text-align:right"><div class="small">Next</div><a href="/chapters/part-44-finding-self/">Part 44: Finding self</a></div>
+            </div>
+          
     </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
+  
       </div>
+      <div class="stack">
+        
+    <section class="card">
+      <div class="eyebrow">At a glance</div>
+      <h2 class="section-title">Why this page matters</h2>
+      
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            <div class="stats"><div class="stat"><strong>Part 43</strong><span class="small">Archive label</span></div><div class="stat"><strong>4</strong><span class="small">Reading blocks</span></div><div class="stat"><strong>6</strong><span class="small">Related guide links</span></div></div>
+          
+    </section>
+  
+        
+    <section class="card">
+      <div class="eyebrow">Related guides</div>
+      <h2 class="section-title">Explore the ideas around this chapter</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Fate Gu</div>
+      <h3><a href="/themes/fate-gu/">Fate Gu Explained Theme Guide</a></h3>
+      <p>A focused guide to Fate Gu itself: what it represents and why it towers over the work.</p>
+      <a href="/themes/fate-gu/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Fate and Freedom</div>
       <h3><a href="/themes/fate-and-freedom/">Fate and Freedom in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>A guide to Fate Gu, rebellion, and the long struggle for freedom.</p>
       <a href="/themes/fate-and-freedom/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Freedom Gu</div>
+      <h3><a href="/themes/freedom-gu/">Freedom Gu Explained Theme Guide</a></h3>
+      <p>A guide to what Freedom Gu means, why it is costly, and why it never stays light for long.</p>
+      <a href="/themes/freedom-gu/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Wisdom, Strength, and Self</div>
       <h3><a href="/themes/wisdom-strength-and-self/">Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.</p>
       <a href="/themes/wisdom-strength-and-self/">Open page</a>
     </article>
   
-    <article class="info-card">
-      <div class="eyebrow">Guides</div>
-      <h3><a href="/guides/">Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order</a></h3>
-      <p>A hub for beginner-friendly guides, reading order, character context, and theme explainers.</p>
+    <article class="guide-card">
+      <div class="eyebrow">Guide hub</div>
+      <h3><a href="/guides/">Legends of Ren Zu Guides | Reader Guides, Explainers, and Summaries</a></h3>
+      <p>A hub for reading order, summaries, explainers, and beginner-friendly entry points.</p>
       <a href="/guides/">Open page</a>
     </article>
   </div>
     </section>
+  
+      </div>
+    </div>
   
   </main>
   

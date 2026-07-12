@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Part 38: Facing a Strong Predicament | The Legends of Ren Zu</title>
-    <meta name="description" content="Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was ins…" />
+    <meta name="description" content="Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was inside this P…" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-38-facing-a-strong-predicament/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Part 38: Facing a Strong Predicament | The Legends of Ren Zu" />
-    <meta property="og:description" content="Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was ins…" />
+    <meta property="og:description" content="Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was inside this P…" />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-38-facing-a-strong-predicament/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Part 38: Facing a Strong Predicament | The Legends of Ren Zu" />
-    <meta name="twitter:description" content="Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was ins…" />
+    <meta name="twitter:description" content="Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was inside this P…" />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 38: Facing a Strong Predicament","headline":"Part 38: Facing a Strong Predicament","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-38-facing-a-strong-predicament/","description":"Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was ins…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 38: Facing a Strong Predicament","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-38-facing-a-strong-predicament/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 38: Facing a Strong Predicament","headline":"Part 38: Facing a Strong Predicament","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-38-facing-a-strong-predicament/","description":"Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was inside this P…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 38: Facing a Strong Predicament","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-38-facing-a-strong-predicament/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">The Legends of Ren Zu</div>
       <h1>Part 38: Facing a Strong Predicament</h1>
-      <p class="lead">Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was ins…</p>
+      <p class="lead">Read Part 38: Facing a Strong Predicament from The Legends of Ren Zu. Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was inside this P…</p>
+      <div class="chip-row"><span class="chip">Direct chapter URL</span><span class="chip">Guide-linked</span><span class="chip">Search-indexable</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,71 +324,85 @@
   </header>
   <main class="wrap stack">
     
+    <div class="two-col">
+      <div class="stack">
+        
     <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>Part 38: Facing a Strong Predicament</span>
-      </nav>
-      <div class="meta">
-        <span>Part 38</span>
-        <span>Gu Zhen Ren</span>
-        <span>The Omniarch reader companion</span>
-      </div>
-      <div class="chapter-body">
-        <p>Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was inside this Predicament's body, laughing, “Oh human, I am back again. This time, I have help. Let's see what you can do.” Ren Zu had to stop walking, even though the Predicament before him was huge; he did not fluster. Long ago, Ren Zu had been chased by a group of Predicaments as he escaped. However, after he gave his heart to Hope Gu, those Predicaments, which feared hope, escaped in panic. “Oh Hope Gu, I need your help,” Ren Zu summoned hope Gu, but the light of hope did not scare away this Predicament. “What was going on?”, Hope Gu asked. “Haha!” Strong Gu laughed. “Oh human, this Predicament has gained my help. “It will definitely be the greatest Predicament you have ever met in your life. With just hope, how can you possibly defeat it?” Ren Zu could not think of a way. At this moment, Weak Gu, shielded by Ren Zu, spoke in a soft voice, “Oh human, thank you for protecting me. Don't worry; I have an idea. Let's scare this Predicament away.” “You can scare it away?” Ren Zu asked. Weak Gu shook its head, “Oh human, even something as weak as me has a method to survive in life. Against those that want to eat or bully me, I will often put up a deceiving disguise to make others think that I am very strong. This world favors the strong. Even if we are weak, we need to disguise ourselves as strong beings, or we will be bullied everywhere. Oh human, you can do it. Don't you have</p>
-<p>Fear Gu? Isn't Attitude Gu on your face?” Ren Zu heard Weak Gu's suggestion and decided to try it. He first twisted his appearance using Attitude Gu, revealing his teeth, and showing a fierce expression. Next, he used Fear Gu to scare the Predicament, which bared its teeth, sprawling on the ground and staring at Ren Zu vigilantly. Ren Zu was dazed. “Why didn't we scare it away?” Weak Gu urged, “Didn't it jump earlier? This means that my method works, but we need to put in more effort. Oh human, why don't you put Attitude Gu on top of Self Gu? What is the best form of deceit or disguise? It is to deceive even yourself. By doing that, we should be able to deceive the Predicament.” Weak Gu continued, “As long as the Predicament thinks that you are strong, it will definitely let you pass. That is because Predicaments often take the initiative to give way to the strong.” Ren Zu took off the mask on his face as he placed Attitude Gu on Self Gu. However, it was pointless; the Predicament did not run off in fear. Ren Zu realized at once, “I understand now. When a person faces a huge predicament, putting up a facade will never solve the real problem.” Strong Gu laughed, “Oh human, stop wasting your effort. With me here to remind the Predicament, how can you guys possibly deceive it? You should not have saved Weak Gu; weak people often like to jeer and taunt others, showing a ruthless demeanour to conceal their own weakness inside.” Ren Zu was helpless; he could only stall for time temporarily. Suddenly, he had a flash of inspiration and said to Strong Gu, “You said that the law of survival is for the strong to eat the weak. I agree with that. But how do you prove that you are strong while we are weak? If you cannot prove this, on what basis are you allowed to eat us?” Strong Gu was dazed, “It is because I am Strong Gu, and that is Weak Gu.” Ren Zu shook his head, “Just your names alone cannot prove anything. Moreover, other than both of you Gu worms, this Predicament and I are also here.” Strong Gu smiled coldly, “Then I have a good method to prove it! We will eat a portion of each other; whoever fails to persevere to the end will lose. Whoever is weak deserves to be eaten.” Ren Zu saw that he could not stall for any more time; he had to take a risk. “Then we will do that. Don't regret it! However, which of us will eat first?” Strong Gu was confident in its strength, it chuckled, “So what if I let you go first?” Ren Zu assessed the Predicament with his gaze. The truth was he had never</p>
-<p>eaten any Predicaments before. Ren Zu thought about it before he had an idea. “Then I will eat the head of the Predicament first.” Thus, Predicament took off its head and gave it to Ren Zu. Ren Zu only took a bite when his face became distorted; he almost vomited on the spot. “So bitter!” It turned out that this was a huge bitter head. Not just that, even though the Predicament lost its head, it was still standing; the neck that was missing a head did not bleed at all, there were no issues at all. “Haha!” Strong Gu laughed. “Oh human, you chose wrongly. By just eating bitter heads, you cannot resolve any predicaments. Moreover, whether you are capable of eating this huge bitter head is another question altogether! If you cannot eat it, it means that you are a weakling; you deserve to be eaten by us.” Compared to the Predicament's head, Ren Zu's body was very small. Ren Zu knew that Strong Gu was right; he could not afford to lose. If he lost, not only would he fail to protect Weak Gu, he would even lose his life and become the food of the Predicament. Ren Zu could only frown as he opened his mouth, continuing to eat the bitter head. After taking dozens of mouthfuls, Ren Zu suddenly stopped; he opened his mouth and almost vomited. Hope Gu encouraged him, “Oh human, don't vomit. If you grit your teeth, you can devour any hardship that comes your way. Humans do not just need to eat food; they also need to taste bitterness.” Ren Zu nodded as he continued to eat. Halfway through, the Fear Gu on his body started to shout, “Oh heaven, when will we ever finish eating it?” Ren Zu also felt a trace of despair. Courage Gu quickly said, “Oh human, you cannot be afraid of tasting bitterness. Don't fear bitterness; suffering is only temporary. If you start to fear suffering, you will suffer for life.” With the help of Courage Gu, Ren Zu finally managed to eat all of the bitter heads after great hardship. Ren Zu wiped his mouth as he looked at Strong Gu with difficulty, “You can choose now.” Strong Gu smiled, “Then we will eat your skin first.” Ren Zu had to pull off the skin on his body as he threw it to the Predicament. The Predicament had no head; it stuffed Ren Zu's skin down its neck. Ren Zu's</p>
-<p>skin was completely eaten, but its huge belly did not expand at all. Strong Gu asked again, “Oh human, what are you going to eat next?” Ren Zu was troubled now; he had just eaten the Predicament's head, and it was too bitter. Even though he endured the process, his stomach was almost full. As for the Predicament, even though it had no head, it was still alive and standing. “What should I eat now? I ate too much earlier; my stomach is reaching its limit. If I have to eat a lot, my stomach might burst, and I'll die.” Ren Zu thought to himself; he had to eat the most important and fatal part of the Predicament's body. But which part of the Predicament's body was the most important? After thinking for a long time, Ren Zu finally had an idea. He said to Strong Gu, “Then I will eat the part that you absolutely do not want me to eat.” Strong Gu snorted coldly, “Then you can eat some losses.” It took out all of the losses from the Predicament's body and gave them to Ren Zu for consumption. These losses were not big; the quantity was not large either. Ren Zu was quite surprised because after these losses were taken out, the originally huge Predicament shrunk by a lot. Rules and Regulation Gu started to explain for Ren Zu, “Oh human, this is not strange. Predicaments vary according to people. Since you ate such a huge bitter head earlier, you will have fewer losses to eat, thus, it became smaller.” Ren Zu became happy, “This is great. Even if I eat all of these losses, I will not reach my limit; it will not fill my stomach completely.” Ren Zu opened his mouth and ate a small loss. It was so spicy that Ren Zu could not even speak at this moment. Continuing to eat, Ren Zu opened his mouth as he breathed heavily; his empty eye sockets also started to tear up uncontrollably. Eating again, Ren Zu's entire body was covered in sweat that merged with the tears flowing out of his eye sockets. The most uncomfortable thing for Ren Zu was that budding flames started to appear in his heart. These yellowish flames resembled chicks; they gathered together in groups. The more losses one ate, the more flames of resentment they would feel in their heart. The more flames of resentment they had, the more uncomfortable it felt. Even Ren Zu's several hearts could not take it; they were going to be incinerated soon. Right at this moment, the Heart of Nobleness grew in Ren Zu's chest.</p>
-<p>Compared to the other hearts, the Heart of Nobleness was able to endure the most flames of resentment. With this heart to bear the burden, Ren Zu finally managed to endure it. Ren Zu ate all of the losses. Strong Gu looked at Ren Zu's bulging belly as he smiled coldly, “Oh human, you are almost at your limit; it is time for us to eat.” Ren Zu breathed roughly as he asked, “What do you want to eat?” Strong Gu said, “I want to eat your flesh.” Ren Zu was helpless about it; he could only let it eat his flesh. Ren Zu's skin and flesh were inside Predicament's stomach; he only had his bones, organs, and hair left.</p>
-      </div>
-      <div class="pager">
-        <div>
-          <div class="small">Previous</div><a href="/chapters/part-37-lightning-and-hatred/">Part 37: Lightning and Hatred</a>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Next</div><a href="/chapters/part-39-hope-triumphs-again/">Part 39: Hope triumphs again</a>
-        </div>
-      </div>
+      <div class="eyebrow">Chapter text</div>
+      <h2 class="section-title">Part 38: Facing a Strong Predicament</h2>
+      
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>Part 38: Facing a Strong Predicament</span>
+            </nav>
+            <div class="meta">
+              <span>Part 38</span>
+              <span>Gu Zhen Ren</span>
+              <span>The Omniarch reader companion</span>
+            </div>
+            <div class="chapter-body"><p>Ren Zu continued on his journey. After a while, a huge Predicament entered Ren Zu's vision. Strong Gu was inside this Predicament's body, laughing, “Oh human, I am back again. This time, I have help. Let's see what you can do.” Ren Zu had to stop walking, even though the Predicament before him was huge; he did not fluster. Long ago, Ren Zu had been chased by a group of Predicaments as he escaped. However, after he gave his heart to Hope Gu, those Predicaments, which feared hope, escaped in panic. “Oh Hope Gu, I need your help,” Ren Zu summoned hope Gu, but the light of hope did not scare away this Predicament. “What was going on?”, Hope Gu asked. “Haha!” Strong Gu laughed. “Oh human, this Predicament has gained my help. “It will definitely be the greatest Predicament you have ever met in your life. With just hope, how can you possibly defeat it?” Ren Zu could not think of a way. At this moment, Weak Gu, shielded by Ren Zu, spoke in a soft voice, “Oh human, thank you for protecting me. Don't worry; I have an idea. Let's scare this Predicament away.” “You can scare it away?” Ren Zu asked. Weak Gu shook its head, “Oh human, even something as weak as me has a method to survive in life. Against those that want to eat or bully me, I will often put up a deceiving disguise to make others think that I am very strong. This world favors the strong. Even if we are weak, we need to disguise ourselves as strong beings, or we will be bullied everywhere. Oh human, you can do it. Don't you have</p><p>Fear Gu? Isn't Attitude Gu on your face?” Ren Zu heard Weak Gu's suggestion and decided to try it. He first twisted his appearance using Attitude Gu, revealing his teeth, and showing a fierce expression. Next, he used Fear Gu to scare the Predicament, which bared its teeth, sprawling on the ground and staring at Ren Zu vigilantly. Ren Zu was dazed. “Why didn't we scare it away?” Weak Gu urged, “Didn't it jump earlier? This means that my method works, but we need to put in more effort. Oh human, why don't you put Attitude Gu on top of Self Gu? What is the best form of deceit or disguise? It is to deceive even yourself. By doing that, we should be able to deceive the Predicament.” Weak Gu continued, “As long as the Predicament thinks that you are strong, it will definitely let you pass. That is because Predicaments often take the initiative to give way to the strong.” Ren Zu took off the mask on his face as he placed Attitude Gu on Self Gu. However, it was pointless; the Predicament did not run off in fear. Ren Zu realized at once, “I understand now. When a person faces a huge predicament, putting up a facade will never solve the real problem.” Strong Gu laughed, “Oh human, stop wasting your effort. With me here to remind the Predicament, how can you guys possibly deceive it? You should not have saved Weak Gu; weak people often like to jeer and taunt others, showing a ruthless demeanour to conceal their own weakness inside.” Ren Zu was helpless; he could only stall for time temporarily. Suddenly, he had a flash of inspiration and said to Strong Gu, “You said that the law of survival is for the strong to eat the weak. I agree with that. But how do you prove that you are strong while we are weak? If you cannot prove this, on what basis are you allowed to eat us?” Strong Gu was dazed, “It is because I am Strong Gu, and that is Weak Gu.” Ren Zu shook his head, “Just your names alone cannot prove anything. Moreover, other than both of you Gu worms, this Predicament and I are also here.” Strong Gu smiled coldly, “Then I have a good method to prove it! We will eat a portion of each other; whoever fails to persevere to the end will lose. Whoever is weak deserves to be eaten.” Ren Zu saw that he could not stall for any more time; he had to take a risk. “Then we will do that. Don't regret it! However, which of us will eat first?” Strong Gu was confident in its strength, it chuckled, “So what if I let you go first?” Ren Zu assessed the Predicament with his gaze. The truth was he had never</p><p>eaten any Predicaments before. Ren Zu thought about it before he had an idea. “Then I will eat the head of the Predicament first.” Thus, Predicament took off its head and gave it to Ren Zu. Ren Zu only took a bite when his face became distorted; he almost vomited on the spot. “So bitter!” It turned out that this was a huge bitter head. Not just that, even though the Predicament lost its head, it was still standing; the neck that was missing a head did not bleed at all, there were no issues at all. “Haha!” Strong Gu laughed. “Oh human, you chose wrongly. By just eating bitter heads, you cannot resolve any predicaments. Moreover, whether you are capable of eating this huge bitter head is another question altogether! If you cannot eat it, it means that you are a weakling; you deserve to be eaten by us.” Compared to the Predicament's head, Ren Zu's body was very small. Ren Zu knew that Strong Gu was right; he could not afford to lose. If he lost, not only would he fail to protect Weak Gu, he would even lose his life and become the food of the Predicament. Ren Zu could only frown as he opened his mouth, continuing to eat the bitter head. After taking dozens of mouthfuls, Ren Zu suddenly stopped; he opened his mouth and almost vomited. Hope Gu encouraged him, “Oh human, don't vomit. If you grit your teeth, you can devour any hardship that comes your way. Humans do not just need to eat food; they also need to taste bitterness.” Ren Zu nodded as he continued to eat. Halfway through, the Fear Gu on his body started to shout, “Oh heaven, when will we ever finish eating it?” Ren Zu also felt a trace of despair. Courage Gu quickly said, “Oh human, you cannot be afraid of tasting bitterness. Don't fear bitterness; suffering is only temporary. If you start to fear suffering, you will suffer for life.” With the help of Courage Gu, Ren Zu finally managed to eat all of the bitter heads after great hardship. Ren Zu wiped his mouth as he looked at Strong Gu with difficulty, “You can choose now.” Strong Gu smiled, “Then we will eat your skin first.” Ren Zu had to pull off the skin on his body as he threw it to the Predicament. The Predicament had no head; it stuffed Ren Zu's skin down its neck. Ren Zu's</p><p>skin was completely eaten, but its huge belly did not expand at all. Strong Gu asked again, “Oh human, what are you going to eat next?” Ren Zu was troubled now; he had just eaten the Predicament's head, and it was too bitter. Even though he endured the process, his stomach was almost full. As for the Predicament, even though it had no head, it was still alive and standing. “What should I eat now? I ate too much earlier; my stomach is reaching its limit. If I have to eat a lot, my stomach might burst, and I'll die.” Ren Zu thought to himself; he had to eat the most important and fatal part of the Predicament's body. But which part of the Predicament's body was the most important? After thinking for a long time, Ren Zu finally had an idea. He said to Strong Gu, “Then I will eat the part that you absolutely do not want me to eat.” Strong Gu snorted coldly, “Then you can eat some losses.” It took out all of the losses from the Predicament's body and gave them to Ren Zu for consumption. These losses were not big; the quantity was not large either. Ren Zu was quite surprised because after these losses were taken out, the originally huge Predicament shrunk by a lot. Rules and Regulation Gu started to explain for Ren Zu, “Oh human, this is not strange. Predicaments vary according to people. Since you ate such a huge bitter head earlier, you will have fewer losses to eat, thus, it became smaller.” Ren Zu became happy, “This is great. Even if I eat all of these losses, I will not reach my limit; it will not fill my stomach completely.” Ren Zu opened his mouth and ate a small loss. It was so spicy that Ren Zu could not even speak at this moment. Continuing to eat, Ren Zu opened his mouth as he breathed heavily; his empty eye sockets also started to tear up uncontrollably. Eating again, Ren Zu's entire body was covered in sweat that merged with the tears flowing out of his eye sockets. The most uncomfortable thing for Ren Zu was that budding flames started to appear in his heart. These yellowish flames resembled chicks; they gathered together in groups. The more losses one ate, the more flames of resentment they would feel in their heart. The more flames of resentment they had, the more uncomfortable it felt. Even Ren Zu's several hearts could not take it; they were going to be incinerated soon. Right at this moment, the Heart of Nobleness grew in Ren Zu's chest.</p><p>Compared to the other hearts, the Heart of Nobleness was able to endure the most flames of resentment. With this heart to bear the burden, Ren Zu finally managed to endure it. Ren Zu ate all of the losses. Strong Gu looked at Ren Zu's bulging belly as he smiled coldly, “Oh human, you are almost at your limit; it is time for us to eat.” Ren Zu breathed roughly as he asked, “What do you want to eat?” Strong Gu said, “I want to eat your flesh.” Ren Zu was helpless about it; he could only let it eat his flesh. Ren Zu's skin and flesh were inside Predicament's stomach; he only had his bones, organs, and hair left.</p></div>
+            <div class="pager">
+              <div><div class="small">Previous</div><a href="/chapters/part-37-lightning-and-hatred/">Part 37: Lightning and Hatred</a></div>
+              <div style="text-align:right"><div class="small">Next</div><a href="/chapters/part-39-hope-triumphs-again/">Part 39: Hope triumphs again</a></div>
+            </div>
+          
     </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
+  
       </div>
+      <div class="stack">
+        
+    <section class="card">
+      <div class="eyebrow">At a glance</div>
+      <h2 class="section-title">Why this page matters</h2>
+      
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            <div class="stats"><div class="stat"><strong>Part 38</strong><span class="small">Archive label</span></div><div class="stat"><strong>5</strong><span class="small">Reading blocks</span></div><div class="stat"><strong>5</strong><span class="small">Related guide links</span></div></div>
+          
+    </section>
+  
+        
+    <section class="card">
+      <div class="eyebrow">Related guides</div>
+      <h2 class="section-title">Explore the ideas around this chapter</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Hope Gu</div>
       <h3><a href="/themes/hope-gu/">Hope Gu Explained Theme Guide</a></h3>
-      <p>Why Hope Gu matters, what it represents, and where it shapes the story most strongly.</p>
+      <p>Why Hope Gu matters, what it symbolizes, and where it shapes the story most strongly.</p>
       <a href="/themes/hope-gu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Hope Gu meaning</div>
+      <h3><a href="/guides/hope-gu-meaning/">Hope Gu Meaning | Key Moments and Theme Guide</a></h3>
+      <p>An original guide to what Hope Gu means and why readers remember it so strongly.</p>
+      <a href="/guides/hope-gu-meaning/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Wisdom, Strength, and Self</div>
       <h3><a href="/themes/wisdom-strength-and-self/">Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.</p>
       <a href="/themes/wisdom-strength-and-self/">Open page</a>
     </article>
   
-    <article class="info-card">
-      <div class="eyebrow">Guides</div>
-      <h3><a href="/guides/">Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order</a></h3>
-      <p>A hub for beginner-friendly guides, reading order, character context, and theme explainers.</p>
+    <article class="guide-card">
+      <div class="eyebrow">Guide hub</div>
+      <h3><a href="/guides/">Legends of Ren Zu Guides | Reader Guides, Explainers, and Summaries</a></h3>
+      <p>A hub for reading order, summaries, explainers, and beginner-friendly entry points.</p>
       <a href="/guides/">Open page</a>
     </article>
   </div>
     </section>
+  
+      </div>
+    </div>
   
   </main>
   

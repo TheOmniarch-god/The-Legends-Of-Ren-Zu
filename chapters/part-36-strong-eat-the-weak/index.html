@@ -5,18 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Part 36: Strong eat the weak | The Legends of Ren Zu</title>
-    <meta name="description" content="Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked…" />
+    <meta name="description" content="Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked Cognition…" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-36-strong-eat-the-weak/" />
     <meta property="og:site_name" content="The Legends of Ren Zu" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Part 36: Strong eat the weak | The Legends of Ren Zu" />
-    <meta property="og:description" content="Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked…" />
+    <meta property="og:description" content="Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked Cognition…" />
     <meta property="og:url" content="https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-36-strong-eat-the-weak/" />
     <meta property="og:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Part 36: Strong eat the weak | The Legends of Ren Zu" />
-    <meta name="twitter:description" content="Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked…" />
+    <meta name="twitter:description" content="Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked Cognition…" />
     <meta name="twitter:image" content="https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png" />
     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
@@ -24,37 +24,52 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
     :root {
-      --bg: #0e0a09;
-      --panel: #17110f;
-      --soft: #221916;
-      --text: #efe6d7;
+      --bg: #0d0807;
+      --bg2: #160f0d;
+      --panel: rgba(24, 17, 15, 0.9);
+      --panel-soft: rgba(255,255,255,0.03);
+      --text: #f2eadc;
       --muted: #cbbda8;
       --accent: #d7b374;
       --accent-strong: #f0c983;
-      --border: rgba(215, 179, 116, 0.22);
+      --accent-fade: rgba(215,179,116,0.12);
+      --border: rgba(215, 179, 116, 0.2);
+      --border-strong: rgba(215, 179, 116, 0.42);
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --max: 1000px;
+      --max: 1120px;
+      --radius: 22px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      line-height: 1.75;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.72;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 36%),
-        linear-gradient(180deg, #140f0d 0%, #090605 100%);
+        radial-gradient(circle at top, rgba(104,67,22,0.22), transparent 34%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
       min-height: 100vh;
     }
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      color: #fbf7f0;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1rem; }
     a { color: var(--accent-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
     .topnav {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(10, 7, 6, 0.78);
       backdrop-filter: blur(10px);
-      background: rgba(9, 6, 5, 0.78);
       border-bottom: 1px solid var(--border);
     }
     .topnav-inner {
@@ -63,13 +78,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       padding: 14px 0;
     }
     .brand {
-      color: var(--text);
+      color: #fff5e4;
       font-weight: 700;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .navlinks {
       display: flex;
@@ -79,36 +95,40 @@
       font-size: 0.95rem;
     }
     .hero {
-      padding: 54px 0 28px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .eyebrow {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 12px;
+    .hero-inner {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
     }
-    h1, h2, h3 { line-height: 1.15; margin: 0 0 16px; }
-    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); }
-    h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); margin-top: 0; }
-    h3 { font-size: 1.2rem; }
-    p { margin: 0 0 1rem; }
-    p.lead {
+    .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lead {
       font-size: 1.08rem;
       color: var(--muted);
-      max-width: 72ch;
-      margin: 0 0 22px;
+      max-width: 74ch;
+      margin: 0;
     }
     .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 4px;
     }
     .button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -119,81 +139,142 @@
     }
     .button.primary {
       background: linear-gradient(180deg, rgba(215,179,116,0.25), rgba(215,179,116,0.12));
+      border-color: var(--border-strong);
     }
-    main { padding: 30px 0 70px; }
-    .stack { display: grid; gap: 20px; }
-    .card {
-      background: rgba(23,17,15,0.9);
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .chip {
       border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    main { padding: 28px 0 72px; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 24px;
       box-shadow: var(--shadow);
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      color: var(--muted);
-      font-size: 0.96rem;
-      margin: 8px 0 18px;
+    .card-soft {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
     }
+    .section-title { margin-bottom: 8px; }
+    .small { color: var(--muted); font-size: 0.94rem; }
+    .muted { color: var(--muted); }
     .breadcrumbs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 8px 0 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #fff6e8;
+      margin-bottom: 4px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
-    .info-card, .chapter-card {
-      background: rgba(255,255,255,0.02);
+    .guide-card, .chapter-card, .detail-card {
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 18px;
+      height: 100%;
     }
-    .info-card h3, .chapter-card h3 { margin-bottom: 10px; }
-    .info-card p, .chapter-card p { color: var(--muted); }
-    .list, .link-list {
+    .guide-card p, .chapter-card p, .detail-card p {
+      color: var(--muted);
+    }
+    .detail-card ul, .detail-card ol, .card ul, .card ol {
+      padding-left: 1.1rem;
       margin: 0;
-      padding-left: 1.2rem;
     }
-    .list li, .link-list li { margin: 0 0 0.55rem; }
+    .detail-card li, .card li {
+      margin-bottom: 0.5rem;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+    }
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
     .callout {
-      background: rgba(215, 179, 116, 0.08);
-      border-left: 4px solid rgba(215, 179, 116, 0.65);
+      background: var(--accent-fade);
+      border-left: 4px solid rgba(215, 179, 116, 0.7);
+      border-radius: 16px;
       padding: 16px 18px;
-      border-radius: 14px;
       color: var(--muted);
     }
     .quote {
       margin: 0;
-      padding: 16px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 16px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
       color: var(--muted);
       font-style: italic;
     }
-    .section-title {
-      margin-bottom: 10px;
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
     }
-    .small { color: var(--muted); font-size: 0.93rem; }
+    .two-col > * { min-width: 0; }
+    .chapter-body p { margin-bottom: 1rem; }
     .pager {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
+    .faq-item + .faq-item { margin-top: 14px; }
     footer {
-      padding: 26px 0 60px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
+      padding: 28px 0 60px;
+      color: var(--muted);
     }
     .footer-links {
       display: flex;
@@ -202,9 +283,20 @@
       margin-top: 10px;
       font-size: 0.95rem;
     }
+    @media (max-width: 840px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .topnav-inner {
+        align-items: flex-start;
+      }
+      .navlinks {
+        justify-content: flex-start;
+      }
+    }
   </style>
   
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 36: Strong eat the weak","headline":"Part 36: Strong eat the weak","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-36-strong-eat-the-weak/","description":"Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 36: Strong eat the weak","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-36-strong-eat-the-weak/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","inLanguage":"en"},{"@context":"https://schema.org","@type":"Book","name":"The Legends of Ren Zu","author":{"@type":"Person","name":"Gu Zhen Ren"},"publisher":{"@type":"Organization","name":"The Omniarch"},"inLanguage":"en","image":"https://thelegendsofrenzu.theomniarch.com.ng/icons/icon-512.png","url":"https://thelegendsofrenzu.theomniarch.com.ng/","description":"The Legends of Ren Zu by Gu Zhen Ren."},{"@context":"https://schema.org","@type":"Chapter","name":"Part 36: Strong eat the weak","headline":"Part 36: Strong eat the weak","url":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-36-strong-eat-the-weak/","description":"Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked Cognition…","author":{"@type":"Person","name":"Gu Zhen Ren"},"isPartOf":{"@type":"Book","name":"The Legends of Ren Zu","url":"https://thelegendsofrenzu.theomniarch.com.ng/","author":{"@type":"Person","name":"Gu Zhen Ren"}},"inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thelegendsofrenzu.theomniarch.com.ng/"},{"@type":"ListItem","position":2,"name":"Chapters","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/"},{"@type":"ListItem","position":3,"name":"Part 36: Strong eat the weak","item":"https://thelegendsofrenzu.theomniarch.com.ng/chapters/part-36-strong-eat-the-weak/"}]}]</script>
 </head>
 <body>
   
@@ -218,10 +310,11 @@
     </div>
   
   <header class="hero">
-    <div class="wrap">
+    <div class="hero-inner">
       <div class="eyebrow">The Legends of Ren Zu</div>
       <h1>Part 36: Strong eat the weak</h1>
-      <p class="lead">Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked…</p>
+      <p class="lead">Read Part 36: Strong eat the weak from The Legends of Ren Zu. Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked Cognition…</p>
+      <div class="chip-row"><span class="chip">Direct chapter URL</span><span class="chip">Guide-linked</span><span class="chip">Search-indexable</span></div>
       <div class="actions">
         <a class="button primary" href="/">Open immersive reader</a>
         <a class="button" href="/chapters/">Browse chapters</a>
@@ -231,68 +324,92 @@
   </header>
   <main class="wrap stack">
     
+    <div class="two-col">
+      <div class="stack">
+        
     <section class="card">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span>›</span>
-        <a href="/chapters/">Chapters</a>
-        <span>›</span>
-        <span>Part 36: Strong eat the weak</span>
-      </nav>
-      <div class="meta">
-        <span>Part 36</span>
-        <span>Gu Zhen Ren</span>
-        <span>The Omniarch reader companion</span>
-      </div>
-      <div class="chapter-body">
-        <p>Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked Cognition Gu, “Oh Cognition Gu, how can I obtain Freedom Gu again? After what happened last time, Freedom Gu will not approach me anymore.” Cognition Gu answered, “Oh human, why do you desire Freedom Gu so much?” Ren Zu replied irritably, “Don't you know the reason already? I am searching for freedom to break free of the restraints of fate.” Cognition Gu answered once again, “Then I have nothing much to tell you. Haven't you told Fate Gu the answer to this question already?” Ren Zu was dazed before he recalled, before he went insane, he met Fate Gu. When he was harmed by Fate Gu, he shouted at it that he would use his own strength and wisdom to obtain freedom; he would eventually break free from fate's control. Ren Zu's eyes brightened, “Oh Gu, I remember now, thank you for the reminder. I need to rely on myself to break free of fate. I already have my own strength; what I lack is my own wisdom. I need to let Self Gu eat a mouthful of Wisdom Gu, just like how it ate a part of Strength Gu in the past. But where is Wisdom Gu?”, Ren Zu asked Cognition Gu. Cognition Gu replied, “I do not know. Wisdom Gu has been to many places; its location is not fixed. You can find wisdom in countless places, so human, you need to find it yourself.” Ren Zu nodded as he set off on his journey again. He walked and walked and walked. One day, he saw two Gu worms chasing each other along the road. One Gu worm was white and tiny; it escaped ahead as it begged for mercy, “Stop chasing me, stop chasing me, I do not want to be eaten by you.” The other Gu was clearly larger in size; it had thick armor and said in a deep tone, “I want to eat you, I want to eat you! No matter where you escape to, I will eat you.” The tiny white Gu was about to be caught by the larger Gu behind; it suddenly saw Ren Zu and hid behind him, “Oh human, I beg of you, quickly save me.” Ren Zu saw that this Gu worm was so pitiful, chased by another Gu worm, unable to fend for itself, he felt like he was seeing himself.</p>
-<p>At this instance, a new heart grew in his chest—the heart of sympathy. Ren Zu stretched out both arms as he stopped the larger Gu, “Stop, stop chasing it.” The armored Gu shouted, “Hey human, are you obstructing me? No, you cannot stop me; you are unable to stop me. Why is that so?”, Ren Zu was curious. The armored Gu explained, “I am Strong Gu; that is Weak Gu. Since time immemorial, the rule of nature is that the strong prey on the weak. Thus, the strong must eat the weak; weaklings are the food of the strong.” Ren Zu sighed as he tried to convince the Gu, “Then why don't you let it off just this once; look at how pitiful it is.” Strong Gu sneered, “Not even once! In the eyes of the strong, weaklings have no stature; there is no sympathy for the weak. This is because heaven and earth will never pity the weak; it will only marvel at the incredible feats of the strong. Weaklings are born to be subdued, controlled, and devoured by the strong.” Ren Zu saw that his words fell on deaf ears; he could only deny Strong Gu forcefully, “I have already saved this Gu; go and eat others.” Strong Gu knew that it could not beat Ren Zu alone; it could only fly away in dissatisfaction, “I will be back.”</p>
-      </div>
-      <div class="pager">
-        <div>
-          <div class="small">Previous</div><a href="/chapters/part-35-joy-and-weight-of-freedom/">Part 35: Joy and Weight of Freedom</a>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Next</div><a href="/chapters/part-37-lightning-and-hatred/">Part 37: Lightning and Hatred</a>
-        </div>
-      </div>
+      <div class="eyebrow">Chapter text</div>
+      <h2 class="section-title">Part 36: Strong eat the weak</h2>
+      
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <a href="/">Home</a><span>›</span><a href="/chapters/">Chapters</a><span>›</span><span>Part 36: Strong eat the weak</span>
+            </nav>
+            <div class="meta">
+              <span>Part 36</span>
+              <span>Gu Zhen Ren</span>
+              <span>The Omniarch reader companion</span>
+            </div>
+            <div class="chapter-body"><p>Ren Zu lost Freedom Gu; he was anguished and only recovered after a long time. Ren Zu was troubled; he asked Cognition Gu, “Oh Cognition Gu, how can I obtain Freedom Gu again? After what happened last time, Freedom Gu will not approach me anymore.” Cognition Gu answered, “Oh human, why do you desire Freedom Gu so much?” Ren Zu replied irritably, “Don't you know the reason already? I am searching for freedom to break free of the restraints of fate.” Cognition Gu answered once again, “Then I have nothing much to tell you. Haven't you told Fate Gu the answer to this question already?” Ren Zu was dazed before he recalled, before he went insane, he met Fate Gu. When he was harmed by Fate Gu, he shouted at it that he would use his own strength and wisdom to obtain freedom; he would eventually break free from fate's control. Ren Zu's eyes brightened, “Oh Gu, I remember now, thank you for the reminder. I need to rely on myself to break free of fate. I already have my own strength; what I lack is my own wisdom. I need to let Self Gu eat a mouthful of Wisdom Gu, just like how it ate a part of Strength Gu in the past. But where is Wisdom Gu?”, Ren Zu asked Cognition Gu. Cognition Gu replied, “I do not know. Wisdom Gu has been to many places; its location is not fixed. You can find wisdom in countless places, so human, you need to find it yourself.” Ren Zu nodded as he set off on his journey again. He walked and walked and walked. One day, he saw two Gu worms chasing each other along the road. One Gu worm was white and tiny; it escaped ahead as it begged for mercy, “Stop chasing me, stop chasing me, I do not want to be eaten by you.” The other Gu was clearly larger in size; it had thick armor and said in a deep tone, “I want to eat you, I want to eat you! No matter where you escape to, I will eat you.” The tiny white Gu was about to be caught by the larger Gu behind; it suddenly saw Ren Zu and hid behind him, “Oh human, I beg of you, quickly save me.” Ren Zu saw that this Gu worm was so pitiful, chased by another Gu worm, unable to fend for itself, he felt like he was seeing himself.</p><p>At this instance, a new heart grew in his chest—the heart of sympathy. Ren Zu stretched out both arms as he stopped the larger Gu, “Stop, stop chasing it.” The armored Gu shouted, “Hey human, are you obstructing me? No, you cannot stop me; you are unable to stop me. Why is that so?”, Ren Zu was curious. The armored Gu explained, “I am Strong Gu; that is Weak Gu. Since time immemorial, the rule of nature is that the strong prey on the weak. Thus, the strong must eat the weak; weaklings are the food of the strong.” Ren Zu sighed as he tried to convince the Gu, “Then why don't you let it off just this once; look at how pitiful it is.” Strong Gu sneered, “Not even once! In the eyes of the strong, weaklings have no stature; there is no sympathy for the weak. This is because heaven and earth will never pity the weak; it will only marvel at the incredible feats of the strong. Weaklings are born to be subdued, controlled, and devoured by the strong.” Ren Zu saw that his words fell on deaf ears; he could only deny Strong Gu forcefully, “I have already saved this Gu; go and eat others.” Strong Gu knew that it could not beat Ren Zu alone; it could only fly away in dissatisfaction, “I will be back.”</p></div>
+            <div class="pager">
+              <div><div class="small">Previous</div><a href="/chapters/part-35-joy-and-weight-of-freedom/">Part 35: Joy and Weight of Freedom</a></div>
+              <div style="text-align:right"><div class="small">Next</div><a href="/chapters/part-37-lightning-and-hatred/">Part 37: Lightning and Hatred</a></div>
+            </div>
+          
     </section>
-    <section class="card stack">
-      <div>
-        <div class="eyebrow">Explore more</div>
-        <h2 class="section-title">Related guides for this chapter</h2>
-        <p class="small">These pages are original guide pages designed to support related searches and help readers understand the major ideas surrounding this chapter.</p>
+  
       </div>
+      <div class="stack">
+        
+    <section class="card">
+      <div class="eyebrow">At a glance</div>
+      <h2 class="section-title">Why this page matters</h2>
+      
+            <p class="small">This page gives search engines a stable chapter URL while still pointing real readers toward deeper character, theme, and guide pages.</p>
+            <div class="stats"><div class="stat"><strong>Part 36</strong><span class="small">Archive label</span></div><div class="stat"><strong>2</strong><span class="small">Reading blocks</span></div><div class="stat"><strong>6</strong><span class="small">Related guide links</span></div></div>
+          
+    </section>
+  
+        
+    <section class="card">
+      <div class="eyebrow">Related guides</div>
+      <h2 class="section-title">Explore the ideas around this chapter</h2>
       <div class="grid">
-    <article class="info-card">
+    <article class="guide-card">
       <div class="eyebrow">Ren Zu</div>
       <h3><a href="/characters/ren-zu/">Who Is Ren Zu? Character Guide</a></h3>
-      <p>A quick guide to Ren Zu, humanity’s first ancestor, and why he matters across the entire work.</p>
+      <p>A full character guide to Ren Zu, humanity’s ancestor and the center of the legends.</p>
       <a href="/characters/ren-zu/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Fate Gu</div>
+      <h3><a href="/themes/fate-gu/">Fate Gu Explained Theme Guide</a></h3>
+      <p>A focused guide to Fate Gu itself: what it represents and why it towers over the work.</p>
+      <a href="/themes/fate-gu/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Fate and Freedom</div>
       <h3><a href="/themes/fate-and-freedom/">Fate and Freedom in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>A guide to Fate Gu, rebellion, and the long struggle for freedom.</p>
       <a href="/themes/fate-and-freedom/">Open page</a>
     </article>
   
-    <article class="info-card">
+    <article class="guide-card">
+      <div class="eyebrow">Freedom Gu</div>
+      <h3><a href="/themes/freedom-gu/">Freedom Gu Explained Theme Guide</a></h3>
+      <p>A guide to what Freedom Gu means, why it is costly, and why it never stays light for long.</p>
+      <a href="/themes/freedom-gu/">Open page</a>
+    </article>
+  
+    <article class="guide-card">
       <div class="eyebrow">Wisdom, Strength, and Self</div>
       <h3><a href="/themes/wisdom-strength-and-self/">Wisdom, Strength, and Self in The Legends of Ren Zu | Theme Guide</a></h3>
       <p>How Strength Gu, Wisdom Gu, and Self Gu frame growth, identity, and human effort.</p>
       <a href="/themes/wisdom-strength-and-self/">Open page</a>
     </article>
   
-    <article class="info-card">
-      <div class="eyebrow">Guides</div>
-      <h3><a href="/guides/">Legends of Ren Zu Guides | Ren Zu, Hope Gu, Fate, and Reading Order</a></h3>
-      <p>A hub for beginner-friendly guides, reading order, character context, and theme explainers.</p>
+    <article class="guide-card">
+      <div class="eyebrow">Guide hub</div>
+      <h3><a href="/guides/">Legends of Ren Zu Guides | Reader Guides, Explainers, and Summaries</a></h3>
+      <p>A hub for reading order, summaries, explainers, and beginner-friendly entry points.</p>
       <a href="/guides/">Open page</a>
     </article>
   </div>
     </section>
+  
+      </div>
+    </div>
   
   </main>
   
