@@ -1976,28 +1976,55 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
         : ["心", "路", "尘", "凡"];
   const avatarSealMark = avatarSealMarks[avatarSeed % avatarSealMarks.length];
   const defaultAvatars = [
-    { id: "avatar_01", label: "Lotus", src: "/assets/avatars/avatar-01.webp" },
-    { id: "avatar_02", label: "Schemer", src: "/assets/avatars/avatar-02.webp" },
-    { id: "avatar_03", label: "Ink Robe", src: "/assets/avatars/avatar-03.webp" },
-    { id: "avatar_04", label: "Scroll", src: "/assets/avatars/avatar-04.webp" },
-    { id: "avatar_05", label: "Twin Jade", src: "/assets/avatars/avatar-05.webp" },
-    { id: "avatar_06", label: "Fox Joy", src: "/assets/avatars/avatar-06.webp" },
-    { id: "avatar_07", label: "Lantern", src: "/assets/avatars/avatar-07.webp" },
-    { id: "avatar_08", label: "The Legend", src: "/assets/avatars/avatar-08.webp" },
-    { id: "avatar_09", label: "Rain Spear", src: "/assets/avatars/avatar-09.webp" },
-    { id: "avatar_10", label: "Festival", src: "/assets/avatars/avatar-10.webp" },
-    { id: "avatar_11", label: "Dragon Smile", src: "/assets/avatars/avatar-11.webp" },
-    { id: "avatar_12", label: "Flower Jade", src: "/assets/avatars/avatar-12.webp" },
-    { id: "avatar_13", label: "Sleeper", src: "/assets/avatars/avatar-13.webp" },
-    { id: "avatar_14", label: "Turquoise", src: "/assets/avatars/avatar-14.webp" },
-    { id: "avatar_15", label: "Wolf Crown", src: "/assets/avatars/avatar-15.webp" },
-    { id: "avatar_16", label: "Wanderer", src: "/assets/avatars/avatar-16.webp" },
-    { id: "avatar_17", label: "Moon Veil", src: "/assets/avatars/avatar-17.webp" },
+    { id: "avatar_01", label: "Lotus", src: "/assets/avatars/avatar-01.webp", requiredTier: "mortal" },
+    { id: "avatar_04", label: "Scroll", src: "/assets/avatars/avatar-04.webp", requiredTier: "mortal" },
+    { id: "avatar_07", label: "Lantern", src: "/assets/avatars/avatar-07.webp", requiredTier: "mortal" },
+    { id: "avatar_10", label: "Festival", src: "/assets/avatars/avatar-10.webp", requiredTier: "mortal" },
+    { id: "avatar_13", label: "Sleeper", src: "/assets/avatars/avatar-13.webp", requiredTier: "mortal" },
+    { id: "avatar_02", label: "Schemer", src: "/assets/avatars/avatar-02.webp", requiredTier: "gu_master" },
+    { id: "avatar_03", label: "Ink Robe", src: "/assets/avatars/avatar-03.webp", requiredTier: "gu_master" },
+    { id: "avatar_12", label: "Flower Jade", src: "/assets/avatars/avatar-12.webp", requiredTier: "gu_master" },
+    { id: "avatar_16", label: "Wanderer", src: "/assets/avatars/avatar-16.webp", requiredTier: "gu_master" },
+    { id: "avatar_05", label: "Twin Jade", src: "/assets/avatars/avatar-05.webp", requiredTier: "gu_immortal" },
+    { id: "avatar_11", label: "Dragon Smile", src: "/assets/avatars/avatar-11.webp", requiredTier: "gu_immortal" },
+    { id: "avatar_14", label: "Turquoise", src: "/assets/avatars/avatar-14.webp", requiredTier: "gu_immortal" },
+    { id: "avatar_17", label: "Moon Veil", src: "/assets/avatars/avatar-17.webp", requiredTier: "gu_immortal" },
+    { id: "avatar_08", label: "The Legend", src: "/assets/avatars/avatar-08.webp", requiredTier: "venerable" },
+    { id: "avatar_09", label: "Rain Spear", src: "/assets/avatars/avatar-09.webp", requiredTier: "venerable" },
+    { id: "avatar_15", label: "Wolf Crown", src: "/assets/avatars/avatar-15.webp", requiredTier: "venerable" },
+    { id: "avatar_06", label: "Fox Joy", src: "/assets/avatars/avatar-06.webp", requiredTier: "venerable" },
   ];
-  const activeAvatarId = avatarChoice || defaultAvatars[avatarSeed % defaultAvatars.length].id;
-  const activeAvatar = defaultAvatars.find(a => a.id === activeAvatarId) || defaultAvatars[avatarSeed % defaultAvatars.length];
+  function avatarTierRank(value) {
+    if (value === "venerable") return 4;
+    if (value === "gu_immortal") return 3;
+    if (value === "gu_master") return 2;
+    return 1;
+  }
+  function avatarTierLabel(value) {
+    if (value === "venerable") return "Venerable";
+    if (value === "gu_immortal") return "Gu Immortal";
+    if (value === "gu_master") return "Gu Master";
+    return "Free";
+  }
+  function avatarUnlocked(a) {
+    return avatarTierRank(tier) >= avatarTierRank(a?.requiredTier || "mortal");
+  }
+  const unlockedAvatars = defaultAvatars.filter(avatarUnlocked);
+  const seededAvatar = unlockedAvatars[avatarSeed % Math.max(1, unlockedAvatars.length)] || defaultAvatars[0];
+  const requestedAvatar = defaultAvatars.find(a => a.id === avatarChoice);
+  const activeAvatar = requestedAvatar && avatarUnlocked(requestedAvatar) ? requestedAvatar : seededAvatar;
+  const activeAvatarId = activeAvatar.id;
 
   async function chooseAvatar(id) {
+    const picked = defaultAvatars.find(a => a.id === id);
+    if (!picked) return;
+    if (!avatarUnlocked(picked)) {
+      setSaveErr(`Requires ${avatarTierLabel(picked.requiredTier)} realm.`);
+      setSaveMsg("");
+      setTimeout(() => setSaveErr(""), 1800);
+      return;
+    }
+
     setAvatarChoice(id);
     try { localStorage.setItem("renzu_avatar_choice", id); } catch (_) {}
     setSaveErr("");
@@ -2302,23 +2329,29 @@ function ProfileModal({ open, onClose, D, S, deviceId, username, email, tier, ti
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(78px, 1fr))", gap: 9, marginBottom: 12 }}>
                   {defaultAvatars.map(a => {
                     const chosen = activeAvatarId === a.id;
+                    const locked = !avatarUnlocked(a);
                     return (
-                      <button key={a.id} onClick={() => chooseAvatar(a.id)} title={a.label} style={{
-                        minHeight: 94,
+                      <button key={a.id} onClick={() => chooseAvatar(a.id)} title={locked ? `${a.label} · Requires ${avatarTierLabel(a.requiredTier)}` : a.label} style={{
+                        minHeight: 104,
                         borderRadius: 14,
-                        border: `1px solid ${chosen ? avatarCfg.accent + "aa" : border}`,
-                        background: chosen ? `${avatarCfg.accent}16` : (D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)"),
+                        border: `1px solid ${chosen ? avatarCfg.accent + "aa" : locked ? border : border}`,
+                        background: chosen ? `${avatarCfg.accent}16` : locked ? (D ? "rgba(255,255,255,0.018)" : "rgba(0,0,0,0.018)") : (D ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)"),
                         color: text,
-                        cursor: "pointer",
+                        cursor: locked ? "not-allowed" : "pointer",
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
                         gap: 3,
+                        opacity: locked ? 0.46 : 1,
                         boxShadow: chosen ? `0 0 16px ${avatarCfg.accent}22` : "none",
                       }}>
-                        {renderAvatarImage(a, 48)}
+                        <div style={{ position: "relative" }}>
+                          {renderAvatarImage(a, 48)}
+                          {locked && <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "rgba(0,0,0,0.38)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff0c8", fontSize: 13 }}>锁</div>}
+                        </div>
                         <span style={{ fontFamily: headFont, fontSize: 8.5, letterSpacing: "0.07em", textTransform: "uppercase", color: chosen ? avatarCfg.accent : textDim }}>{a.label}</span>
+                        {locked && <span style={{ fontFamily: headFont, fontSize: 6.8, letterSpacing: "0.08em", textTransform: "uppercase", color: textDim }}>{avatarTierLabel(a.requiredTier)}</span>}
                       </button>
                     );
                   })}
