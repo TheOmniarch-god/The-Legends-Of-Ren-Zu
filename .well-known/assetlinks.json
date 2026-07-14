@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.theomniarch.legendsofrenzu",
+        "sha256_cert_fingerprints": ["C4:3A:A2:05:CD:7B:E3:C3:ED:8C:53:BC:B9:89:6A:AA:E1:97:48:D0:E2:35:61:43:61:38:07:6B:D2:D4:A7:E8"]
+      }
+    }]
