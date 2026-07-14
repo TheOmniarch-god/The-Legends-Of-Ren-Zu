@@ -4713,12 +4713,16 @@ const chapterKeyRef = useRef(null);
     return "";
   }
 
+  function isOmniarchAccount(emailValue = userEmail) {
+    return String(emailValue || "").trim().toLowerCase() === "omniarchportal@gmail.com";
+  }
+
   function isProfilePreviewComplete() {
     try {
       const params = new URLSearchParams(window.location.search || "");
-      return params.get("profileComplete") === "1" || params.get("codexComplete") === "1" || (window.location.hash || "").includes("myriad");
+      return params.get("profileComplete") === "1" || params.get("codexComplete") === "1" || (window.location.hash || "").includes("myriad") || isOmniarchAccount();
     } catch (_) {
-      return false;
+      return isOmniarchAccount();
     }
   }
 
