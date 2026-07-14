@@ -1471,6 +1471,55 @@ function LegalTrustModal({ open, onClose, D, S }) {
   );
 }
 
+function HelpFaqModal({ open, onClose, D, S }) {
+  const [tab, setTab] = useState("start");
+  useEffect(() => { if (open) setTab("start"); }, [open]);
+  if (!open) return null;
+  const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
+  const borderStrong = D ? "rgba(255,255,255,0.20)" : S ? "rgba(120,80,20,0.55)" : "rgba(0,0,0,0.22)";
+  const surface = D ? "#08080a" : S ? "#f2dfb6" : "#fffaf0";
+  const pageBg = D ? "rgba(0,0,0,0.82)" : S ? "rgba(88,48,8,0.30)" : "rgba(236,232,222,0.72)";
+  const text = D ? "#dddbd5" : S ? "#2a1502" : "#0d0c09";
+  const textDim = D ? "#9a9890" : S ? "#7a4e18" : "#6a6660";
+  const headFont = "Metamorphous, Georgia, serif";
+  const bodyFont = "'IM Fell English', Georgia, serif";
+  const sections = {
+    start: { title: "Getting Started", points: ["Open Home to browse all Ren Zu entries.", "Use Search to find themes, Gu, or chapter titles.", "Open a chapter to read, listen, save passages, and ask Ren Zu.", "Login if you want purchases, Codex, saved items, avatar, and Hall features to follow your account."] },
+    reader: { title: "Reading", points: ["Open any entry from Home to start at the top.", "Continue Reading resumes the last saved position.", "Reader Settings control text size, line spacing, and reading width across all chapters.", "Long-press a sentence to open passage actions."] },
+    audio: { title: "Narration", points: ["Use Play to start narration for a chapter.", "Use Read From Here from the passage menu to start narration at a selected sentence.", "The active sentence highlights and scrolls into view while audio reads.", "Audio Settings control narrator, accent, and speed across the app."] },
+    saved: { title: "Saved", points: ["Bookmarks save chapters or passages.", "Highlights mark important sentences.", "Notes attach private thoughts to a passage.", "Saved contains All, Bookmarks, Highlights, and Notes tabs.", "Saved features require Login so they sync across devices."] },
+    codex: { title: "Codex", points: ["Gu are not duplicated. They are perceived as traces and refined when the realm is sufficient.", "Mortal, Immortal, and Venerable paths show Codex progression.", "A trace means the Gu has been encountered but has not submitted to the current realm.", "Full visible Legends Codex completion grants the Myriad aura."] },
+    realms: { title: "Realms & Treasure", points: ["Treasure Yellow Heaven handles realm upgrades.", "Flutterwave and crypto payments generate or verify Realm Tokens.", "Realm Tokens are redeemed while logged in so the realm binds to the email account.", "Higher realms unlock more narration, Ask Ren Zu usage, Codex paths, avatar options, and Hall eligibility."] },
+    profile: { title: "Profile & Avatars", points: ["Profile shows realm, progress, avatar, saved counts, and account state.", "Choose a default avatar in Account Details.", "Some avatars require Gu Master, Gu Immortal, or Venerable realm.", "Avatar choice syncs to the logged-in email account after saving."] },
+    hall: { title: "Hall Of Venerables", points: ["Only Venerable profiles can enter the Hall.", "Venerable Listing is optional.", "The Hall displays avatar, realm frame, title, Codex progress, and Myriad status.", "The Omniarch account may appear as Founder · Supreme Venerable."] },
+    ask: { title: "Ask Ren Zu", points: ["Ask Ren Zu answers from the current passage, nearby context, the app's Legends index, and curated canon notes.", "It can connect a passage to Fang Yuan or the main Reverend Insanity novel when asked.", "Ren Zu is not Fang Yuan; connections are thematic, strategic, or world-mechanic based.", "Ask Ren Zu consumes chat essence/credits according to realm."] },
+    install: { title: "Install & Support", points: ["Use Install App from the nav menu to add the reader to the device.", "If PWA splash/icon changes do not appear, remove and reinstall the app because mobile browsers cache PWA assets.", "Trust & Policies contains Privacy, Terms, Refunds, and Contact.", "For payment issues, include account email and transaction reference."] }
+  };
+  const tabs = Object.entries(sections).map(([id, v]) => [id, v.title]);
+  const current = sections[tab] || sections.start;
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:10016, background:pageBg, backdropFilter:"blur(12px)", WebkitBackdropFilter:"blur(12px)", overflowY:"auto" }}>
+      <div style={{ maxWidth:780, margin:"0 auto", padding:"18px 16px 44px" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+          <button onClick={onClose} style={{ background:"transparent", border:"none", color:textDim, cursor:"pointer", fontFamily:headFont, fontSize:12 }}>← Back</button>
+          <div style={{ fontFamily:headFont, fontSize:13, letterSpacing:"0.16em", textTransform:"uppercase", color:text }}>Help / FAQ</div>
+          <div style={{ width:42 }} />
+        </div>
+        <div style={{ display:"flex", gap:7, flexWrap:"wrap", justifyContent:"center", marginBottom:12 }}>
+          {tabs.map(([id,label]) => <button key={id} onClick={() => setTab(id)} style={{ padding:"7px 11px", borderRadius:999, border:`1px solid ${tab===id ? borderStrong : border}`, background:tab===id ? (D ? "rgba(255,255,255,0.10)" : S ? "rgba(139,94,26,0.18)" : "rgba(0,0,0,0.07)") : "transparent", color:tab===id ? text : textDim, cursor:"pointer", fontFamily:headFont, fontSize:10, letterSpacing:"0.08em" }}>{label}</button>)}
+        </div>
+        <div style={{ padding:"16px", borderRadius:20, border:`1px solid ${border}`, background:surface, marginBottom:12 }}>
+          <div style={{ fontFamily:headFont, fontSize:16, color:text, marginBottom:6 }}>{current.title}</div>
+          <div style={{ fontFamily:bodyFont, fontSize:13, lineHeight:1.65, color:textDim }}>Quick guide for using this part of the app.</div>
+        </div>
+        <div style={{ display:"grid", gap:10 }}>
+          {current.points.map((point, idx) => <div key={idx} style={{ padding:"13px 14px", borderRadius:16, border:`1px solid ${border}`, background:surface }}><div style={{ display:"grid", gridTemplateColumns:"24px 1fr", gap:10, alignItems:"start" }}><div style={{ width:22, height:22, borderRadius:"50%", border:`1px solid ${borderStrong}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:headFont, fontSize:10, color:textDim }}>{idx+1}</div><div style={{ fontFamily:bodyFont, fontSize:12.7, color:text, lineHeight:1.6 }}>{point}</div></div></div>)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SettingsHubModal({ open, onClose, D, S, onReader, onAudio, onHelp, onLegal }) {
   if (!open) return null;
   const border = D ? "rgba(255,255,255,0.10)" : S ? "rgba(180,130,40,0.40)" : "rgba(0,0,0,0.12)";
@@ -3471,6 +3520,7 @@ function RenZuReader() {
   const [showNotes, setShowNotes] = useState(false);
   const [showSettingsHub, setShowSettingsHub] = useState(false);
   const [showLegal, setShowLegal] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [showSavedHub, setShowSavedHub] = useState(false);
   const [annotations, setAnnotations] = useState([]);
   const [annotationBusy, setAnnotationBusy] = useState(false);
@@ -6950,6 +7000,13 @@ function getOrBuildSentences() {
         </div>
       )}
 
+      <HelpFaqModal
+        open={showHelp}
+        onClose={() => { setShowHelp(false); setShowSettingsHub(true); }}
+        D={D}
+        S={S}
+      />
+
       <LegalTrustModal
         open={showLegal}
         onClose={() => { setShowLegal(false); setShowSettingsHub(true); }}
@@ -6964,10 +7021,7 @@ function getOrBuildSentences() {
         S={S}
         onReader={() => { setShowSettingsHub(false); setShowReaderSettingsPage(true); }}
         onAudio={() => { setShowSettingsHub(false); setShowAudioSettingsPage(true); }}
-        onHelp={() => {
-          setShowSettingsHub(false);
-          try { window.location.href = "/faq/"; } catch (_) {}
-        }}
+        onHelp={() => { setShowSettingsHub(false); setShowHelp(true); }}
         onLegal={() => { setShowSettingsHub(false); setShowLegal(true); }}
       />
 
