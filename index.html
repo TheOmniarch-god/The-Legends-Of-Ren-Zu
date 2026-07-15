@@ -35,11 +35,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
 </head>
 <body>
-  <div id="app-boot-splash" style="position:fixed;inset:0;z-index:2147483647;background:#050403;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#f7d36a;font-family:Georgia,serif;transition:opacity .22s ease;">
-    <img src="/assets/renzu-main-app-image.jpg" alt="The Legends Of Ren Zu" style="width:min(78vw,390px);max-height:58vh;height:auto;display:block;object-fit:contain;border-radius:18px;box-shadow:0 28px 70px rgba(0,0,0,.48);filter:drop-shadow(0 18px 40px rgba(212,168,60,.24));" />
-    <div style="margin-top:18px;font-size:clamp(24px,7vw,44px);font-weight:900;letter-spacing:.045em;color:#ffe8a8;text-align:center;text-shadow:0 0 28px rgba(212,168,60,.42);">The Legends Of Ren Zu</div>
-    <div style="margin-top:8px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,220,150,.62);">Opening The Archive</div>
-  </div>
   <div id="root"></div>
   <script>
   window.__CHAPTERS__ = [
@@ -7374,7 +7369,6 @@ function getOrBuildSentences() {
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(React.createElement(RenZuReader));
-    setTimeout(() => { const el = document.getElementById('app-boot-splash'); if (el) { el.style.opacity = '0'; setTimeout(() => el.remove(), 240); } }, 850);
   </script>
   <script>
     // Register service worker so browsers consider this app installable
