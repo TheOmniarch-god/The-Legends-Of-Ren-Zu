@@ -1,0 +1,3 @@
+{
+	"extends": "@renzu-bts/config/tsconfig.base.json"
+}

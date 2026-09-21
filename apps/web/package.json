@@ -1,0 +1,51 @@
+{
+	"name": "web",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --port 3001",
+		"build": "tsc -b ../../packages/api && next build",
+		"check-types": "tsc -b ../../packages/api && tsc --noEmit",
+		"start": "next start",
+		"env:generate": "varlock codegen",
+		"auth:generate": "varlock run -- bun x auth@latest generate --config server/services.ts --output ../../packages/db/src/schema/auth.ts --yes"
+	},
+	"dependencies": {
+		"@ai-sdk/devtools": "^1.0.15",
+		"@ai-sdk/google": "^4.0.64",
+		"@ai-sdk/react": "^4.0.96",
+		"@orpc/client": "catalog:",
+		"@orpc/server": "catalog:",
+		"@orpc/tanstack-query": "^1.15.0",
+		"@renzu-bts/api": "workspace:*",
+		"@renzu-bts/auth": "workspace:*",
+		"@renzu-bts/db": "workspace:*",
+		"@renzu-bts/ui": "workspace:*",
+		"@swc/helpers": "^0.5.23",
+		"@tanstack/react-form": "^1.33.5",
+		"@tanstack/react-query": "^5.102.8",
+		"@varlock/nextjs-integration": "1.2.2",
+		"ai": "catalog:",
+		"babel-plugin-react-compiler": "^1.0.0",
+		"better-auth": "catalog:",
+		"drizzle-orm": "catalog:",
+		"lucide-react": "catalog:",
+		"next": "^16.3.4",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"sonner": "catalog:",
+		"streamdown": "^2.6.0",
+		"varlock": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@renzu-bts/config": "workspace:*",
+		"@tailwindcss/postcss": "catalog:",
+		"@tanstack/react-query-devtools": "^5.102.8",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"tailwindcss": "catalog:",
+		"typescript": "catalog:"
+	}
+}

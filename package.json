@@ -1,13 +1,79 @@
 {
-  "name": "renzu-reader-backend",
-  "version": "1.0.0",
-  "description": "Backend API for The Legends of Ren Zu reader — cultivation billing system",
-  "type": "module",
-  "scripts": {
-    "generate:seo": "node scripts/generate-seo-pages.mjs",
-    "deploy": "vercel --prod"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.45.0"
-  }
+	"name": "renzu-bts",
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"apps/*",
+			"packages/*"
+		],
+		"catalog": {
+			"zod": "^4.5.4",
+			"typescript": "^6.0.3",
+			"@types/bun": "^1.4.2",
+			"varlock": "1.18.0",
+			"@types/node": "^26.4.1",
+			"@orpc/server": "^1.15.0",
+			"@orpc/openapi": "^1.15.0",
+			"@orpc/zod": "^1.15.0",
+			"better-auth": "1.7.5",
+			"ai": "^7.0.93",
+			"lucide-react": "^1.41.0",
+			"react": "^19.2.8",
+			"react-dom": "^19.2.8",
+			"sonner": "^2.0.8",
+			"@orpc/client": "^1.15.0",
+			"@tailwindcss/postcss": "^4.3.3",
+			"@types/react": "^19.2.18",
+			"@types/react-dom": "^19.2.7",
+			"tailwindcss": "^4.3.3",
+			"drizzle-orm": "1.0.0-rc.4"
+		}
+	},
+	"type": "module",
+	"scripts": {
+		"dev": "bun run --filter '*' dev",
+		"build": "bun run --filter '*' build",
+		"check-types": "bun run --filter '*' check-types",
+		"dev:web": "bun run --filter web dev",
+		"db:push": "bun run --filter @renzu-bts/db db:push",
+		"db:studio": "bun run --filter @renzu-bts/db db:studio",
+		"db:generate": "bun run --filter @renzu-bts/db db:generate",
+		"db:migrate": "bun run --filter @renzu-bts/db db:migrate",
+		"deploy:setup": "vercel link",
+		"dev:vercel": "vercel dev -L",
+		"env:preview": "tsx scripts/sync-vercel-env.ts preview",
+		"env:production": "tsx scripts/sync-vercel-env.ts production",
+		"deploy": "vercel deploy",
+		"deploy:prod": "vercel deploy --prod",
+		"deploy:check": "vercel deploy --dry",
+		"env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
+		"postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
+		"auth:generate": "cd apps/web && bun run auth:generate",
+		"check": "biome check --write .",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.12",
+		"@renzu-bts/config": "workspace:*",
+		"@types/bun": "catalog:",
+		"@types/node": "catalog:",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.5.0",
+		"tsx": "^4.23.13",
+		"typescript": "catalog:",
+		"varlock": "catalog:",
+		"vercel": "^59.11.7"
+	},
+	"overrides": {
+		"@next/env": "npm:@varlock/nextjs-integration@1.2.2"
+	},
+	"lint-staged": {
+		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+			"biome check --write ."
+		]
+	},
+	"packageManager": "bun@1.4.0"
 }

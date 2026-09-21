@@ -1,0 +1,23 @@
+{
+	"name": "@renzu-bts/auth",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./*": "./src/*.ts"
+	},
+	"scripts": {
+		"build": "tsc -b",
+		"check-types": "tsc -b"
+	},
+	"dependencies": {
+		"@better-auth/drizzle-adapter": "1.7.5",
+		"@renzu-bts/db": "workspace:*",
+		"better-auth": "catalog:",
+		"drizzle-orm": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@renzu-bts/config": "workspace:*",
+		"typescript": "catalog:"
+	}
+}

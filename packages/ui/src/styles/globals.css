@@ -1,0 +1,336 @@
+/* Hallmark · genre: editorial · macrostructure: Quote-Led / Catalogue / Long Document · theme: Atelier · enrichment: none (typography only) · nav: N6 · footer: Ft1 */
+/* Hallmark · pre-emit critique: P5 H4 E4 S5 R5 V5 · contrast: pass (40-41) · nav: N6 · footer: Ft1 · slop: pass (42-45) · honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · icons: pass (30) · mobile: pass (34, 49, 50-57) */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@source "../../../apps/**/*.{ts,tsx}";
+@source "../**/*.{ts,tsx}";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+	/* Atelier — warm parchment paper, bronze accent, jade second.
+	Reader colour psychology: warm paper lowers arousal vs cool white
+	(longer dwell, less skimming); warm ink avoids harsh-contrast fatigue;
+	bronze signals wisdom/antiquity; jade reserved for listening/progress. */
+	--color-paper: oklch(94% 0.02 85);
+	--color-paper-2: oklch(90.5% 0.022 85);
+	--color-rule: oklch(80% 0.014 85);
+	--color-neutral: oklch(55% 0.01 80);
+	--color-muted: oklch(41% 0.011 75);
+	--color-ink: oklch(21% 0.012 70);
+	--color-accent: oklch(53% 0.14 75);
+	--color-accent-deep: oklch(43% 0.13 72);
+	--color-jade: oklch(50% 0.11 165);
+	--color-focus: oklch(53% 0.19 75);
+
+	--background: var(--color-paper);
+	--foreground: var(--color-ink);
+	--card: var(--color-paper-2);
+	--card-foreground: var(--color-ink);
+	--popover: var(--color-paper);
+	--popover-foreground: var(--color-ink);
+	--primary: var(--color-accent-deep);
+	--primary-foreground: oklch(96% 0.012 85);
+	--secondary: oklch(87.5% 0.024 85);
+	--secondary-foreground: var(--color-ink);
+	--muted: var(--color-paper-2);
+	--muted-foreground: var(--color-muted);
+	--accent: oklch(88.5% 0.035 80);
+	--accent-foreground: var(--color-ink);
+	--destructive: oklch(0.58 0.22 27);
+	--border: var(--color-rule);
+	--input: var(--color-rule);
+	--ring: var(--color-focus);
+	--chart-1: oklch(0.809 0.105 251.813);
+	--chart-2: oklch(0.623 0.214 259.815);
+	--chart-3: oklch(0.546 0.245 262.881);
+	--chart-4: oklch(0.488 0.243 264.376);
+	--chart-5: oklch(0.424 0.199 265.638);
+	--radius: 0.625rem;
+	--sidebar: var(--color-paper-2);
+	--sidebar-foreground: var(--color-ink);
+	--sidebar-primary: var(--color-accent-deep);
+	--sidebar-primary-foreground: oklch(97% 0.01 85);
+	--sidebar-accent: var(--color-paper-2);
+	--sidebar-accent-foreground: var(--color-ink);
+	--sidebar-border: var(--color-rule);
+	--sidebar-ring: var(--color-focus);
+
+	--font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+	--font-body: var(--font-newsreader), Georgia, "Times New Roman", serif;
+	--font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+
+	--space-3xs: 0.125rem;
+	--space-2xs: 0.25rem;
+	--space-xs: 0.5rem;
+	--space-sm: 0.75rem;
+	--space-md: 1rem;
+	--space-lg: 1.5rem;
+	--space-xl: 2.5rem;
+	--space-2xl: 4rem;
+	--space-3xl: 6rem;
+	--space-4xl: 9rem;
+
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+	--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+	--dur-micro: 120ms;
+	--dur-short: 220ms;
+	--dur-long: 420ms;
+
+	--z-base: 1;
+	--z-raised: 10;
+	--z-dropdown: 100;
+	--z-sticky: 200;
+	--z-modal: 400;
+	--z-toast: 500;
+	--z-tooltip: 600;
+}
+
+.dark {
+	/* Candlelight mode — warm charcoal keeps the anchor hue; low blue
+	light for night reading; bronze lightened, chroma eased. */
+	--color-paper: oklch(16% 0.012 70);
+	--color-paper-2: oklch(20% 0.013 70);
+	--color-rule: oklch(30% 0.01 70);
+	--color-neutral: oklch(62% 0.009 75);
+	--color-muted: oklch(72% 0.008 80);
+	--color-ink: oklch(93% 0.008 85);
+	--color-accent: oklch(72% 0.12 78);
+	--color-accent-deep: oklch(76% 0.11 80);
+	--color-jade: oklch(68% 0.09 165);
+	--color-focus: oklch(72% 0.15 75);
+
+	--background: var(--color-paper);
+	--foreground: var(--color-ink);
+	--card: var(--color-paper-2);
+	--card-foreground: var(--color-ink);
+	--popover: var(--color-paper-2);
+	--popover-foreground: var(--color-ink);
+	--primary: var(--color-accent);
+	--primary-foreground: oklch(18% 0.012 70);
+	--secondary: oklch(24% 0.012 70);
+	--secondary-foreground: var(--color-ink);
+	--muted: var(--color-paper-2);
+	--muted-foreground: var(--color-muted);
+	--accent: oklch(26% 0.014 70);
+	--accent-foreground: var(--color-ink);
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: var(--color-rule);
+	--input: var(--color-rule);
+	--ring: var(--color-focus);
+	--chart-1: oklch(0.809 0.105 251.813);
+	--chart-2: oklch(0.623 0.214 259.815);
+	--chart-3: oklch(0.546 0.245 262.881);
+	--chart-4: oklch(0.488 0.243 264.376);
+	--chart-5: oklch(0.424 0.199 265.638);
+	--sidebar: var(--color-paper-2);
+	--sidebar-foreground: var(--color-ink);
+	--sidebar-primary: var(--color-accent);
+	--sidebar-primary-foreground: oklch(18% 0.012 70);
+	--sidebar-accent: oklch(24% 0.012 70);
+	--sidebar-accent-foreground: var(--color-ink);
+	--sidebar-border: var(--color-rule);
+	--sidebar-ring: var(--color-focus);
+}
+
+@theme inline {
+	--font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	--font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+	--font-body: var(--font-newsreader), Georgia, "Times New Roman", serif;
+	--color-sidebar-ring: var(--sidebar-ring);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar: var(--sidebar);
+	--color-chart-5: var(--chart-5);
+	--color-chart-4: var(--chart-4);
+	--color-chart-3: var(--chart-3);
+	--color-chart-2: var(--chart-2);
+	--color-chart-1: var(--chart-1);
+	--color-ring: var(--ring);
+	--color-input: var(--input);
+	--color-border: var(--border);
+	--color-destructive: var(--destructive);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent: var(--accent);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-muted: var(--muted);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-secondary: var(--secondary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary: var(--primary);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-popover: var(--popover);
+	--color-card-foreground: var(--card-foreground);
+	--color-card: var(--card);
+	--color-foreground: var(--foreground);
+	--color-background: var(--background);
+	--color-paper: var(--color-paper);
+	--color-paper-2: var(--color-paper-2);
+	--color-rule: var(--color-rule);
+	--color-ink: var(--color-ink);
+	--color-bronze: var(--color-accent);
+	--color-bronze-deep: var(--color-accent-deep);
+	--color-jade: var(--color-jade);
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--radius-2xl: calc(var(--radius) + 8px);
+	--radius-3xl: calc(var(--radius) + 12px);
+	--radius-4xl: calc(var(--radius) + 16px);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	html {
+		overflow-x: clip;
+	}
+	h1,
+	h2,
+	h3,
+	.font-display {
+		overflow-wrap: anywhere;
+		min-width: 0;
+	}
+	body {
+		overflow-x: clip;
+		@apply bg-background font-body text-foreground antialiased;
+		font-variant-numeric: oldstyle-nums;
+	}
+	::selection {
+		background: var(--color-accent);
+	}
+	:focus-visible {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+	}
+}
+
+/* Long-form reader — 65ch measure, 1.8 leading, drop cap on entry. */
+@layer components {
+	.legend-prose {
+		max-width: 65ch;
+		font-size: 1.125rem;
+		line-height: 1.8;
+	}
+	.legend-prose > p + p {
+		margin-top: var(--space-lg);
+	}
+	.legend-prose > p:first-of-type::first-letter {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 3.4em;
+		line-height: 0.9;
+		float: left;
+		padding-right: var(--space-xs);
+		color: var(--color-accent-deep);
+	}
+	.legend-prose a {
+		text-decoration: underline;
+		text-decoration-color: var(--color-accent);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 3px;
+		transition:
+			text-decoration-thickness var(--dur-micro) var(--ease-out),
+			color var(--dur-micro) var(--ease-out);
+	}
+	.legend-prose a:hover {
+		text-decoration-thickness: 2px;
+		color: var(--color-accent-deep);
+	}
+	.legend-prose h2 {
+		margin-top: var(--space-xl);
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+	.legend-prose h3 {
+		margin-top: var(--space-lg);
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		font-weight: 500;
+	}
+	.legend-prose ul,
+	.legend-prose ol {
+		margin-top: var(--space-md);
+	}
+	.legend-prose li {
+		margin-left: var(--space-lg);
+	}
+	.legend-prose ul > li {
+		list-style: disc;
+	}
+	.legend-prose ol > li {
+		list-style: decimal;
+	}
+	.typographic-link {
+		text-decoration: underline;
+		text-decoration-color: var(--color-accent);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 3px;
+		transition:
+			text-decoration-thickness var(--dur-micro) var(--ease-out),
+			color var(--dur-micro) var(--ease-out);
+	}
+	.typographic-link:hover {
+		text-decoration-thickness: 2px;
+		color: var(--color-accent-deep);
+	}
+	.typographic-link:active {
+		color: var(--color-accent-deep);
+	}
+	.rule-double {
+		border: 0;
+		border-top: 1px solid var(--color-rule);
+		border-bottom: 1px solid var(--color-rule);
+		height: 4px;
+	}
+}
+
+/* One orchestrated entrance; content is otherwise just there. */
+@layer utilities {
+	.reveal {
+		opacity: 0;
+		transform: translateY(8px);
+		animation: hallmark-reveal var(--dur-long) var(--ease-out) forwards;
+		animation-delay: calc(var(--i, 0) * 60ms);
+	}
+	@keyframes hallmark-reveal {
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		/* Reduced-motion must override all author transitions — !important is the mechanism. */
+		/* biome-ignore lint/complexity/noImportantStyles: accessibility override */
+		animation-duration: 150ms !important;
+		/* biome-ignore lint/complexity/noImportantStyles: accessibility override */
+		animation-iteration-count: 1 !important;
+		/* biome-ignore lint/complexity/noImportantStyles: accessibility override */
+		transition-duration: 150ms !important;
+	}
+	.reveal {
+		animation-name: hallmark-reveal-reduced;
+	}
+	@keyframes hallmark-reveal-reduced {
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+}
