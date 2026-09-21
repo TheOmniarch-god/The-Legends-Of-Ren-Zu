@@ -56,3 +56,9 @@ coverage
 .cache
 tmp
 temp
+
+# Local-only tooling (kept off GitHub)
+.codegraph/
+.hallmark/
+.husky/
+.reticle/
