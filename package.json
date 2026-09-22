@@ -49,6 +49,7 @@
 		"env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
 		"postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
 		"auth:generate": "cd apps/web && bun run auth:generate",
+		"blog:seed": "bun scripts/seed-blog.ts",
 		"check": "biome check --write .",
 		"prepare": "husky"
 	},

@@ -246,6 +246,17 @@
 		text-decoration-thickness: 2px;
 		color: var(--color-accent-deep);
 	}
+	.legend-prose img.content-media,
+	.legend-prose video.content-media {
+		display: block;
+		width: 100%;
+		border: 1px solid var(--color-rule);
+		margin-top: var(--space-lg);
+		margin-bottom: var(--space-lg);
+	}
+	.legend-prose video.content-media {
+		background: #000;
+	}
 	.legend-prose h2 {
 		margin-top: var(--space-xl);
 		font-family: var(--font-display);

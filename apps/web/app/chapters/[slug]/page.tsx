@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { BlogArticle } from "@/components/blog-article";
 import { chapterBySlug, chapters, teaser } from "@/data/chapters";
+import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog-data";
 
 export function generateStaticParams() {
 	return chapters.map((chapter) => ({ slug: chapter.slug }));
@@ -14,6 +16,22 @@ export async function generateMetadata({
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
 	const { slug } = await params;
+	const post = await getPublishedPostBySlug(slug);
+	if (post) {
+		const title = `Part ${post.num || ""}: ${post.title} | The Legends of Ren Zu`;
+		const description =
+			post.seoDescription || post.excerpt || teaser(post.content, 120);
+		return {
+			title,
+			description,
+			openGraph: {
+				title,
+				description,
+				type: "article",
+				images: post.coverImageUrl ? [{ url: post.coverImageUrl }] : undefined,
+			},
+		};
+	}
 	const chapter = chapterBySlug.get(slug);
 	if (!chapter) return {};
 	const title = `Part ${chapter.num}: ${chapter.title} | The Legends of Ren Zu`;
@@ -59,6 +77,56 @@ export default async function ChapterPage({
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params;
+
+	// DB-first: admin-managed version with cover image + video wins when present.
+	const post = await getPublishedPostBySlug(slug);
+	if (post) {
+		const siblings = await listPublishedPosts("chapter", 200);
+		const index = siblings.findIndex((s) => s.slug === slug);
+		const prev = siblings[index - 1];
+		const next = siblings[index + 1];
+		return (
+			<BlogArticle
+				post={{
+					slug: post.slug,
+					type: post.type,
+					num: post.num,
+					title: post.title,
+					excerpt: post.excerpt,
+					content: post.content,
+					coverImageUrl: post.coverImageUrl,
+					coverImageAlt: post.coverImageAlt,
+					videoUrl: post.videoUrl,
+					videoProvider: post.videoProvider,
+					tags: post.tags,
+				}}
+				eyebrow="The Legends of Ren Zu"
+				backHref="/chapters"
+				backLabel="Chapters"
+				prev={
+					prev
+						? {
+								slug: prev.slug,
+								title: prev.title,
+								num: prev.num,
+								base: "/chapters",
+							}
+						: null
+				}
+				next={
+					next
+						? {
+								slug: next.slug,
+								title: next.title,
+								num: next.num,
+								base: "/chapters",
+							}
+						: null
+				}
+			/>
+		);
+	}
+
 	const chapter = chapterBySlug.get(slug);
 	if (!chapter) notFound();
 

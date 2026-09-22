@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { chapters, teaser } from "@/data/chapters";
+import { listPublishedPosts } from "@/lib/blog-data";
 
 export const metadata: Metadata = {
 	title: "The Legends of Ren Zu Chapters | Archive and Reading Guide",
@@ -11,11 +13,33 @@ export const metadata: Metadata = {
 
 // Hallmark · Catalogue: inventory header (count, no adjectives) + uniform
 // hairline rows; card-internal link per row; no global CTA.
-export default function ChaptersArchive() {
+// DB-first: shows admin-managed chapters (with covers) when the blog DB is seeded.
+export default async function ChaptersArchive() {
+	const dbChapters = await listPublishedPosts("chapter", 200);
+	const items =
+		dbChapters.length > 0
+			? dbChapters.map((p) => ({
+					slug: p.slug,
+					num: p.num || "",
+					title: p.title,
+					excerpt: p.excerpt || teaser(p.content, 160),
+					cover: p.coverImageUrl,
+					coverAlt: p.coverImageAlt,
+					hasVideo: Boolean(p.videoUrl),
+				}))
+			: chapters.map((c) => ({
+					slug: c.slug,
+					num: c.num,
+					title: c.title,
+					excerpt: teaser(c.body, 160),
+					cover: null as string | null,
+					coverAlt: null as string | null,
+					hasVideo: false,
+				}));
 	return (
 		<main className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-6">
 			<p className="font-sans text-muted-foreground text-xs uppercase tracking-[0.18em]">
-				The archive · {chapters.length} entries · Reverend Insanity
+				The archive · {items.length} entries · Reverend Insanity
 			</p>
 			<h1 className="mt-3 font-display font-semibold text-4xl tracking-tight sm:text-5xl">
 				Chapters
@@ -29,6 +53,12 @@ export default function ChaptersArchive() {
 					className="typographic-link whitespace-nowrap font-sans text-sm"
 				>
 					Reading order
+				</Link>
+				<Link
+					href="/blog"
+					className="typographic-link whitespace-nowrap font-sans text-sm"
+				>
+					Webnovel
 				</Link>
 				<Link
 					href="/guides"
@@ -51,7 +81,7 @@ export default function ChaptersArchive() {
 			</div>
 
 			<ol className="mt-10">
-				{chapters.map((chapter) => (
+				{items.map((chapter) => (
 					<li
 						key={chapter.slug}
 						className="grid grid-cols-[minmax(0,3.5rem)_minmax(0,1fr)] gap-4 border-rule border-t py-5 last:border-b sm:grid-cols-[minmax(0,5rem)_minmax(0,1fr)_minmax(0,16rem)] sm:gap-6"
@@ -65,10 +95,25 @@ export default function ChaptersArchive() {
 								className="typographic-link"
 							>
 								{chapter.title}
+								{chapter.hasVideo ? " ▶" : ""}
 							</Link>
+							{chapter.cover && (
+								<Link
+									href={`/chapters/${chapter.slug}`}
+									className="mt-3 block max-w-xs"
+								>
+									<Image
+										src={chapter.cover}
+										alt={chapter.coverAlt || chapter.title}
+										width={320}
+										height={180}
+										className="aspect-video w-full border border-rule object-cover"
+									/>
+								</Link>
+							)}
 						</h2>
 						<p className="col-start-2 font-body text-base text-muted-foreground leading-relaxed sm:col-start-3">
-							{teaser(chapter.body, 160)}
+							{chapter.excerpt}
 						</p>
 					</li>
 				))}

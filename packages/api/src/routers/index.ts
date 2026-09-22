@@ -1,6 +1,8 @@
 import type { RouterClient } from "@orpc/server";
 
 import { protectedProcedure, publicProcedure } from "../index";
+import { adminRouter } from "./admin";
+import { blogRouter } from "./blog";
 import { hallRouter } from "./hall";
 import { libraryRouter } from "./library";
 import { paymentsRouter } from "./payments";
@@ -20,6 +22,8 @@ export const appRouter = {
 	library: libraryRouter,
 	hall: hallRouter,
 	payments: paymentsRouter,
+	blog: blogRouter,
+	admin: adminRouter,
 };
 export type AppRouter = typeof appRouter;
 export type AppRouterClient = RouterClient<typeof appRouter>;

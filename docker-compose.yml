@@ -1,0 +1,32 @@
+# Local dev database for The Legends of Ren Zu.
+#
+# Usage:
+#   docker compose up -d db        # start Postgres (port 54322, matches apps/web/.env)
+#   bun run db:push                # create tables (blog + auth + reader)
+#   bun run blog:seed              # seed chapters/guides/characters/themes
+#   bun run dev:web                # start the app on http://localhost:3001
+#
+# Supabase Storage is NOT emulated here — image/video uploads need real
+# Supabase keys (see SUPABASE_LOCAL_PROFILES below). Everything else
+# (posts, admin panel, roles, public blog) works fully offline.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: renzu-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "127.0.0.1:54322:5432"
+    volumes:
+      - renzu-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  renzu-pgdata:

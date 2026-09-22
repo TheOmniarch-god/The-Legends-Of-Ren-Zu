@@ -10,6 +10,7 @@ import UserMenu from "./user-menu";
 // Home/Dashboard/AI-Chat bar said "SaaS".
 const LINKS = [
 	{ to: "/chapters", label: "Chapters" },
+	{ to: "/blog", label: "Webnovel" },
 	{ to: "/guides", label: "Guides" },
 	{ to: "/characters", label: "Characters" },
 	{ to: "/themes", label: "Themes" },

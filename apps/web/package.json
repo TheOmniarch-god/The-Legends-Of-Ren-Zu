@@ -21,6 +21,8 @@
 		"@renzu-bts/auth": "workspace:*",
 		"@renzu-bts/db": "workspace:*",
 		"@renzu-bts/ui": "workspace:*",
+		"@supabase/ssr": "^0.12.7",
+		"@supabase/supabase-js": "^2.116.0",
 		"@swc/helpers": "^0.5.23",
 		"@tanstack/react-form": "^1.33.5",
 		"@tanstack/react-query": "^5.102.8",

@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 
 import { chapters, teaser } from "@/data/chapters";
+import { listPublishedPosts } from "@/lib/blog-data";
 
 export const metadata: Metadata = {
 	title: "The Legends of Ren Zu | Read, Listen, and Ask",
@@ -16,8 +17,26 @@ export const metadata: Metadata = {
 const HERO_QUOTE =
 	"“Wine is both bitter and sweet, love is the same, and human lives are even more so.”";
 
-export default function Home() {
+function blogHref(post: { type: string; slug: string }): Route {
+	switch (post.type) {
+		case "chapter":
+			return `/chapters/${post.slug}` as Route;
+		case "guide":
+			return `/guides/${post.slug}` as Route;
+		case "character":
+			return `/characters/${post.slug}` as Route;
+		case "theme":
+			return `/themes/${post.slug}` as Route;
+		default:
+			return `/blog/${post.slug}` as Route;
+	}
+}
+
+export default async function Home() {
 	const featured = chapters.slice(0, 6);
+	const latest = (await listPublishedPosts(undefined, 4)).filter(
+		(p) => p.coverImageUrl,
+	);
 	return (
 		<main className="mx-auto w-full max-w-5xl px-4 sm:px-6">
 			<section className="reveal grid gap-10 pt-12 pb-16 sm:pt-16">
@@ -115,9 +134,54 @@ export default function Home() {
 
 			<hr className="rule-double" />
 
+			{latest.length > 0 && (
+				<section className="reveal py-14" style={{ "--i": 2 } as CSSProperties}>
+					<div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
+						<h2 className="font-display font-semibold text-3xl tracking-tight">
+							Fresh from the webnovel
+						</h2>
+						<Link
+							href="/blog"
+							className="typographic-link whitespace-nowrap font-sans text-sm"
+						>
+							All posts →
+						</Link>
+					</div>
+					<div className="grid gap-6 sm:grid-cols-2">
+						{latest.map((post) => (
+							<Link
+								key={post.id}
+								href={blogHref(post)}
+								className="group border border-rule"
+							>
+								{post.coverImageUrl && (
+									<Image
+										src={post.coverImageUrl}
+										alt={post.coverImageAlt || post.title}
+										width={640}
+										height={360}
+										className="aspect-video w-full object-cover"
+									/>
+								)}
+								<div className="p-4">
+									<p className="font-sans text-muted-foreground text-xs uppercase tracking-[0.14em]">
+										{post.type}
+									</p>
+									<p className="mt-1 font-display text-xl leading-snug group-hover:underline">
+										{post.title}
+									</p>
+								</div>
+							</Link>
+						))}
+					</div>
+				</section>
+			)}
+
+			<hr className="rule-double" />
+
 			<section
 				className="reveal grid gap-8 py-14 sm:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
-				style={{ "--i": 2 } as CSSProperties}
+				style={{ "--i": 3 } as CSSProperties}
 			>
 				<h2 className="font-display font-semibold text-3xl tracking-tight">
 					Three ways to keep reading
