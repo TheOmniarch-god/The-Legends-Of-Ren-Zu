@@ -57,6 +57,41 @@ function slugify(value: string) {
 		.slice(0, 200);
 }
 
+export type PostChangeEvent = {
+	id: string;
+	type: string;
+	slug: string;
+	status: string;
+};
+
+let postChangeHook: ((event: PostChangeEvent) => void) | null = null;
+
+/**
+ * Registered by the hosting app (e.g. Next.js) to refresh caches and notify
+ * search engines whenever a post is created, updated, published or removed.
+ * The api package itself stays runtime-agnostic — the host provides the
+ * Next.js-specific revalidation / IndexNow calls.
+ */
+export function onPostChange(hook: (event: PostChangeEvent) => void) {
+	postChangeHook = hook;
+}
+
+function emitPostChange(
+	post: { id: string; type: string; slug: string; status: string } | undefined,
+) {
+	if (!post || !postChangeHook) return;
+	try {
+		postChangeHook({
+			id: post.id,
+			type: post.type,
+			slug: post.slug,
+			status: post.status,
+		});
+	} catch {
+		// Notifications must never break publishing.
+	}
+}
+
 export const adminRouter = {
 	stats: adminProcedure.handler(async ({ context }) => {
 		const { db } = context;
@@ -200,6 +235,7 @@ export const adminRouter = {
 						});
 					}
 				}
+				emitPostChange(post);
 				return { success: true, post };
 			}),
 
@@ -240,6 +276,7 @@ export const adminRouter = {
 							.values(tagIds.map((tagId) => ({ postId: id, tagId })));
 					}
 				}
+				emitPostChange(updated[0]);
 				return { success: true, post: updated[0] };
 			}),
 
@@ -255,16 +292,23 @@ export const adminRouter = {
 					})
 					.where(eq(posts.id, input.id))
 					.returning();
+				emitPostChange(updated[0]);
 				return { success: true, post: updated[0] };
 			}),
 
 		remove: superAdminProcedure
 			.input(z.object({ id: z.string().min(1) }))
 			.handler(async ({ input, context }) => {
+				const existing = await context.db
+					.select()
+					.from(posts)
+					.where(eq(posts.id, input.id))
+					.limit(1);
 				await context.db
 					.delete(postsToTags)
 					.where(eq(postsToTags.postId, input.id));
 				await context.db.delete(posts).where(eq(posts.id, input.id));
+				if (existing[0]) emitPostChange({ ...existing[0], status: "deleted" });
 				return { success: true };
 			}),
 	},

@@ -5,12 +5,43 @@ import type { CSSProperties } from "react";
 
 import { chapters, teaser } from "@/data/chapters";
 import { listPublishedPosts } from "@/lib/blog-data";
+import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
 	title: "The Legends of Ren Zu | Read, Listen, and Ask",
 	description:
 		"Read, listen, annotate, and discuss The Legends of Ren Zu with The Omniarch reader.",
+	alternates: { canonical: canonicalUrl("/") },
+	openGraph: {
+		type: "website",
+		siteName: "The Legends of Ren Zu",
+		locale: "en_US",
+		url: canonicalUrl("/"),
+		title: "The Legends of Ren Zu | Read, Listen, and Ask",
+		description:
+			"Read, listen, annotate, and discuss The Legends of Ren Zu with The Omniarch reader.",
+		images: [
+			{
+				url: "/assets/renzu-main-app-image.jpg",
+				width: 1200,
+				height: 630,
+				alt: "The Legends of Ren Zu artwork",
+			},
+		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "The Legends of Ren Zu | Read, Listen, and Ask",
+		description:
+			"Read, listen, annotate, and discuss The Legends of Ren Zu with The Omniarch reader.",
+		images: ["/assets/renzu-main-app-image.jpg"],
+	},
+	robots: { index: true, follow: true },
 };
+
+// Home shows the latest webnovel posts — refresh from the DB at most every
+// 10 minutes (publishing also triggers instant revalidation).
+export const revalidate = 600;
 
 // Hallmark · H3 Quote-Led knobs: quote-weight=roman display · attribution=under quote · length=80–160 chars
 // Verbatim from Part 7 — no invented copy.

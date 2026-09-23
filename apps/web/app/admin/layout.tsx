@@ -1,8 +1,12 @@
-import type { Route } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getAdminSession } from "@/server/admin-guard";
+
+export const metadata: Metadata = {
+	robots: { index: false, follow: false },
+};
 
 const NAV: { href: Route; label: string }[] = [
 	{ href: "/admin", label: "Overview" },

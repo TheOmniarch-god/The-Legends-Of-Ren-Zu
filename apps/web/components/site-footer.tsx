@@ -35,6 +35,9 @@ export default function SiteFooter() {
 						<Link href="/faq" className="typographic-link whitespace-nowrap">
 							Questions
 						</Link>
+						<a href="/llms.txt" className="typographic-link whitespace-nowrap">
+							LLMs
+						</a>
 					</p>
 				</div>
 			</div>

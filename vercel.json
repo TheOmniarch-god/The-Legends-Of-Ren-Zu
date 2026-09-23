@@ -1,4 +1,15 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
-	"bunVersion": "1.x"
+	"bunVersion": "1.x",
+	"headers": [
+		{
+			"source": "/googlebb58fb4acaca6506.html",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow"
+				}
+			]
+		}
+	]
 }

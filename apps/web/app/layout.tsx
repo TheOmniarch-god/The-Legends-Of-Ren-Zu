@@ -35,12 +35,60 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
 	title: {
-		default: "The Legends of Ren Zu",
-		template: "%s",
+		default: "The Legends of Ren Zu | Read, Listen, and Ask",
+		template: "%s | The Legends of Ren Zu",
 	},
 	description:
 		"The Legends of Ren Zu — Reverend Insanity by Gu Zhen Ren. Read, listen, annotate, and ask.",
-	metadataBase: new URL("https://thelegendsofrenzu.theomniarch.com.ng"),
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_SITE_URL ||
+			"https://thelegendsofrenzu.theomniarch.com.ng",
+	),
+	alternates: {
+		canonical: "/",
+	},
+	keywords: [
+		"The Legends of Ren Zu",
+		"Ren Zu",
+		"Reverend Insanity",
+		"Gu Zhen Ren",
+		"Hope Gu",
+		"Fate Gu",
+		"xianxia guides",
+	],
+	authors: [{ name: "Gu Zhen Ren" }],
+	creator: "The Omniarch",
+	publisher: "The Omniarch",
+	openGraph: {
+		type: "website",
+		siteName: "The Legends of Ren Zu",
+		locale: "en_US",
+		url: "/",
+		title: "The Legends of Ren Zu | Read, Listen, and Ask",
+		description:
+			"The Legends of Ren Zu — Reverend Insanity by Gu Zhen Ren. Read, listen, annotate, and ask.",
+	},
+	twitter: {
+		card: "summary_large_image",
+		site: "@theomniarch",
+		title: "The Legends of Ren Zu | Read, Listen, and Ask",
+		description:
+			"The Legends of Ren Zu — Reverend Insanity by Gu Zhen Ren. Read, listen, annotate, and ask.",
+	},
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			"max-image-preview": "large",
+			"max-snippet": -1,
+		},
+	},
+};
+
+export const viewport = {
+	themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({
@@ -48,8 +96,45 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const siteUrl = (
+		process.env.NEXT_PUBLIC_SITE_URL ||
+		"https://thelegendsofrenzu.theomniarch.com.ng"
+	).replace(/\/$/, "");
+	const websiteJsonLd = {
+		"@context": "https://schema.org",
+		"@graph": [
+			{
+				"@type": "WebSite",
+				"@id": `${siteUrl}#website`,
+				url: siteUrl,
+				name: "The Legends of Ren Zu",
+				inLanguage: "en",
+				publisher: { "@id": `${siteUrl}#organization` },
+				potentialAction: {
+					"@type": "SearchAction",
+					target: {
+						"@type": "EntryPoint",
+						urlTemplate: `${siteUrl}/blog?search={search_term_string}`,
+					},
+					"query-input": "required name=search_term_string",
+				},
+			},
+			{
+				"@type": "Organization",
+				"@id": `${siteUrl}#organization`,
+				name: "The Legends of Ren Zu",
+				url: siteUrl,
+			},
+		],
+	};
 	return (
 		<html lang="en" suppressHydrationWarning>
+			<head>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+				/>
+			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${newsreader.variable} antialiased`}
 			>
